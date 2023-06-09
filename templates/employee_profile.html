@@ -2039,189 +2039,130 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                         <!-- Increment Details -->
 
                                                                         <div class="row">
-                                                                          <div class="col-12">
-                                                                            <div class="row">
-                                                                              <div class="col-10">
-                                                                                <h3>Increment</h3>
-                                                                              </div>
+                                                                            <div class="col-12">
+                                                                              <div class="row">
+                                                                                <div class="col-10">
+                                                                                  <h3>Increment</h3>
+                                                                                </div>
                                                                                 <div class="col-1">
-                                                                                    <a href="url_for('employee_profile',username=username, empid=data['personal_data']['userID'])}}">
-                                                                                <button class="btn border-1 btn-secondary hidden" type="button" id="inc_cancle_btn">Cancle</button>
-                                                                                        </a>
+                                                                                  <a href="url_for('employee_profile',username=username, empid=data['personal_data']['userID'])}}">
+                                                                                    <button class="btn border-1 btn-secondary hidden" type="button" id="inc_cancle_btn">Cancel</button>
+                                                                                  </a>
+                                                                                </div>
+                                                                                <div class="col-1">
+                                                                                  <button class="btn border-1 btn-secondary d-flex-end" type="button" id="inc_edit_btn" onclick="incrementEditMode()">Edit</button>
+                                                                                  <button class="btn border-1 btn-secondary hidden" type="submit" id="inc_save_btn" onclick="incrementSaveValues()">Save</button>
+                                                                                </div>
                                                                               </div>
-                                                                              <div class="col-1">
-                                                                                <button class="btn border-1 btn-secondary d-flex-end" type="button" id="inc_edit_btn" onclick="incrementEditMode()">Edit</button>
-                                                                                <button class="btn border-1 btn-secondary hidden" type="submit" id="inc_save_btn" onclick="incrementSaveValues()">Save</button>
-                                                                              </div>
-                                                                            </div>
-                                                                            <div class="row mt-3">
-                                                                              <div class="col-12">
-                                                                                  <form id="myForm" method="POST"
-                                                                                        action="{{url_for('save_data',username=username, empid=data['personal_data']['userID'])}}">
-
-                                                                                      <table class="table">
-                                                                                          <thead class="table-secondary">
-                                                                                          <tr class="bg-dark">
-                                                                                              <th scope="col">Gross
-                                                                                                  Salary (₹)
-                                                                                              </th>
-                                                                                              <th scope="col">Job
-                                                                                                  Position
-                                                                                              </th>
-                                                                                              <th scope="col">Effective
-                                                                                                  Date
-                                                                                              </th>
-                                                                                              <th scope="col" onclick="toggleIncrementType()">
-                                                                                                  Increment
-                                                                                              </th>
-                                                                                              <th scope="col">Total
-                                                                                                  (₹)
-                                                                                              </th>
-                                                                                              <th scope="col">Note</th>
-                                                                                          </tr>
-                                                                                          </thead>
-                                                                                          <tbody id="tableBody">
-                                                                                          {% for index, content in
-                                                                                          increment_data %}
-                                                                                          {% for key in content %}
-                                                                                          <tr class="table-light col-12">
-                                                                                              <td scope="col">
-                                                                                                  <p id="incinformation{{ index }}_1">
-                                                                                                      {{
-                                                                                                      content[key]['grossSalary']
-                                                                                                      }}
-                                                                                                  </p>
-                                                                                                  <input type="text"
-                                                                                                         id="inctextBox{{ index }}_1"
-                                                                                                         name="{{key}}_grossSalary"
-                                                                                                         class="hidden form-control-sm"
-                                                                                                         size="8">
-                                                                                              </td>
-                                                                                              <td scope="col">
-                                                                                                  <p id="incinformation{{ index }}_2">
-                                                                                                      {{
-                                                                                                      content[key]['jobPosition']
-                                                                                                      }}
-                                                                                                  </p>
-                                                                                                  <input type="text"
-                                                                                                         id="inctextBox{{ index }}_2"
-                                                                                                         name="{{key}}_jobPosition"
-                                                                                                         class="hidden form-control-sm"
-                                                                                                         size="8">
-                                                                                              </td>
-                                                                                              <td scope="col">
-                                                                                                  <p id="incinformation{{ index }}_3">
-                                                                                                      {{
-                                                                                                      content[key]['effectiveDate']
-                                                                                                      }}
-                                                                                                  </p>
-                                                                                                  <input type="date"
-                                                                                                         id="inctextBox{{ index }}_3"
-                                                                                                         name="{{key}}_effectiveDate"
-                                                                                                         class="hidden form-control-sm"
-                                                                                                         size="8">
-                                                                                              </td>
-                                                                                              <td scope="col">
-                                                                                                  <p id="incinformation{{ index }}_4">
-                                                                                                      {{
-                                                                                                      content[key]['increment']
-                                                                                                      }}
-                                                                                                  </p>
-                                                                                                  <input type="text"
-                                                                                                         id="inctextBox{{ index }}_4"
-                                                                                                         name="{{key}}_increment"
-                                                                                                         class="hidden form-control-sm"
-                                                                                                         size="8">
-                                                                                              </td>
-                                                                                              <td scope="col">
-                                                                                                  <p id="incinformation{{ index }}_5">
-                                                                                                      {{
-                                                                                                      content[key]['total']
-                                                                                                      }}
-                                                                                                  </p>
-                                                                                                  <input type="text"
-                                                                                                         id="inctextBox{{ index }}_5"
-                                                                                                         name="{{key}}_total"
-                                                                                                         class="hidden form-control-sm"
-                                                                                                         size="8">
-                                                                                              </td>
-                                                                                                <td scope="col">
-                                                                                                <p id="incinformation{{ index }}_6" class="note-column" title="{{ content[key]['note'] }}">
-                                                                                                  {{ content[key]['note'] }}
-                                                                                                </p>
-                                                                                                <input type="text" id="inctextBox{{ index }}_6" name="{{key}}_note" class="hidden form-control-sm" size="8">
-                                                                                              </td>
-                                                                                          </tr>
-                                                                                          {% endfor %}
-                                                                                          {% endfor %}
-                                                                                          <tr class="hidden"
-                                                                                              id="addNewDataRow">
-                                                                                              <td scope="col">
-                                                                                                  <p id="incinformation10_1">
-                                                                                                      <input type="text"
-                                                                                                             id="inctextBox10_1"
-                                                                                                             name="new_inc_grossSalary"
-                                                                                                             class="form-control-sm"
-                                                                                                             size="8">
-                                                                                                  </p>
-                                                                                              </td>
-                                                                                              <td scope="col">
-                                                                                                  <p id="incinformation10_2">
-                                                                                                      <input type="text"
-                                                                                                             id="inctextBox10_2"
-                                                                                                             name="new_inc_jobPosition"
-                                                                                                             class="form-control-sm"
-                                                                                                             size="8">
-                                                                                                  </p>
-                                                                                              </td>
-                                                                                              <td scope="col">
-                                                                                                  <p id="incinformation10_3">
-                                                                                                      <input type="date"
-                                                                                                             id="inctextBox10_3"
-                                                                                                             name="new_inc_effectiveDate"
-                                                                                                             class="form-control-sm"
-                                                                                                             size="8">
-                                                                                                  </p>
-                                                                                              </td>
-                                                                                              <td scope="col">
-                                                                                                  <p id="incinformation10_4">
-                                                                                                      <input type="text"
-                                                                                                             id="inctextBox10_4"
-                                                                                                             name="new_inc_increment"
-                                                                                                             class="form-control-sm"
-                                                                                                             size="8">
-                                                                                                  </p>
-                                                                                              </td>
-                                                                                              <td scope="col">
-                                                                                                  <p id="incinformation10_5">
-                                                                                                      <input type="text"
-                                                                                                             id="inctextBox10_5"
-                                                                                                             name="new_inc_total"
-                                                                                                             class="form-control-sm"
-                                                                                                             size="8">
-                                                                                                  </p>
-                                                                                              </td>
-                                                                                               <td scope="col">
-                                                                                                <p id="incinformation10_6">
-                                                                                                  <input type="text" id="inctextBox10_6" name="new_inc_note" class="form-control-sm" size="8">
-                                                                                                </p>
-                                                                                              </td>
-                                                                                          </tr>
-                                                                                          <tr>
-                                                                                              <td colspan="6"><a
-                                                                                                      class="hidden"
-                                                                                                      href="#"
-                                                                                                      id="addNewDataLink">+
-                                                                                                  ADD NEW DATA</a></td>
-                                                                                          </tr>
-                                                                                          </tbody>
-                                                                                      </table>
+                                                                              <div class="row mt-3">
+                                                                                <div class="col-12">
+                                                                                  <form id="myForm" method="POST" action="{{url_for('save_data',username=username, empid=data['personal_data']['userID'])}}">
+                                                                                    <table class="table">
+                                                                                      <thead class="table-secondary">
+                                                                                        <tr class="bg-dark">
+                                                                                          <th scope="col">Gross Salary (₹)</th>
+                                                                                          <th scope="col">Job Position</th>
+                                                                                          <th scope="col">Effective Date</th>
+                                                                                          <th scope="col" onclick="toggleIncrementType()">Increment</th>
+                                                                                          <th scope="col">Total (₹)</th>
+                                                                                          <th scope="col">Note</th>
+                                                                                        </tr>
+                                                                                      </thead>
+                                                                                      <tbody id="tableBody">
+                                                                                        {% for index, content in increment_data %}
+                                                                                        {% for key in content %}
+                                                                                        <tr class="table-light col-12">
+                                                                                          <td scope="col">
+                                                                                            <p id="incinformation{{ index }}_1">{{ content[key]['grossSalary'] }}</p>
+                                                                                            <input type="text" id="inctextBox{{ index }}_1" name="{{key}}_grossSalary" class="hidden form-control-sm" size="8">
+                                                                                          </td>
+                                                                                          <td scope="col">
+                                                                                            <p id="incinformation{{ index }}_2">{{ content[key]['jobPosition'] }}</p>
+                                                                                            <input type="text" id="inctextBox{{ index }}_2" name="{{key}}_jobPosition" class="hidden form-control-sm" size="8">
+                                                                                          </td>
+                                                                                          <td scope="col">
+                                                                                            <p id="incinformation{{ index }}_3">{{ content[key]['effectiveDate'] }}</p>
+                                                                                            <span id="error" style="color: red;"></span>
+                                                                                            <input type="date" id="inctextBox{{ index }}_3" name="{{key}}_effectiveDate" min="" class="hidden form-control-sm storedDate" size="8" onclick="validateDate({{ index }})">
+                                                                                          </td>
+                                                                                          <td scope="col">
+                                                                                            <p id="incinformation{{ index }}_4">{{ content[key]['increment'] }}</p>
+                                                                                            <input type="text" id="inctextBox{{ index }}_4" name="{{key}}_increment" class="hidden form-control-sm" size="8">
+                                                                                          </td>
+                                                                                          <td scope="col">
+                                                                                            <p id="incinformation{{ index }}_5">{{ content[key]['total'] }}</p>
+                                                                                            <input type="text" id="inctextBox{{ index }}_5" name="{{key}}_total" class="hidden form-control-sm" size="8">
+                                                                                          </td>
+                                                                                          <td scope="col">
+                                                                                            <p id="incinformation{{ index }}_6" class="note-column" title="{{ content[key]['note'] }}">{{ content[key]['note'] }}</p>
+                                                                                            <input type="text" id="inctextBox{{ index }}_6" name="{{key}}_note" class="hidden form-control-sm" size="8">
+                                                                                          </td>
+                                                                                        </tr>
+                                                                                        {% endfor %}
+                                                                                        {% endfor %}
+                                                                                        <tr class="hidden" id="addNewDataRow">
+                                                                                          <td scope="col">
+                                                                                            <p id="incinformation10_1">
+                                                                                              <input type="text" id="inctextBox10_1" name="new_inc_grossSalary" class="form-control-sm" size="8">
+                                                                                            </p>
+                                                                                          </td>
+                                                                                          <td scope="col">
+                                                                                            <p id="incinformation10_2">
+                                                                                              <input type="text" id="inctextBox10_2" name="new_inc_jobPosition" class="form-control-sm" size="8">
+                                                                                            </p>
+                                                                                          </td>
+                                                                                          <td scope="col">
+                                                                                            <p id="incinformation10_3">
+                                                                                              <input type="date" id="inctextBox10_3" name="new_inc_effectiveDate" min="" class="form-control-sm storedDate" size="8" onclick="validateDate()">
+                                                                                            </p>
+                                                                                          </td>
+                                                                                          <td scope="col">
+                                                                                            <p id="incinformation10_4">
+                                                                                              <input type="text" id="inctextBox10_4" name="new_inc_increment" class="form-control-sm" size="8">
+                                                                                            </p>
+                                                                                          </td>
+                                                                                          <td scope="col">
+                                                                                            <p id="incinformation10_5">
+                                                                                              <input type="text" id="inctextBox10_5" name="new_inc_total" class="form-control-sm" size="8">
+                                                                                            </p>
+                                                                                          </td>
+                                                                                          <td scope="col">
+                                                                                            <p id="incinformation10_6">
+                                                                                              <input type="text" id="inctextBox10_6" name="new_inc_note" class="form-control-sm" size="8">
+                                                                                            </p>
+                                                                                          </td>
+                                                                                        </tr>
+                                                                                        <tr>
+                                                                                          <td colspan="6"><a class="hidden" href="#" id="addNewDataLink">+ ADD NEW DATA</a></td>
+                                                                                        </tr>
+                                                                                      </tbody>
+                                                                                    </table>
                                                                                   </form>
+                                                                                </div>
                                                                               </div>
                                                                             </div>
                                                                           </div>
-                                                                        </div>
-
+                                                                          
+                                                                          <script>
+                                                                            function validateDate(index) {
+                                                                              var selectedDateInput = document.getElementById("inctextBox" + index + "_3");
+                                                                              var selectedDate = new Date(selectedDateInput.value);
+                                                                              var storedDates = document.getElementsByClassName("storedDate");
+                                                                              
+                                                                              for (var i = 0; i < storedDates.length; i++) {
+                                                                                var storedDate = new Date(storedDates[i].value);
+                                                                                
+                                                                                if (selectedDate && storedDate && selectedDate <= storedDate) {
+                                                                                  document.getElementById("error").innerText = "Selected date must be after all stored dates.";
+                                                                                  return false;
+                                                                                }
+                                                                              }
+                                                                              
+                                                                              document.getElementById("error").innerText = "";
+                                                                              return true;
+                                                                            }
+                                                                          </script>
+                                                                          
 
                                                                     </div>
                                                                 </div>
@@ -3301,6 +3242,7 @@ function addNewDataRow() {
 
   // Create the input elements for the new row
   var input1 = document.createElement('input');
+  input1.value = ({{ data["personal_data"]["salary"] }} / 12).toFixed(2);
   input1.type = 'text';
   input1.name = 'new_inc_grossSalary';
   input1.classList.add('form-control-sm');
@@ -3315,10 +3257,28 @@ function addNewDataRow() {
 
   // Create the input elements for the new row
   var input3 = document.createElement('input');
-  input3.type = 'date';
-  input3.name = 'new_inc_effectiveDate';
-  input3.classList.add('form-control-sm');
-  input3.size = '8';
+    input3.type = 'date';
+    input3.name = 'new_inc_effectiveDate';
+    input3.classList.add('form-control-sm');
+    input3.size = '8';
+
+    // Get today's date
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; // January is 0
+    var yyyy = today.getFullYear();
+
+    // Convert single-digit day or month to two digits
+    if (dd < 10) {
+      dd = '0' + dd;
+    }
+
+    if (mm < 10) {
+      mm = '0' + mm;
+    }
+
+    // Set the minimum date for the input element to today's date
+    input3.min = yyyy + '-' + mm + '-' + dd;
 
   // Create the input elements for the new row
   var input4 = document.createElement('input');
@@ -3488,6 +3448,7 @@ function calculateTotal() {
     input3.name = 'new_ctr_nextContractDate';
     input3.classList.add('form-control-sm');
     input3.size = '8';
+    
 
     // Append the input elements to the cells
     cell1.appendChild(input1);
@@ -3698,7 +3659,7 @@ return daysDiff;
             xhr.addEventListener('readystatechange', function () {
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
-                        window.location.href = `http://192.168.0.183:3005/${username}/tds_data_update/${id}`;
+                        window.location.href = `http://192.168.0.181:3005/${username}/tds_data_update/${id}`;
                     } else {
                         console.error(xhr.responseText); // Handle error response
                     }
@@ -3814,6 +3775,143 @@ function toggleIncrementType() {
   }
 }
   </script>
+
+
+
+<!-- script for editing priviously added increments -->
+
+  <script>
+document.addEventListener('DOMContentLoaded', function() {
+  var inputElements = document.querySelectorAll('[id^="inctextBox"]');
+
+  inputElements.forEach(function(inputElement) {
+    inputElement.addEventListener('input', handleInputChange);
+  });
+});
+
+function handleInputChange(event) {
+  var changedInput = event.target;
+  var changedValue = changedInput.value;
+  var changedId = changedInput.id;
+
+  var columnIndex = getColumnIndex(changedId);
+    console.log(columnIndex)
+  // Check if the column index is 4
+  if (columnIndex === 4) {
+
+    console.log('Input ID: ' + changedId + ', Changed Value: ' + changedValue);
+
+    var rowIndex = getRowIndex(changedId);
+    var firstColumnId = 'inctextBox' + rowIndex + '_1';
+    var firstColumnValue = parseFloat(document.getElementById(firstColumnId).value);
+
+    console.log('First Column Value: ' + firstColumnValue);
+
+    var sum = calculateSum(firstColumnValue, changedValue);
+    console.log('Sum: ' + sum);
+
+    var fifthColumnId = 'inctextBox' + rowIndex + '_5';
+    document.getElementById(fifthColumnId).value = sum.toFixed(2); 
+
+    // Add your desired logic here to handle the sum value.
+    // You can perform any required actions or update other elements on the page.
+  }
+}
+
+function getColumnIndex(id) {
+  var regex = /^inctextBox\d+_(\d+)$/;
+  var match = id.match(regex);
+  if (match && match.length > 1) {
+    var columnIndex = parseInt(match[1]);
+    return columnIndex;
+  }
+  return -1; // Invalid ID format
+}
+
+function getRowIndex(id) {
+  var regex = /^inctextBox(\d+)_\d+$/;
+  var match = id.match(regex);
+  if (match && match.length > 1) {
+    var rowIndex = parseInt(match[1]);
+    return rowIndex;
+  }
+  return -1; // Invalid ID format
+}
+
+function calculateSum(firstColumnValue, changedValue) {
+  var percentageRegex = /^(\d+(\.\d+)?)%$/;
+  if (percentageRegex.test(changedValue)) {
+    var parsedValue = parseFloat(changedValue) / 100;  // Divide parsedValue by 100 to convert it to a decimal
+    if (!isNaN(parsedValue)) {
+      return firstColumnValue + (firstColumnValue * parsedValue);
+    }
+  } else {
+    var parsedValue = parseFloat(changedValue);
+    if (!isNaN(parsedValue)) {
+      return firstColumnValue + parsedValue;
+    }
+  }
+  // Add a return statement or default behavior here, such as returning an error value
+}
+
+  </script>
+
+
+<!-- script for calander validation -->
+
+
+<script>
+  function validateDate(index) {
+    if( index === 0){
+        var selectedDateInput = document.getElementById("inctextBox" + index + "_3");
+        console.log(selectedDateInput)
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; // January is 0
+        var yyyy = today.getFullYear();
+
+        // Convert single-digit day or month to two digits
+        if (dd < 10) {
+        dd = '0' + dd;
+        console.log(dd)
+        }
+
+        if (mm < 10) {
+        mm = '0' + mm;
+        console.log(mm)
+        }
+        selectedDateInput.min = dd + '-' + mm + '-' + yyyy;
+    }
+    else if(index>0){
+        var selectedDateInput = document.getElementById("inctextBox" + (index - 1) + "_3");
+        var selectedDateValue = selectedDateInput.value;
+        var today = selectedDateValue;
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1; // January is 0
+        var yyyy = today.getFullYear();
+
+        // Convert single-digit day or month to two digits
+        if (dd < 10) {
+        dd = '0' + dd;
+        console.log("for more ")
+        console.log(dd)
+        }
+
+        if (mm < 10) {
+        mm = '0' + mm;
+        console.log("for more ")
+        console.log(mm)
+        }
+        var currentDateInput = document.getElementById("inctextBox" + index  + "_3");
+        currentDateInput.min = dd + '-' + mm + '-' + yyyy;
+        
+    }
+
+  }
+
+  </script>
+  
+
 
 
 
