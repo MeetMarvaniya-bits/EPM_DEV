@@ -1,5 +1,4 @@
 import time
-import progressbar
 from openpyxl import load_workbook
 from datetime import datetime, timedelta
 

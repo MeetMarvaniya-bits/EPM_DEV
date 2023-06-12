@@ -2099,7 +2099,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
 <td scope="col">
   <p id="incinformation{{ index }}_3">{{ content[key]['effectiveDate'] }}</p>
   <span id="error" style="color: red;"></span>
-  <input type="date" id="inctextBox{{ index }}_3" name="{{key}}_effectiveDate" min="" class="hidden form-control-sm storedDate" size="8" onclick="validateDate({{ index }})">
+  <input type="date" id="inctextBox{{ index }}_3" name="{{key}}_effectiveDate" min="" class="hidden form-control-sm storedDate" size="8" >
 </td>
 <td scope="col" class="d-flex">
   <div class="icon-box">
@@ -3486,7 +3486,7 @@ function calculateTotal(index) {
   var totalElement = document.getElementById('incinformation' + index + '_5');
 
   if (incrementType === 'percentage') {
-    var total = grossSalary * (incrementValue * 0.01);
+    var total = grossSalary + (grossSalary * (incrementValue * 0.01));
     totalElement.textContent = total.toFixed(2);
     document.getElementById('inctextBox' + index + '_5').value = total.toFixed(2);
   } else if (incrementType === 'full_amount') {
@@ -3513,6 +3513,9 @@ function calculateTotal(index) {
 
 <!--  cotract JS  -->
 <script>
+  function functionnnn() {
+    console.log("innnnnnnnnnnnnn")
+  }  
   // Function to toggle edit mode for contract data
   function contractEditMode() {
     // Get all the paragraph elements
