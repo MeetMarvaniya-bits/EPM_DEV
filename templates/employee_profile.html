@@ -2089,7 +2089,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                         <tr class="table-light col-12">
   <td scope="col">
     <p id="incinformation{{ index }}_1">{{ content[key]['grossSalary'] }}</p>
-    <input type="text" id="inctextBox{{ index }}_1" name="{{key}}_grossSalary" class="hidden form-control-sm" size="8" oninput="validateDigits('inctextBox{{ index }}_1')">
+    <input type="text" id="inctextBox{{ index }}_1" name="{{key}}_grossSalary" class="hidden form-control-sm" size="8" oninput="onlyNumber(event)">
   </td>
   <td scope="col">
     <p id="incinformation{{ index }}_2">{{ content[key]['jobPosition'] }}</p>
@@ -2112,12 +2112,12 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
     <option {% if content[key]['incrementType'] == 'percentage' %}selected{% endif %} value="percentage">%</option>
     <option {% if content[key]['incrementType'] == 'full_amount' %}selected{% endif %} value="full_amount">₹</option>
   </select>
-  <input type="text" id="inctextBox{{ index }}_4_input" name="{{key}}_increment" class="hidden form-control-sm" size="8" value="{{ content[key]['increment'] }}"  oninput="calculateTotal({{ index }});validateDigits('inctextBox{{ index }}_1');">
+  <input type="text" id="inctextBox{{ index }}_4_input" name="{{key}}_increment" class="hidden form-control-sm" size="8" value="{{ content[key]['increment'] }}"  oninput="calculateTotal({{ index }}),onlyNumber(event)">
 </td>
 
   <td scope="col">
     <p id="incinformation{{ index }}_5">{{ content[key]['total'] }}</p>
-    <input type="text" id="inctextBox{{ index }}_5" name="{{key}}_total" class="hidden form-control-sm" size="8" oninput="validateDigits('inctextBox{{ index }}_1')">
+    <input type="text" id="inctextBox{{ index }}_5" name="{{key}}_total" class="hidden form-control-sm" size="8" oninput="onlyNumber(event)">
   </td>
   <td scope="col">
     <p id="incinformation{{ index }}_6" class="note-column" title="{{ content[key]['note'] }}">{{ content[key]['note'] }}</p>
@@ -3232,10 +3232,10 @@ if (textBox) {
   // Check if the paragraph text ends with "Rs" or "%"
   if (paragraphText.endsWith("Rs")) {
     // Remove "Rs" from the end of the text
-    paragraphText = paragraphText.slice(0, -2);
+    paragraphText = paragraphText.slice(0, -2).trim();
   } else if (paragraphText.endsWith("%")) {
     // Remove "%" from the end of the text
-    paragraphText = paragraphText.slice(0, -1);
+    paragraphText = paragraphText.slice(0, -1).trim();
   }
 
   // Set the value of the textbox to the modified paragraph text
@@ -4023,16 +4023,12 @@ function handleDropdownChange(index) {
   
 <!-- script for checking validation in increment section -->
   <script>
-    function validateDigits(inputId) {
-      var input = document.getElementById(inputId);
-      var value = input.value;
-      var pattern = /^\d+$/; // Regular expression to match only digits
-      console.log(value)
-  
-      if (!pattern.test(value)) {
-        input.value = ""; // Clear the input field if it contains non-digit characters
-      }
-    }
+    const onlyNumber = (event) => {
+        let keyCode = event.keyCode ? event.keyCode : event.which;
+        if ((keyCode < 48 || keyCode > 57) && keyCode !== 46) {
+            event.preventDefault();
+        }
+    };
   </script>
   
 
