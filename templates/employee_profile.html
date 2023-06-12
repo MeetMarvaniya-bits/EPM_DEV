@@ -2081,6 +2081,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                           <th scope="col" onclick="toggleIncrementType()">Increment</th>
                                                                                           <th scope="col">Total (₹)</th>
                                                                                           <th scope="col">Note</th>
+                                                                                          <th></th>
                                                                                         </tr>
                                                                                       </thead>
                                                                                       <tbody id="tableBody">
@@ -2089,7 +2090,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                         <tr class="table-light col-12">
   <td scope="col">
     <p id="incinformation{{ index }}_1">{{ content[key]['grossSalary'] }}</p>
-    <input type="text" id="inctextBox{{ index }}_1" name="{{key}}_grossSalary" class="hidden form-control-sm" size="8" oninput="validateDigits('inctextBox{{ index }}_1')">
+    <input type="text" id="inctextBox{{ index }}_1" name="{{key}}_grossSalary" class="hidden form-control-sm" size="8" onkeypress="onlyNumber(event)">
   </td>
   <td scope="col">
     <p id="incinformation{{ index }}_2">{{ content[key]['jobPosition'] }}</p>
@@ -2098,7 +2099,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
 <td scope="col">
   <p id="incinformation{{ index }}_3">{{ content[key]['effectiveDate'] }}</p>
   <span id="error" style="color: red;"></span>
-  <input type="date" id="inctextBox{{ index }}_3" name="{{key}}_effectiveDate" min="{%if index == 0%}{{data['personal_data']['doj']}}{%else%}{{ content['increment_0' + index|string]['effectiveDate']  }}{%endif%}" class="hidden form-control-sm storedDate" size="8" onclick="validateDate({{ index }})">
+  <input type="date" id="inctextBox{{ index }}_3" name="{{key}}_effectiveDate"  min="{% if key == 'increment_01' %}{{data['personal_data']['doj']}}{% else %}{{effective_dates[index-1]}}{% endif %}" class="hidden form-control-sm storedDate" size="8" >
 </td>
 <td scope="col" class="d-flex">
   <div class="icon-box">
@@ -2112,17 +2113,20 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
     <option {% if content[key]['incrementType'] == 'percentage' %}selected{% endif %} value="percentage">%</option>
     <option {% if content[key]['incrementType'] == 'full_amount' %}selected{% endif %} value="full_amount">₹</option>
   </select>
-  <input type="text" id="inctextBox{{ index }}_4_input" name="{{key}}_increment" class="hidden form-control-sm" size="8" value="{{ content[key]['increment'] }}" onchnage="validateDigits('inctextBox{{ index }}_1')" oninput="calculateTotal({{ index }})">
+  <input type="text" id="inctextBox{{ index }}_4_input" name="{{key}}_increment" class="hidden form-control-sm" size="8" value="{{ content[key]['increment'] }}"  onkeypress="calculateTotal({{ index }}),onlyNumber(event)">
 </td>
 
   <td scope="col">
     <p id="incinformation{{ index }}_5">{{ content[key]['total'] }}</p>
-    <input type="text" id="inctextBox{{ index }}_5" name="{{key}}_total" class="hidden form-control-sm" size="8" oninput="validateDigits('inctextBox{{ index }}_1')">
+    <input type="text" id="inctextBox{{ index }}_5" name="{{key}}_total" class="hidden form-control-sm" size="8" onkeypress="onlyNumber(event)">
   </td>
   <td scope="col">
     <p id="incinformation{{ index }}_6" class="note-column" title="{{ content[key]['note'] }}">{{ content[key]['note'] }}</p>
     <input type="text" id="inctextBox{{ index }}_6" name="{{key}}_note" class="hidden form-control-sm" size="8">
   </td>
+  <td> <a type="btn" class="btn" href="/delete_increment/{{data['personal_data']['userID'] }}/{{username}}/{{key}}/{{content[key]}}">
+    <i class="fa fa-trash" aria-hidden="true"></i>
+    </a></td>
 </tr>
 
 
@@ -2141,7 +2145,8 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                           </td>
                                                                                           <td scope="col">
                                                                                             <p id="incinformation10_3">
-                                                                                              <input type="date" id="inctextBox10_3" name="new_inc_effectiveDate" min="" class="form-control-sm storedDate" size="8" onclick="validateDate()">
+                                                                                              <input type="date" id="inctextBox10_3" name="new_inc_effectiveDate"   min="{% if key == 'increment_01' %}{{data['personal_data']['doj']}}{% else %}{{effective_dates[index]}}{% endif %}" class="form-control-sm storedDate" size="8" onclick="validateDate()">
+                                                                                              <script> console.log("{{effective_dates[index]}}")</script>
                                                                                             </p>
                                                                                           </td>
                                                                                           <td scope="col">
@@ -2161,7 +2166,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                           </td>
                                                                                         </tr>
                                                                                         <tr>
-                                                                                          <td colspan="6"><a class="hidden" id="addNewDataLink">+ ADD NEW DATA</a></td>
+                                                                                          <td colspan="6"><a class="hidden" href="#" id="addNewDataLink">+ ADD NEW DATA</a></td>
                                                                                         </tr>
                                                                                       </tbody>
                                                                                     </table>
@@ -3174,6 +3179,11 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
 </div>
 
 
+
+
+
+
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
       // Get all the increment dropdown elements
@@ -3232,10 +3242,10 @@ if (textBox) {
   // Check if the paragraph text ends with "Rs" or "%"
   if (paragraphText.endsWith("Rs")) {
     // Remove "Rs" from the end of the text
-    paragraphText = paragraphText.slice(0, -3);
+    paragraphText = paragraphText.slice(0, -2).trim();
   } else if (paragraphText.endsWith("%")) {
     // Remove "%" from the end of the text
-    paragraphText = paragraphText.slice(0, -2);
+    paragraphText = paragraphText.slice(0, -1).trim();
   }
 
   // Set the value of the textbox to the modified paragraph text
@@ -3301,6 +3311,7 @@ function addNewDataRow() {
   var cell4 = document.createElement('td');
   var cell5 = document.createElement('td');
   var cell6 = document.createElement('td');
+  var cell7 = document.createElement('td'); // New cell for delete button
 
   // Create the input elements for the new row
   var input1 = document.createElement('input');
@@ -3387,6 +3398,17 @@ function addNewDataRow() {
   input6.name = 'new_inc_note';
   input6.classList.add('form-control-sm');
   input6.size = '8';
+      // Create the delete button element
+      var deleteButton = document.createElement('a');
+    deleteButton.type = 'btn';
+    deleteButton.classList.add('btn');
+    deleteButton.innerHTML = '<i class="fa fa-trash" aria-hidden="true"></i>';
+  
+    // Add click event listener to the delete button
+    deleteButton.addEventListener('click', function() {
+      newRow.remove(); // Remove the corresponding row when delete button is clicked
+    });
+  
 
     // Add event listeners to calculate the total
     input1.addEventListener('input', calculateTotal);
@@ -3439,6 +3461,7 @@ function addNewHandleDropdownChange(event) {
   cell4.appendChild(input4);
   cell5.appendChild(input5);
   cell6.appendChild(input6);
+  cell7.appendChild(deleteButton); // Append delete button to the cell
   // ...append other input elements to respective cells...
 
   // Append the cells to the new row
@@ -3448,6 +3471,7 @@ function addNewHandleDropdownChange(event) {
   newRow.appendChild(cell4);
   newRow.appendChild(cell5);
   newRow.appendChild(cell6);
+  newRow.appendChild(cell7); // Append delete button cell to the new row
 
   // Get the "ADD NEW DATA" row and insert the new row above it
   var addNewDataRow = document.getElementById('addNewDataRow');
@@ -3461,8 +3485,6 @@ function addNewHandleDropdownChange(event) {
 var addNewDataLink = document.getElementById('addNewDataLink');
 addNewDataLink.addEventListener('click', addNewDataRow);
 
-
-    // Function to calculate the total
 function calculateTotal(index) {
   var grossSalary = parseFloat(document.getElementById('inctextBox' + index + '_1').value) || 0;
   var incrementType = document.getElementById('incdrop' + index + '_4').value;
@@ -3497,6 +3519,9 @@ function calculateTotal(index) {
 
 <!--  cotract JS  -->
 <script>
+  function functionnnn() {
+    console.log("innnnnnnnnnnnnn")
+  }  
   // Function to toggle edit mode for contract data
   function contractEditMode() {
     // Get all the paragraph elements
@@ -4025,16 +4050,12 @@ function handleDropdownChange(index) {
   
 
   <script>
-    function validateDigits(inputId) {
-      var input = document.getElementById(inputId);
-      var value = input.value;
-      var pattern = /^\d+$/; // Regular expression to match only digits
-      console.log(value)
-  
-      if (!pattern.test(value)) {
-        input.value = ""; // Clear the input field if it contains non-digit characters
-      }
-    }
+    const onlyNumber = (event) => {
+        let keyCode = event.keyCode ? event.keyCode : event.which;
+        if ((keyCode < 48 || keyCode > 57) && keyCode !== 46) {
+            event.preventDefault();
+        }
+    };
   </script>
   
 
