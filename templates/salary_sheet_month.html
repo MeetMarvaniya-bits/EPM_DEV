@@ -15,7 +15,7 @@
                         <div class="col-lg-6 col-sm-12 mt-2">
                             <ul class="nav justify-content-start">
                                 <li class="nav-item">
-                                    <a class="nav-link active" aria-current="page" href="#">
+                                    <a class="nav-link active" aria-current="page">
                                         <h5><b>Salary Sheet</b></h5>
 
                                     </a>
@@ -30,7 +30,7 @@
                         <div class="col-lg-6 col-sm-12 mt-2">
                             <ul class="nav justify-content-end  end-0">
 
-                                <!-- MODAL -->
+                                <!-- SALARY PERCENTAGE MODAL -->
                                 <div class="modal " id="exampleModal1" tabindex="-1"
                                      aria-labelledby="exampleModalLabel1" aria-hidden="true">
                                     <div class="modal-dialog vh-100  modal-dialog-scrollable justify-content-end p-0 me-0 mt-0 mb-0">
@@ -81,9 +81,6 @@
                                         </button>
                                     </div>
                                 </li>
-
-                               
-
 
                             </ul>
                         </div>
@@ -255,6 +252,39 @@ for (var i = 0; i < statusLabels.length; i++) {
 
 </script>
 
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const uploadButton = document.getElementById('uploadButton');
+
+    uploadButton.addEventListener('click', () => {
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+
+        fileInput.addEventListener('change', () => {
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response from the server
+                console.log(data);
+            })
+            .catch(error => {
+                // Handle any errors
+                console.error(error);
+            });
+        });
+
+        fileInput.click();
+    });
+});
+</script>
 
 
 

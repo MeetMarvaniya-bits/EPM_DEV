@@ -1,6 +1,6 @@
 import datetime
 from concurrent.futures import ThreadPoolExecutor
-from flask import Flask, render_template, request, redirect, url_for, session, send_file, Response
+from flask import Flask, render_template, request, redirect, url_for, session, send_file, Response, jsonify
 import io
 from leave_manage import Leavemanage
 from firebase_admin import credentials
@@ -27,6 +27,8 @@ from generate_excel import create_excel_file
 from read_data import ExcelData
 import os
 import platform
+import read_excel_leave_data
+
 
 
 # FLASK APP
@@ -516,47 +518,37 @@ def save_data(empid, username):
         for n in range(1, 10):
             for key, value in data.items():
                 if key.startswith(f'increment_0{n}'):
-                    if data[f'increment_0{n}_increment'].endswith('%'):
-                        data[f'increment_0{n}_increment'] = str(float(data[f'increment_0{n}_grossSalary']) * float((data[f'increment_0{n}_increment']).split('%')[0]) * 0.01)
-                        new_data = {f'increment_0{n}':
+                    new_data = {f'increment_0{n}':
                             {
                                 f'grossSalary': data[f'increment_0{n}_grossSalary'],
                                 f'jobPosition': data[f'increment_0{n}_jobPosition'],
                                 f'effectiveDate': data[f'increment_0{n}_effectiveDate'],
                                 f'increment': data[f'increment_0{n}_increment'],
+                                f'incrementType': data[f'increment_0{n}_increment_type'],
                                 f'total': data[f'increment_0{n}_total'],
                                 f'note': data[f'increment_0{n}_note']}
                         }
-                        contract_increment_data.update(new_data)
-                    else:
-                        new_data = {f'increment_0{n}':
-                            {
-                                f'grossSalary': data[f'increment_0{n}_grossSalary'],
-                                f'jobPosition': data[f'increment_0{n}_jobPosition'],
-                                f'effectiveDate': data[f'increment_0{n}_effectiveDate'],
-                                f'increment': data[f'increment_0{n}_increment'],
-                                f'total': data[f'increment_0{n}_total'],
-                                f'note': data[f'increment_0{n}_note']}
-                        }
-                        print(new_data)
+                    contract_increment_data.update(new_data)
 
-                        contract_increment_data.update(new_data)
+
+
 
                 elif key.startswith(f'new_inc_'):
+
                     if data[f'new_inc_grossSalary'] != "" and data[f'new_inc_jobPosition'] != "":
-                        if data[f'new_inc_increment'].endswith('%'):
-                            data[f'new_inc_increment'] = str(float(data[f'new_inc_grossSalary']) * float((data[f'new_inc_increment']).split('%')[0]) * 0.01)
+                        print(data)
+
                         new_data = {f'increment_0{len(increment_list) + 1}':
+
                             {
                                 f'grossSalary': data[f'new_inc_grossSalary'],
                                 f'jobPosition': data[f'new_inc_jobPosition'],
                                 f'effectiveDate': data[f'new_inc_effectiveDate'],
                                 f'increment': data[f'new_inc_increment'],
+                                f'incrementType': data[f'new_drop_increment'],
                                 f'total': data[f'new_inc_total'],
                                 f'note': data[f'new_inc_note']}
                         }
-
-                        print(new_data)
                         contract_increment_data.update(new_data)
 
                 elif key.startswith(f'contract_0{n}'):
@@ -632,9 +624,9 @@ def set_storage_path(username, salid):
 @app.route('/<username>/salary', methods=['GET', 'POST'])
 def salary(username):
     ''' DISPLAY SALARY DETAILS OF ALL MONTH IN YEAR '''
-    holidays = db.collection(companyname).document('holidays').get().to_dict()
-    moath_data = moth_count.count(holidays)
-    working_days = moath_data['workingDays']
+
+
+
     if datetime.datetime.now().day == 1 and 'session_salary' not in session:
         SalaryCalculation(db, companyname).generate_salary(workingday=working_days)
         leaveobj.leave_add(companyname)
@@ -677,29 +669,63 @@ def salary(username):
                            , username=username, salary_status=salary_status, year=year)
 
 
+
+@app.route('/upload', methods=['POST'])
+def upload():
+    ''' IMPORT EXCEL SHEET FOR SALARY DATA '''
+    username = 'Admin'
+    if request.method == 'POST':
+        file = request.files['file']
+        data = read_excel_leave_data.read_excel_rows(file)
+        print(data)
+        return redirect(url_for('salary', username=username))
+    return redirect(url_for('salary', username=username))
+
+
+
 @app.route('/<username>/salarysheetview/<salid>', methods=['GET', 'POST'])
 def salary_sheet_view(username, salid):
+
+
+
     # month = int(salid[5:])
 
     if request.method == 'POST':
         form = request.form
-        fields = {}
-        for key, value in form.items():
-            fields.update({key: value})
+        print(form)
+        if 'date' in form.keys():
+            form = form.to_dict()
+            data = {str(form["date"]): form["description"]}
+            print(data)
+            db.collection(companyname).document('holidays').update(data)
+            holidays = db.collection(companyname).document('holidays').get().to_dict()
+            moath_data = moth_count.count(holidays)
+            db.collection(companyname).document('month_data').set(moath_data)
+        elif 'date' not in form.keys():
+            fields = {}
+            for key, value in form.items():
+                fields.update({key: value})
 
-        path = get_download_folder()
-        salary_excel = SalaryData(db)
-        salary_excel.add_data(salid=salid, fields=fields, path=path, companyname=companyname)
+            path = get_download_folder()
+            salary_excel = SalaryData(db)
+            salary_excel.add_data(salid=salid, fields=fields, path=path, companyname=companyname)
+        else:
+            pass
 
     ''' DISPLAY SALARY DETAILS OF EMPLOYEES IN MONTH '''
+    holidays = db.collection(companyname).document('holidays').get().to_dict()
+    moath_data = moth_count.count_previous_month(holidays=holidays, salid=salid)
+    working_days = moath_data['workingDays']
+
+    holidays = moth_count.get_holidays(holidays)
+
     salary_list = Salarymanage(db).get_all_emp_salary_data(companyname, salid)
 
     salary_status = db.collection(companyname).document('salary_status').get()
     salary_status = salary_status.get(datetime.date(1900, int(salid[4:]), 1).strftime('%B'))
 
-    return render_template('salary_sheet_view.html', data=salary_list, salid=salid,
-                           username=username, salary_status=salary_status)
-
+    return render_template('salary_sheet_view.html', data=salary_list, salid=salid, username=username,
+                           salary_status=salary_status, moath_data=moath_data, holidays=holidays)
 
 @app.route('/<username>/salarysheetedit/<empid> <salid>', methods=['GET', 'POST'])
 def salary_sheet_edit_(username, empid, salid):
@@ -717,6 +743,40 @@ def salary_sheet_edit_(username, empid, salid):
     return render_template('salary_sheet_edit_personal.html', data=employee_salary_data, id=salid
                            , salary_data=salary_percentage, username=username,
                            working_days=working_days)
+
+
+@app.route('/<username>/salarysheeteditall/<salid>', methods=["GET","POST"])
+def salary_sheet_edit_all(username, salid):
+    salary_list = Salarymanage(db).get_all_emp_salary_data(companyname, salid)
+    print(salary_list)
+    return render_template("salary_sheet_edit_all.html", datas=salary_list, username=username, salid=salid)
+
+@app.route('/save_edited_data', methods=['POST'])
+def save_edited_data():
+    # Get the form data from request.form
+    form_data = request.form
+    # form_dict = form_data.to_dict()
+    form_dict = dict(form_data)
+    print(form_dict)
+    salid = request.args.get('sal_id')
+    username = request.args.get('user_name')
+    print(f"{salid} is salid and {username} is username")
+
+    for key, value in form_dict.items():
+        if value != '':
+            document_name = key.split('_')[0]  # Extracting the document name from the key
+            field_name = key.split('_')[1]  # Extracting the field name from the key
+
+            # Updating the document in Firestore
+            doc_ref = db.collection(companyname).document('employee').collection('employee').document(document_name).collection(
+            'salaryslips').document(salid)
+            doc_ref.update({field_name: value})
+
+    # Return a response to the client
+    return redirect(url_for('salary_sheet_view', username=username, salid=salid))
+
+
+
 
 
 @app.route('/<username>/set_status/<salid>/<status>')

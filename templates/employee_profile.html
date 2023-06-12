@@ -1,3 +1,4 @@
+
 {% extends "base.html" %}
 {% block title %}Employee profile{% endblock %}
 {% block head %}
@@ -25,6 +26,20 @@
       white-space: normal;
       z-index: 9999;
     }
+
+    .icon-box {
+  display: flex;
+  align-items: top;
+}
+
+.icon-text {
+  margin-right: 5px;
+}
+
+.icon {
+  font-weight: bold;
+}
+
 
   </style>
 {% endblock %}
@@ -2072,32 +2087,45 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                         {% for index, content in increment_data %}
                                                                                         {% for key in content %}
                                                                                         <tr class="table-light col-12">
-                                                                                          <td scope="col">
-                                                                                            <p id="incinformation{{ index }}_1">{{ content[key]['grossSalary'] }}</p>
-                                                                                            <input type="text" id="inctextBox{{ index }}_1" name="{{key}}_grossSalary" class="hidden form-control-sm" size="8">
-                                                                                          </td>
-                                                                                          <td scope="col">
-                                                                                            <p id="incinformation{{ index }}_2">{{ content[key]['jobPosition'] }}</p>
-                                                                                            <input type="text" id="inctextBox{{ index }}_2" name="{{key}}_jobPosition" class="hidden form-control-sm" size="8">
-                                                                                          </td>
-                                                                                          <td scope="col">
-                                                                                            <p id="incinformation{{ index }}_3">{{ content[key]['effectiveDate'] }}</p>
-                                                                                            <span id="error" style="color: red;"></span>
-                                                                                            <input type="date" id="inctextBox{{ index }}_3" name="{{key}}_effectiveDate" min="" class="hidden form-control-sm storedDate" size="8" onclick="validateDate({{ index }})">
-                                                                                          </td>
-                                                                                          <td scope="col">
-                                                                                            <p id="incinformation{{ index }}_4">{{ content[key]['increment'] }}</p>
-                                                                                            <input type="text" id="inctextBox{{ index }}_4" name="{{key}}_increment" class="hidden form-control-sm" size="8">
-                                                                                          </td>
-                                                                                          <td scope="col">
-                                                                                            <p id="incinformation{{ index }}_5">{{ content[key]['total'] }}</p>
-                                                                                            <input type="text" id="inctextBox{{ index }}_5" name="{{key}}_total" class="hidden form-control-sm" size="8">
-                                                                                          </td>
-                                                                                          <td scope="col">
-                                                                                            <p id="incinformation{{ index }}_6" class="note-column" title="{{ content[key]['note'] }}">{{ content[key]['note'] }}</p>
-                                                                                            <input type="text" id="inctextBox{{ index }}_6" name="{{key}}_note" class="hidden form-control-sm" size="8">
-                                                                                          </td>
-                                                                                        </tr>
+  <td scope="col">
+    <p id="incinformation{{ index }}_1">{{ content[key]['grossSalary'] }}</p>
+    <input type="text" id="inctextBox{{ index }}_1" name="{{key}}_grossSalary" class="hidden form-control-sm" size="8" oninput="validateDigits('inctextBox{{ index }}_1')">
+  </td>
+  <td scope="col">
+    <p id="incinformation{{ index }}_2">{{ content[key]['jobPosition'] }}</p>
+    <input type="text" id="inctextBox{{ index }}_2" name="{{key}}_jobPosition" class="hidden form-control-sm" size="8">
+  </td>
+<td scope="col">
+  <p id="incinformation{{ index }}_3">{{ content[key]['effectiveDate'] }}</p>
+  <span id="error" style="color: red;"></span>
+  <input type="date" id="inctextBox{{ index }}_3" name="{{key}}_effectiveDate" min="" class="hidden form-control-sm storedDate" size="8" onclick="validateDate({{ index }})">
+</td>
+<td scope="col" class="d-flex">
+  <div class="icon-box">
+    {% if content[key]['incrementType'] == 'full_amount' %}
+      <p id="incinformation{{ index }}_4" class="icon-text">{{ content[key]['increment'] }}<span> Rs</span></p>
+    {% elif content[key]['incrementType'] == 'percentage' %}
+      <p id="incinformation{{ index }}_4" class="icon-text">{{ content[key]['increment'] }}<span> %</span></p>
+    {% endif %}
+  </div>
+  <select id="incdrop{{ index }}_4" name="{{key}}_increment_type" class="hidden form-control-sm increment-dropdown" onchange="calculateTotal({{ index }})">
+    <option {% if content[key]['incrementType'] == 'percentage' %}selected{% endif %} value="percentage">%</option>
+    <option {% if content[key]['incrementType'] == 'full_amount' %}selected{% endif %} value="full_amount">₹</option>
+  </select>
+  <input type="text" id="inctextBox{{ index }}_4_input" name="{{key}}_increment" class="hidden form-control-sm" size="8" value="{{ content[key]['increment'] }}"  oninput="calculateTotal({{ index }});validateDigits('inctextBox{{ index }}_1');">
+</td>
+
+  <td scope="col">
+    <p id="incinformation{{ index }}_5">{{ content[key]['total'] }}</p>
+    <input type="text" id="inctextBox{{ index }}_5" name="{{key}}_total" class="hidden form-control-sm" size="8" oninput="validateDigits('inctextBox{{ index }}_1')">
+  </td>
+  <td scope="col">
+    <p id="incinformation{{ index }}_6" class="note-column" title="{{ content[key]['note'] }}">{{ content[key]['note'] }}</p>
+    <input type="text" id="inctextBox{{ index }}_6" name="{{key}}_note" class="hidden form-control-sm" size="8">
+  </td>
+</tr>
+
+
                                                                                         {% endfor %}
                                                                                         {% endfor %}
                                                                                         <tr class="hidden" id="addNewDataRow">
@@ -2142,26 +2170,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                               </div>
                                                                             </div>
                                                                           </div>
-                                                                          
-                                                                          <script>
-                                                                            function validateDate(index) {
-                                                                              var selectedDateInput = document.getElementById("inctextBox" + index + "_3");
-                                                                              var selectedDate = new Date(selectedDateInput.value);
-                                                                              var storedDates = document.getElementsByClassName("storedDate");
-                                                                              
-                                                                              for (var i = 0; i < storedDates.length; i++) {
-                                                                                var storedDate = new Date(storedDates[i].value);
-                                                                                
-                                                                                if (selectedDate && storedDate && selectedDate <= storedDate) {
-                                                                                  document.getElementById("error").innerText = "Selected date must be after all stored dates.";
-                                                                                  return false;
-                                                                                }
-                                                                              }
-                                                                              
-                                                                              document.getElementById("error").innerText = "";
-                                                                              return true;
-                                                                            }
-                                                                          </script>
+                                                                        
                                                                           
 
                                                                     </div>
@@ -3164,32 +3173,85 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
 
 </div>
 
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get all the increment dropdown elements
+      var incrementDropdowns = document.querySelectorAll('.increment-dropdown');
+  
+      // Add a change event listener to each dropdown
+      incrementDropdowns.forEach(function(dropdown) {
+        dropdown.addEventListener('change', function() {
+          var selectedOption = dropdown.value; // Get the selected option value
+  
+          // Perform actions based on the selected option
+          if (selectedOption === 'percentage') {
+            // Option is percentage, do something
+          } else if (selectedOption === 'full_amount') {
+            // Option is full amount, do something else
+          }
+  
+          // Access the corresponding <td> element
+          var tdElement = dropdown.closest('td');
+          // Perform actions on the tdElement, such as updating its content or styling
+        });
+      });
+    });
+  </script>
+
+
+
 <script>
 // Function to toggle edit mode
 function incrementEditMode() {
   // Get all the paragraph elements
   var paragraphs = document.querySelectorAll('p[id^="incinformation"]');
   var textboxes = document.querySelectorAll('input[id^="inctextBox"]');
+  var dropdowns = document.querySelectorAll('select[id^="incdrop"]');
+  console.log(dropdowns)
+  console.log(dropdowns.length)
+  for (var i = 0; i<dropdowns.length; i++){
+    var dropdown = dropdowns[i];
+    console.log(dropdown)
+    dropdown.classList.remove('hidden');
+  }
 
   // Iterate over the paragraphs
   for (var i = 0; i < paragraphs.length; i++) {
     var paragraph = paragraphs[i];
     var textBox = textboxes[i];
 
-    // Check if textBox is defined
-    if (textBox) {
-      // Set the value of the textbox to the paragraph text
-      textBox.value = paragraph.textContent.trim();
 
-      // Show the textbox
-      textBox.classList.remove('hidden');
-    }
+
+    
+// Check if textBox is defined
+if (textBox) {
+  // Get the paragraph text and trim any leading/trailing whitespace
+  let paragraphText = paragraph.textContent.trim();
+
+  // Check if the paragraph text ends with "Rs" or "%"
+  if (paragraphText.endsWith("Rs")) {
+    // Remove "Rs" from the end of the text
+    paragraphText = paragraphText.slice(0, -2);
+  } else if (paragraphText.endsWith("%")) {
+    // Remove "%" from the end of the text
+    paragraphText = paragraphText.slice(0, -1);
+  }
+
+  // Set the value of the textbox to the modified paragraph text
+  textBox.value = paragraphText;
+
+  // Show the textbox
+  textBox.classList.remove('hidden');
+}
+
 
     // Hide the paragraph
     if (paragraph) {
       paragraph.classList.add('hidden');
     }
   }
+
 
   // Remove the hidden class from the "ADD NEW DATA" row
   var addNewDataRow = document.querySelector('a.hidden');
@@ -3287,11 +3349,36 @@ function addNewDataRow() {
   input4.classList.add('form-control-sm');
   input4.size = '8';
 
+  var select = document.createElement('select');
+    select.id = 'inctextBox10_4';
+    select.name = 'new_drop_increment';
+    select.classList.add('form-control-sm');
+    select.addEventListener('change', addNewHandleDropdownChange);
+
+    // Create the first option element
+    var option1 = document.createElement('option');
+    option1.value = 'percentage';
+    option1.text = '%';
+    option1.selected = true;
+
+    // Create the second option element
+    var option2 = document.createElement('option');
+    option2.value = 'full_amount';
+    option2.text = '₹';
+
+    // Append the option elements to the select element
+    select.appendChild(option1);
+    select.appendChild(option2);
+
+    // Append the select element to the cell
+    cell4.appendChild(select);
+
   // Create the input elements for the new row
   var input5 = document.createElement('input');
   input5.type = 'text';
   input5.name = 'new_inc_total';
   input5.classList.add('form-control-sm');
+  
   input5.size = '8';
 
   // Create the input elements for the new row
@@ -3306,20 +3393,40 @@ function addNewDataRow() {
     input4.addEventListener('input', calculateTotal);
 
     // Function to calculate the total
+
+
 function calculateTotal() {
   var grossSalary = parseFloat(input1.value) || 0;
   var increment = parseFloat(input4.value) || 0;
   var total;
 
-  if (input4.value.endsWith('%')) {
-    var percentage = parseFloat(input4.value.slice(0, -1)) || 0;
-    total = grossSalary + (grossSalary * percentage * 0.01);
-  } else {
-    total = grossSalary + increment;
-  }
+    if (select.value === 'percentage') {
+      var percentage = increment;
+      total = grossSalary + (grossSalary * percentage * 0.01);
+    } else {
+      var increment = parseFloat(input4.value) || 0;
+      total = grossSalary + increment;
+    }
 
   input5.value = total;
 }
+
+function addNewHandleDropdownChange(event) {
+    console.log(event)
+  // Get the select element that triggered the event
+  var select = event.target;
+
+  // Get the selected value
+  var value = select.value;
+
+  // Implement the desired behavior based on the selected value
+  if (value === 'percentage') {
+    console.log("percentage")
+  } else if (value === 'full_amount') {
+    console.log("not percentage")
+  }
+}
+
 
 
 
@@ -3354,14 +3461,36 @@ function calculateTotal() {
 var addNewDataLink = document.getElementById('addNewDataLink');
 addNewDataLink.addEventListener('click', addNewDataRow);
 
-function calculateTotal() {
-  var grossSalary = parseFloat(document.getElementById("inctextBox10_1").value) || 0;
-  var increment = parseFloat(document.getElementById("inctextBox10_4").value) || 0;
-  var total = grossSalary + increment;
-  document.getElementById("inctextBox10_5").value = total.toFixed(2);
+function calculateTotal(index) {
+  var grossSalary = parseFloat(document.getElementById('inctextBox' + index + '_1').value) || 0;
+  var incrementType = document.getElementById('incdrop' + index + '_4').value;
+  var incrementValue = parseFloat(document.getElementById('inctextBox' + index + '_4_input').value) || 0;
+  var totalElement = document.getElementById('incinformation' + index + '_5');
+
+  if (incrementType === 'percentage') {
+    var total = grossSalary * (incrementValue * 0.01);
+    totalElement.textContent = total.toFixed(2);
+    document.getElementById('inctextBox' + index + '_5').value = total.toFixed(2);
+  } else if (incrementType === 'full_amount') {
+    var total = grossSalary + incrementValue;
+    totalElement.textContent = total.toFixed(2);
+    document.getElementById('inctextBox' + index + '_5').value = total.toFixed(2);
+  }
 }
 
+
+// Rest of the existing code...
+
+
 </script>
+
+
+
+
+
+
+
+
 
 
 <!--  cotract JS  -->
@@ -3474,6 +3603,10 @@ function calculateTotal() {
 </script>
 
 
+
+
+
+<!-- Leave data  -->
 <script>
 
 var leave_data = [
@@ -3586,6 +3719,10 @@ return daysDiff;
 </script>
 
 
+
+
+
+
 <script>
   const departmentDropdown = document.getElementById("department");
   const jobPositionDropdown = document.getElementById("jobPosition");
@@ -3632,6 +3769,12 @@ return daysDiff;
 
 </script>
 
+
+
+
+
+
+
 <!--Script For Update detail -->
 <script>
     // Take action on particular form submit
@@ -3671,6 +3814,11 @@ return daysDiff;
 
 
 </script>
+
+
+
+
+
 
 <script>
     // Function to toggle edit mode
@@ -3745,6 +3893,10 @@ return daysDiff;
     </script>
 
 
+
+
+
+
 <!--Script For Increment Type Rs/Percentage-->
 <script>
     var incrementType = 'INR';
@@ -3778,89 +3930,47 @@ function toggleIncrementType() {
 
 
 
+
+
+
+
 <!-- script for editing priviously added increments -->
 
-  <script>
-document.addEventListener('DOMContentLoaded', function() {
-  var inputElements = document.querySelectorAll('[id^="inctextBox"]');
 
-  inputElements.forEach(function(inputElement) {
-    inputElement.addEventListener('input', handleInputChange);
-  });
-});
+<script>
+function handleDropdownChange(index) {
+    console.log(index)
+    var selectValue = document.getElementById("incdrop" + index + "_4").value;
+    var grossSalary = parseFloat(document.getElementById("incinformation" + index + "_1").innerText);
+    var increment = parseFloat(document.getElementById("inctextBox" + index + "_4_input").value);
+    console.log(increment + "increment")
+    console.log(grossSalary + "grosss")
 
-function handleInputChange(event) {
-  var changedInput = event.target;
-  var changedValue = changedInput.value;
-  var changedId = changedInput.id;
-
-  var columnIndex = getColumnIndex(changedId);
-    console.log(columnIndex)
-  // Check if the column index is 4
-  if (columnIndex === 4) {
-
-    console.log('Input ID: ' + changedId + ', Changed Value: ' + changedValue);
-
-    var rowIndex = getRowIndex(changedId);
-    var firstColumnId = 'inctextBox' + rowIndex + '_1';
-    var firstColumnValue = parseFloat(document.getElementById(firstColumnId).value);
-
-    console.log('First Column Value: ' + firstColumnValue);
-
-    var sum = calculateSum(firstColumnValue, changedValue);
-    console.log('Sum: ' + sum);
-
-    var fifthColumnId = 'inctextBox' + rowIndex + '_5';
-    document.getElementById(fifthColumnId).value = sum.toFixed(2); 
-
-    // Add your desired logic here to handle the sum value.
-    // You can perform any required actions or update other elements on the page.
-  }
-}
-
-function getColumnIndex(id) {
-  var regex = /^inctextBox\d+_(\d+)$/;
-  var match = id.match(regex);
-  if (match && match.length > 1) {
-    var columnIndex = parseInt(match[1]);
-    return columnIndex;
-  }
-  return -1; // Invalid ID format
-}
-
-function getRowIndex(id) {
-  var regex = /^inctextBox(\d+)_\d+$/;
-  var match = id.match(regex);
-  if (match && match.length > 1) {
-    var rowIndex = parseInt(match[1]);
-    return rowIndex;
-  }
-  return -1; // Invalid ID format
-}
-
-function calculateSum(firstColumnValue, changedValue) {
-  var percentageRegex = /^(\d+(\.\d+)?)%$/;
-  if (percentageRegex.test(changedValue)) {
-    var parsedValue = parseFloat(changedValue) / 100;  // Divide parsedValue by 100 to convert it to a decimal
-    if (!isNaN(parsedValue)) {
-      return firstColumnValue + (firstColumnValue * parsedValue);
+    var total;
+    if (selectValue === "percentage") {
+        console.log(selectValue)
+      total = grossSalary * (increment * 0.01);
+    } else if (selectValue === "full_amount") {
+        console.log(selectValue)
+      total = grossSalary + increment;
     }
-  } else {
-    var parsedValue = parseFloat(changedValue);
-    if (!isNaN(parsedValue)) {
-      return firstColumnValue + parsedValue;
-    }
-  }
-  // Add a return statement or default behavior here, such as returning an error value
-}
 
-  </script>
+    document.getElementById("incinformation" + index + "_5").innerText = total.toFixed(2);
+  }
+
+</script>
+
+
 
 
 <!-- script for calander validation -->
 
 
 <script>
+
+
+
+
   function validateDate(index) {
     if( index === 0){
         var selectedDateInput = document.getElementById("inctextBox" + index + "_3");
@@ -3911,8 +4021,20 @@ function calculateSum(firstColumnValue, changedValue) {
 
   </script>
   
-
-
+<!-- script for checking validation in increment section -->
+  <script>
+    function validateDigits(inputId) {
+      var input = document.getElementById(inputId);
+      var value = input.value;
+      var pattern = /^\d+$/; // Regular expression to match only digits
+      console.log(value)
+  
+      if (!pattern.test(value)) {
+        input.value = ""; // Clear the input field if it contains non-digit characters
+      }
+    }
+  </script>
+  
 
 
 
