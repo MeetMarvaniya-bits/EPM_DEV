@@ -411,9 +411,11 @@ def employee_profile(username, id):
     for key,value in personal_data.items():
         if key.startswith('increment'):
             increment_data.append({key: value})
+
+
+    increment_data = sorted(increment_data, key=lambda x: x[list(x.keys())[0]]['effectiveDate'])
     increment_list = [(index, content) for index, content in enumerate(increment_data)]
-
-
+    effective_dates = [item[1][f'increment_0{i + 1}']['effectiveDate'] for i, item in enumerate(increment_list)]
 
     contract_data = []
     personal_data = personal_data_future.result()
@@ -452,7 +454,7 @@ def employee_profile(username, id):
     print(increment_list)
     return render_template('employee_profile.html', leave=leave_status, data=data, total_leave=total_leave,
                            leave_list=leave_list, leave_date=leave_status_date,username=username, department=department,
-                           increment_data=increment_list, contract_data=contract_list)
+                           increment_data=increment_list, contract_data=contract_list, effective_dates=effective_dates)
 
 
 
@@ -548,7 +550,11 @@ def save_data(empid, username):
     for key, value in personal_data.items():
         if key.startswith('increment'):
             increment_data.append({key: value})
+
+    increment_data= sorted(increment_data, key=lambda x: x[1][list(x[1].keys())[0]]['effectiveDate'])
     increment_list = [(index, content) for index, content in enumerate(increment_data)]
+    # increment_list = sorted(increment_list, key=lambda x: x[1][list(x[1].keys())[0]]['effectiveDate'])
+    print(increment_list)
 
     # # CONTRACT DATA
     contract_data = []

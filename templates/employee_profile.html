@@ -2099,7 +2099,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
 <td scope="col">
   <p id="incinformation{{ index }}_3">{{ content[key]['effectiveDate'] }}</p>
   <span id="error" style="color: red;"></span>
-  <input type="date" id="inctextBox{{ index }}_3" name="{{key}}_effectiveDate" min="" class="hidden form-control-sm storedDate" size="8" >
+  <input type="date" id="inctextBox{{ index }}_3" name="{{key}}_effectiveDate"  min="{% if key == 'increment_01' %}{{data['personal_data']['doj']}}{% else %}{{effective_dates[index-1]}}{% endif %}" class="hidden form-control-sm storedDate" size="8" >
 </td>
 <td scope="col" class="d-flex">
   <div class="icon-box">
@@ -2145,7 +2145,8 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                           </td>
                                                                                           <td scope="col">
                                                                                             <p id="incinformation10_3">
-                                                                                              <input type="date" id="inctextBox10_3" name="new_inc_effectiveDate" min="" class="form-control-sm storedDate" size="8" onclick="validateDate()">
+                                                                                              <input type="date" id="inctextBox10_3" name="new_inc_effectiveDate"   min="{% if key == 'increment_01' %}{{data['personal_data']['doj']}}{% else %}{{effective_dates[index]}}{% endif %}" class="form-control-sm storedDate" size="8" onclick="validateDate()">
+                                                                                              <script> console.log("{{effective_dates[index]}}")</script>
                                                                                             </p>
                                                                                           </td>
                                                                                           <td scope="col">
@@ -3176,6 +3177,11 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
 </div>
 
 </div>
+
+
+
+
+
 
 
 <script>
