@@ -40,6 +40,24 @@
   font-weight: bold;
 }
 
+.btn-custom {
+  background-color: transparent !important;
+  color: inherit !important;
+  border: none !important;
+}
+.center{
+    text-align: center;
+}
+.cursor{
+    cursor: pointer;
+}
+
+.custom-cancle-btn{
+    background-color: transparent;
+    border: solid black 2px;
+}
+
+
 
   </style>
 {% endblock %}
@@ -62,7 +80,7 @@
                     </i>
                 </li>
                 <li class="nav-item">
-                    <b class="nav-link active" aria-current="page" href="#">
+                    <b class="nav-link active" aria-current="page" >
                         <h5><b>{{ data["personal_data"]["employeeName"] }}</b></h5>
                     </b>
                 </li>
@@ -97,7 +115,7 @@
                                                                 <ul class="nav justify-content-start">
                                                                     <li class="nav-item">
                                                                         <a class="nav-link active"
-                                                                           aria-current="page" href="#">
+                                                                           aria-current="page" >
                                                                             <h5><b>Edit Details</b></h5>
                                                                         </a>
                                                                     </li>
@@ -2037,7 +2055,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                           </tr>
                                                                                           <tr>
                                                                                               <td colspan="6">
-                                                                                                  <a href="#" id="addNewDataLinkCtr">
+                                                                                                  <a  id="addNewDataLinkCtr">
                                                                                                   <span class="hidden">+ ADD NEW DATA</span></a></td>
                                                                                           </tr>
                                                                                           </tbody>
@@ -2099,7 +2117,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
 <td scope="col">
   <p id="incinformation{{ index }}_3">{{ content[key]['effectiveDate'] }}</p>
   <span id="error" style="color: red;"></span>
-  <input type="date" id="inctextBox{{ index }}_3" name="{{key}}_effectiveDate" min="" class="hidden form-control-sm storedDate" size="8" onclick="validateDate({{ index }})">
+  <input type="date" id="inctextBox{{ index }}_3" name="{{key}}_effectiveDate"  min="{% if key == 'increment_01' %}{{data['personal_data']['doj']}}{% else %}{{effective_dates[index-1]}}{% endif %}" class="hidden form-control-sm storedDate" size="8" >
 </td>
 <td scope="col" class="d-flex">
   <div class="icon-box">
@@ -2124,10 +2142,32 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
     <p id="incinformation{{ index }}_6" class="note-column" title="{{ content[key]['note'] }}">{{ content[key]['note'] }}</p>
     <input type="text" id="inctextBox{{ index }}_6" name="{{key}}_note" class="hidden form-control-sm" size="8">
   </td>
-  <td> <a type="btn" class="btn" href="/delete_increment/{{data['personal_data']['userID'] }}/{{username}}/{{key}}/{{content[key]}}">
-    <i class="fa fa-trash" aria-hidden="true"></i>
-    </a></td>
+  <td class="center">
+    <button type="button" class="btn-custom" data-bs-toggle="modal" data-bs-target="#deletionPopUp">
+      <i class="fa fa-trash" aria-hidden="true" style="color: black;"></i>
+    </button>
+  </td>
+  
+  
 </tr>
+
+<div class="modal fade" id="deletionPopUp" tabindex="-1" aria-labelledby="exampleModalLabel{{ index }}" aria-hidden="true">
+    <div class="modal-dialog d-flex align-items-center justify-content-center">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel{{ index }}">Confirm Deletion</h5>
+          <button type="button" class="btn-close bg-transparent" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete this increment?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light custom-cancle-btn" data-bs-dismiss="modal">Cancel</button>
+          <a type="button" class="btn btn-danger" href="/delete_increment/{{ data['personal_data']['userID'] }}/{{ username }}/{{ key }}/{{ content[key] }}">Delete</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
                                                                                         {% endfor %}
@@ -2145,7 +2185,8 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                           </td>
                                                                                           <td scope="col">
                                                                                             <p id="incinformation10_3">
-                                                                                              <input type="date" id="inctextBox10_3" name="new_inc_effectiveDate" min="" class="form-control-sm storedDate" size="8" onclick="validateDate()">
+                                                                                                <input type="date" id="inctextBox10_3" name="new_inc_effectiveDate"   min="{% if key == 'increment_01' %}{{data['personal_data']['doj']}}{% else %}{{effective_dates[index]}}{% endif %}" class="form-control-sm storedDate" size="8" onclick="validateDate()">
+                                                                                                <script> console.log("{{effective_dates[index]}}")</script> 
                                                                                             </p>
                                                                                           </td>
                                                                                           <td scope="col">
@@ -2165,7 +2206,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                           </td>
                                                                                         </tr>
                                                                                         <tr>
-                                                                                          <td colspan="6"><a class="hidden" href="#" id="addNewDataLink">+ ADD NEW DATA</a></td>
+                                                                                          <td colspan="6"><a class="hidden cursor"  id="addNewDataLink">+ ADD NEW DATA</a></td>
                                                                                         </tr>
                                                                                       </tbody>
                                                                                     </table>
@@ -3486,7 +3527,7 @@ function calculateTotal(index) {
   var totalElement = document.getElementById('incinformation' + index + '_5');
 
   if (incrementType === 'percentage') {
-    var total = grossSalary * (incrementValue * 0.01);
+    var total = grossSalary + (grossSalary * (incrementValue * 0.01));
     totalElement.textContent = total.toFixed(2);
     document.getElementById('inctextBox' + index + '_5').value = total.toFixed(2);
   } else if (incrementType === 'full_amount') {
@@ -3513,6 +3554,9 @@ function calculateTotal(index) {
 
 <!--  cotract JS  -->
 <script>
+  function functionnnn() {
+    console.log("innnnnnnnnnnnnn")
+  }  
   // Function to toggle edit mode for contract data
   function contractEditMode() {
     // Get all the paragraph elements
@@ -4039,6 +4083,7 @@ function handleDropdownChange(index) {
 
   </script>
   
+<!-- script for only number validation  -->
 
   <script>
     const onlyNumber = (event) => {
@@ -4048,7 +4093,7 @@ function handleDropdownChange(index) {
         }
     };
   </script>
-  
+
 
 
 
