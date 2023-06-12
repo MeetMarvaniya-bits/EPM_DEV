@@ -587,6 +587,39 @@ def tds_data_update(username, id):
         update_obj.update_tds_info(companyname, form, id)
     return redirect(url_for('employee_profile', id=id, username=username))
 
+@app.route('/delete_increment/<id>/<username>/<key>/<path:data_dict>/')
+def delete_increment(id, username,key, data_dict):
+    # Convert the string representation of the dictionary back to a dictionary
+    data = eval(data_dict)
+    print(data,id,username,key)
+    doc_ref=db.collection(companyname).document('increments')
+    data.update({'empid':id})
+
+
+    field_to_update = "increments"
+    # Create a reference to the document
+    doc_ref = db.collection(companyname).document("increments")
+    doc = doc_ref.get()
+    if doc.exists:
+        # Get the current array from the document
+        array_data = doc.to_dict().get('increments', [])
+        # Remove the desired dictionary from the array
+        modified_array = [item for item in array_data if item != data]
+        print(modified_array)
+        print(modified_array)
+        # Update the document with the modified array
+        doc_ref.set({'increments': modified_array}, merge=True)
+
+        print("Dictionary deleted successfully from the array field.")
+    else:
+        print("Document does not exist.")
+
+
+    db.collection(companyname).document('employee').collection('employee').document(id).update({key: firestore.DELETE_FIELD})
+
+    return redirect(url_for('employee_profile',username=username,id=id))
+
+
 
 @app.route('/<username>/department', methods=['GET', 'POST'])
 def department(username):
