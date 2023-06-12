@@ -33,30 +33,58 @@ footer a {
 }
 </style>
 
-    <!-- Read More CSS -->
+    <!-- CSS -->
 <style>
-    .hidden {
-      display: none;
-    }
-    .note-column {
-      width: 150px; /* Adjust the width according to your preference */
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      position: relative;
-    }
+  #tooltip {
+    display: none;
+    position: absolute;
+    left: -60px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    padding: 5px;
+    border-radius: 4px;
+    z-index: 1;
+  }
 
-    .note-column:hover::before {
-      content: attr(title);
-      position: absolute;
-      top: -30px; /* Adjust the tooltip position as needed */
-      left: 0;
-      padding: 5px;
-      background-color: #fff;
-      border: 1px solid #ccc;
-      white-space: normal;
-      z-index: 9999;
-    }
+  #content:hover #tooltip {
+    display: inline;
+  }
+
+  /* Modal Styles */
+  .read-more-modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+
+  .read-more-content {
+    background-color: #fefefe;
+    margin: 40% auto auto 50%;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 40%;
+  }
+
+  .read-more-close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  .close:hover2,
+  .close:focus2 {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+  }
 </style>
 
 
@@ -2025,15 +2053,26 @@ flex-direction: column;">
                                                                                           increment_data %}
                                                                                           {% for key in content %}
                                                                                             <tr class="table-light">
-                                                                                              <td scope="col">{{ content[key]['grossSalary'] }}</td>
-                                                                                              <td scope="col">{{ content[key]['jobPosition'] }}</td>
-                                                                                              <td scope="col">{{ content[key]['effectiveDate'] }}</td>
-                                                                                              <td scope="col">{{ content[key]['increment'] }}</td>
-                                                                                              <td scope="col">{{ content[key]['total'] }}</td>
-                                                                                                <td scope="col" class="note-column" title="{{ content[key]['note'] }}">
+                                                                                              <td scope="col">53,000.00</td>
+                                                                                              <td scope="col">SR.UI/UX Designer</td>
+                                                                                              <td scope="col">Nov 28, 2020</td>
+                                                                                              <td scope="col">16,600.00</td>
+                                                                                              <td scope="col">63,600.00</td>
+                                                                                              </td>
+                                                                                                <td scope="col">
+                                                                                                <p id="incinformation{{ index }}_6" class="note-column" title="{{ content[key]['note'] }}">
                                                                                                   {{ content[key]['note'] }}
+                                                                                                </p>
+                                                                                                <input type="text" id="inctextBox{{ index }}_6" name="{{key}}_note" class="hidden form-control-sm" size="8">
                                                                                               </td>
                                                                                             </tr>
+                                                                                            <!-- Content Modal -->
+                                                                                            <div id="myModal-{{ loop.index }}" class="modal read-more-modal">
+                                                                                              <div id="modal-content" class="modal-content read-more-content">
+                                                                                                <span class="close read-more-close" onclick="closeModal({{ loop.index }})">&times;</span>
+                                                                                                <p>{{ content }}</p>
+                                                                                              </div>
+                                                                                            </div>
 
                                                                                           {% endfor %}
                                                                                           {% endfor %}
@@ -3145,6 +3184,45 @@ document.addEventListener("DOMContentLoaded", function() {
 
 </script>
 
+
+<!--Read More Data Modal -->
+<!-- JavaScript -->
+<script>
+  var content = document.getElementById("read_more_content");
+  var tooltip = document.getElementById("tooltip");
+
+  if (content.innerText.split(" ").length > 3) {
+    var firstTwoWords = content.innerText
+      .split(" ")
+      .slice(0, 2)
+      .join(" ");
+    var remainingWords = content.innerText
+      .split(" ")
+      .slice(2)
+      .join(" ");
+
+    content.innerHTML = firstTwoWords  +  '  <a href="#" onclick="openModal(); return false;">Read More</a>';
+    tooltip.innerText = remainingWords;
+
+    content.onmouseover = function () {
+      tooltip.style.display = "inline";
+    };
+
+    content.onmouseout = function () {
+      tooltip.style.display = "none";
+    };
+
+    var modal2 = document.getElementById("myModal");
+
+    function openModal() {
+      modal2.style.display = "block";
+    }
+
+    function closeModal() {
+      modal2.style.display = "none";
+    }
+  }
+</script>
 
 
 

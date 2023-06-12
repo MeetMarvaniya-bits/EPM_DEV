@@ -32,104 +32,6 @@
                         </div>
                           <div class="col end-0">
                 <ul class="nav justify-content-end  mt-2">
-
-
-                    <li class="nav-item me-2">
-                        <div class="dropdown">
-                            <button id="edit-row-button" class="btn border-1 btn-secondary" type="button">
-                                Edit Rows
-                            </button>
-                        </div>
-                    </li>
-                    
-                    <li class="nav-item me-2">
-                        <div class="dropdown">
-                            <!-- Button trigger modal -->
-                            <button id="uploadButton" class="btn border-1 btn-secondary" type="button">
-                                Import Excel Sheet
-                            </button>
-                        </div>
-                    </li>
-
-
-
-                    <!-- HOLIDAYS MODAL -->
-                    <div class="modal" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModalLabel"
-                    aria-hidden="true">
-                        <div class="modal-dialog vh-100  modal-dialog-scrollable justify-content-end p-0 me-0 mt-0 mb-0">
-                            <div class="modal-content vh-100">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="managmonthdays">Manage Month Days</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                </div>
-                                <div class="container">
-                                    <form action="{{url_for('salary_sheet_view', username=username, salid=salid)}}" method="POST"
-                                          id="monthdata" class="pb-4">
-
-                                        <h6 class="modal-title pt-4" id="addholidays">ADD Holidays</h6>
-
-                                        <div class="modal-body inline">
-
-                                            <input type="date" name="date" id="date" value="" required
-                                                   class="form-control-sm pe-3">
-
-                                            <input type="text" name="description" id="description" value=""
-                                                   placeholder="Description"
-                                                   class="form-control-sm" required>
-                                        </div>
-                                        <div class="modal-footer justify-content-center">
-                                            <button type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal">Close
-                                            </button>
-                                            <button type="submit" value="submit"
-                                                    class="btn btn-primary">ADD
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                                <hr>
-                                <div class="container">
-                                    <h6 class="modal-title pb-4" id="exampleModalLabel">Holidays</h6>
-                                    <table>
-                                        {% for month_str, month_data in holidays.items(): %}
-                                        <tr class="p-2">
-                                            <th colspan="2">
-                                                <b class="ps-2 pt-4"> {{month_str}} </b>
-                                            </th>
-                                        </tr>
-                                        {% for date_str, value in month_data.items():%}
-                                        <tr>
-                                            <td col=1>
-                                                <b class="ps-5"> {{date_str }} </b>
-                                            </td>
-                                            <td col=1>
-                                                <i class="ps-5"> {{value }} </i>
-                                            </td>
-                                        </tr>
-                                        {% endfor %}
-                                        {% endfor %}
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <li class="nav-item me-2">
-                        <div class="dropdown">
-                            <!-- Button trigger modal -->
-                            <button class="btn border-1 btn-secondary " type="button"
-                                data-bs-toggle="modal" data-bs-target="#exampleModal3" aria-haspopup="true"
-                                aria-expanded="false">
-                                Holidays
-                            </button>
-                        </div>
-                    </li>
-
-
-
-
-
                     <li class="nav-item me-2">
                         <div class="dropdown">
                            <label   style="    width: 100px;
@@ -247,23 +149,12 @@
 <!-- Buttons  -->
 <div class="container-fluid" style="background-color: #F4F5F7;">
     <div class="container-fluid p-3">
-        <div>
-                        <div class="pt-3">
-                            <p class="p-2 ps-5  error">
-                                {% for key, value in moath_data.items() %}
-                                <b class="pe-4">{{key}} : {{value}} </b>
-                                {% endfor %}
-                                <!--                                <a href="#">Click</a>-->
-                            </p>
-                        </div>
-                    </div>
         <!-- Employees Salary Data -->
         <table class="table table-bordered" style="border: 2px solid black !important;">
             <!-- Table Header  -->
             <thead class="text-center center align-baseline">
             <tr class="border-bottom" scope="row" style="border: 2px solid !important;">
                 <th scope="col" rowspan="2" class="align-middle" style="background-color: #DFE1E6;">Employee Name</th>
-                <th scope="col" rowspan="2" class="align-middle" style="background-color: #DFE1E6;">Working Hours</th>
                 <th scope="col rwo-2" rowspan="2" class="align-middle" style="background-color: #DFE1E6;"> Leave Taken For LWP</th>
                 <th scope="row" colspan="8" class="align-middle" style="background-color: #DCFDD9;">Earning</th>
                 <th scope="row col" rowspan="2" class="align-middle" style="background-color: #DFE1E6;">Gross Salary</th>
@@ -295,7 +186,6 @@
 
                 <tr>
                     <td scope="col" >{{data[i]['employeeName']}}</td>
-                    <td scope="col" >00:00</td>
                     <td scope="col">{{ data[i]['lwp'] }}</td>
                     <td scope="col">{{data[i]['basic']}}</td>
                     <td scope="col">{{data[i]['hra']}}</td>
@@ -611,136 +501,5 @@ else if(salaryStatus==='Inreview') {
   }
 
 </script>
-
-<script>
-    document.getElementById("topEditButton").addEventListener("click", function() {
-        // Get all the table rows
-        var rows = document.querySelectorAll("table tbody tr");
-        
-        // Enable editing for each row
-        for (var i = 0; i < rows.length; i++) {
-            var cells = rows[i].querySelectorAll("td");
-            for (var j = 0; j < cells.length; j++) {
-                cells[j].contentEditable = "true";
-            }
-        }
-    });
-</script>
-
-<script>
-    // Function to handle saving the edited data
-    function saveEditedData() {
-        // Get all the table rows
-        var rows = document.querySelectorAll("table tbody tr");
-
-        // Create an array to store the updated data
-        var updatedData = [];
-
-        // Loop through each row
-        for (var i = 0; i < rows.length; i++) {
-            var row = rows[i];
-            var cells = row.querySelectorAll("td");
-
-            // Check if the row has been edited
-            if (row.getAttribute("data-edited") === "true") {
-                // Create an object to store the data for this row
-                var rowData = {};
-
-                // Loop through each cell
-                for (var j = 0; j < cells.length; j++) {
-                    var columnName = cells[j].getAttribute("data-column-name");
-                    var cellContent = cells[j].textContent.trim();
-
-                    // Store the column name and cell content in the rowData object
-                    rowData[columnName] = cellContent;
-                }
-
-                // Add the rowData object to the updatedData array
-                updatedData.push(rowData);
-                
-            }
-        }
-
-        console.log(updatedData)
-        // Make sure there are edited rows before sending the request
-        if (updatedData.length > 0) {
-            // Make an AJAX request to send the updatedData to the server
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "/save-edited-data", true);
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                    console.log("Data saved successfully");
-                }
-            };
-            xhr.send(JSON.stringify(updatedData));
-        } else {
-            console.log("No edited rows to save");
-        }
-    }
-
-    // Add event listeners to detect changes in cells
-    var cells = document.querySelectorAll("table tbody td[data-column-name]");
-    for (var i = 0; i < cells.length; i++) {
-        cells[i].addEventListener("input", function () {
-            // Mark the row as edited
-            this.closest("tr").setAttribute("data-edited", "true");
-        });
-    }
-</script>
-
-<script>
-    // Get the edit row button element
-    const editRowButton = document.getElementById('edit-row-button');
-
-    // Extract the username and salid values from the current URL
-    const urlParts = window.location.pathname.split('/');
-    const username = urlParts[1];
-    const salid = urlParts[3];
-
-    // Add an event listener for the click event
-    editRowButton.addEventListener('click', () => {
-        // Redirect the user to the desired URL
-        window.location.href = `/${username}/salarysheeteditall/${salid}`;
-    });
-</script>
-
-
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const uploadButton = document.getElementById('uploadButton');
-
-    uploadButton.addEventListener('click', () => {
-        const fileInput = document.createElement('input');
-        fileInput.type = 'file';
-
-        fileInput.addEventListener('change', () => {
-            const file = fileInput.files[0];
-            const formData = new FormData();
-            formData.append('file', file);
-
-            fetch('/upload', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Handle the response from the server
-                console.log(data);
-            })
-            .catch(error => {
-                // Handle any errors
-                console.error(error);
-            });
-        });
-
-        fileInput.click();
-    });
-});
-</script>
-
-
-
 
 {% endblock %}
