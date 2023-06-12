@@ -60,6 +60,7 @@
             <thead class="text-center center align-baseline">
             <tr class="border-bottom" scope="col" style="border: 2px solid !important;">
                 <th scope="col" rowspan="2" class="align-middle" style="background-color: #DFE1E6;">Employee Name</th>
+                <th scope="col" rowspan="2" class="align-middle" style="background-color: #DFE1E6;">Working Hours</th>
                 <th scope="col rwo-2" rowspan="2" class="align-middle" style="background-color: #DFE1E6;"> Leave Taken
                     For LWP
                 </th>
@@ -95,6 +96,7 @@
             <form action="{{url_for('salary_sheet_edit_', username=username, empid=data[id]['userID'],salid=id )}}" method="POST">
                 <label name="" ></label>
                 <th scope="col">{{ data[id]["employeeName"] }}</th>
+                <th scope="col">00:00</th>
                 <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["lwp"] }}' name="lwp" id="lwp"></td>
                 <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["basic"] }}' name="basic"value="2500" id="basic"readonly></td>
                 <td scope="col"><input type="text" class="form-control text-center"  name="hra" id="hra" value='{{ data[id]["hra"] }}'readonly ></td>

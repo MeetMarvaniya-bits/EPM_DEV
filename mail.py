@@ -30,7 +30,7 @@ class Mail():
 
         body = '''This mail is for Company Registration,
                 you can register Your Company with As follow given link below
-                http://192.168.0.160:3005/
+                http://192.168.0.181:3005/
               warning: you have to specify your company name unique its very sensitive information
               it can not be chnage after you registered
          '''
@@ -57,7 +57,7 @@ class Mail():
         subject = 'Yor Company Account'
         body = f'''This mail is for Company Successsfully registered,
                 Now you can use following url to access your company login
-                http://192.168.0.160:3005/
+                http://192.168.0.181:3005/
               Congratulation, Thank you so much..'''
         message = f"Subject: {subject}\n\n{body}"
         # Send the email
@@ -89,7 +89,7 @@ class Mail():
         message['Subject'] = 'Employee Registration Form'
         body = f'''This mail is for registration,
                     you can register with the following link below:
-                     http://192.168.0.160:3005/register_employee
+                     http://192.168.0.181:3005/register_employee
                     Thank you,
         '''
         message.attach(MIMEText(body, 'plain'))
@@ -125,7 +125,7 @@ class Mail():
                 ID: {new_id}
                 Password={password},
                 Now you can use following url to access your company login
-               http://192.168.0.160:3005/
+               http://192.168.0.181:3005/
               Congratulation, Thank you so much..'''
         message = f"Subject: {subject}\n\n{body}"
         # Send the email
@@ -157,7 +157,7 @@ class Mail():
                     User ID: {email}
                     Password: {password}
                     Now you can use following url to access your company login
-                    http://192.168.0.160:3005/
+                    http://192.168.0.181:3005/
                   Congratulation, Thank you so much..'''
         message = f"Subject: {subject}\n\n{body}"
 
