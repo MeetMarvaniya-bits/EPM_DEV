@@ -780,9 +780,15 @@ def salary_sheet_edit_(username, empid, salid):
 
 @app.route('/<username>/salarysheeteditall/<salid>', methods=["GET","POST"])
 def salary_sheet_edit_all(username, salid):
+    holidays = db.collection(companyname).document('holidays').get().to_dict()
+    moath_data = moth_count.count(holidays)
+    working_days = moath_data['workingDays']
+    salary_percentage = (db.collection(companyname).document('salary_calc').get()).to_dict()
     salary_list = Salarymanage(db).get_all_emp_salary_data(companyname, salid)
-    print(salary_list)
-    return render_template("salary_sheet_edit_all.html", datas=salary_list, username=username, salid=salid)
+    # print(salary_list)
+    return render_template("salary_sheet_edit_all.html", datas=salary_list, username=username, salid=salid,
+                           working_days=working_days, salary_data=salary_percentage)
+
 
 @app.route('/save_edited_data', methods=['POST'])
 def save_edited_data():
@@ -790,15 +796,17 @@ def save_edited_data():
     form_data = request.form
     # form_dict = form_data.to_dict()
     form_dict = dict(form_data)
-    print(form_dict)
+    # print(f'data  = {form_dict}')
     salid = request.args.get('sal_id')
     username = request.args.get('user_name')
-    print(f"{salid} is salid and {username} is username")
+    # print(f"{salid} is salid and {username} is username")
 
     for key, value in form_dict.items():
         if value != '':
             document_name = key.split('_')[0]  # Extracting the document name from the key
             field_name = key.split('_')[1]  # Extracting the field name from the key
+            print(document_name)
+            print({field_name: value})
 
             # Updating the document in Firestore
             doc_ref = db.collection(companyname).document('employee').collection('employee').document(document_name).collection(

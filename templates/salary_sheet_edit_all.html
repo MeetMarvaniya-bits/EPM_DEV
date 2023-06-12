@@ -6,35 +6,40 @@
 {% endblock %}
 {% block content %}
 <!-- Header  -->
-<div class="container-fluid" style="background-color: #ffffff;">
-    <div class="wrapper">
-        <div class="main">
-            <main class="content">
-                <div class="container-fluid p-1 pb-2">
-                    <form id="salaryForm" method="post"  action="" onsubmit="updateActionUrl()">
+<form id="salaryForm" method="post" action="" onsubmit="updateActionUrl()">
+    <div class="container-fluid" style="background-color: #ffffff;">
+        <div class="wrapper">
+            <div class="main">
+                <main class="content">
+                    <div class="container-fluid p-1 pb-2">
                         <div class="row justify-content-between">
                             <div class="col d-flex mt-1 align-items-center">
                                 <span class="me-4 mt-2"><b>Salary Sheet</b></span>
                                 <div class="form-outline text-start">
-                                    {% set month_dict = {'sal001': 'January', 'sal002': 'February', 'sal003': 'March', 'sal004': 'April',
-                                                        'sal005': 'May', 'sal006': 'June', 'sal007': 'July', 'sal008': 'August', 'sal009': 'September', 'sal0010': 'October',
-                                                        'sal0011': 'November', 'sal0012': 'December'} %}
-                                                    <input name="" id="forminput" class="form-control" readonly placeholder="{{month_dict[salid]}}">
+                                    {% set month_dict = {'sal001': 'January', 'sal002': 'February', 'sal003': 'March',
+                                    'sal004': 'April',
+                                    'sal005': 'May', 'sal006': 'June', 'sal007': 'July', 'sal008': 'August', 'sal009':
+                                    'September', 'sal0010': 'October',
+                                    'sal0011': 'November', 'sal0012': 'December'} %}
+                                    <input name="" id="forminput" class="form-control" readonly
+                                           placeholder="{{month_dict[salid]}}">
                                 </div>
                             </div>
-                        
+
                             <div class="col mt-3">
                                 <ul class="nav justify-content-end mb-2">
                                     <li class="nav-item me-4">
                                         <div class="dropdown">
-                                            <button id="saveButton" class="btn border-1 btn-secondary" type="submit" aria-haspopup="true" aria-expanded="false">
+                                            <button id="saveButton" class="btn border-1 btn-secondary" type="submit"
+                                                    aria-haspopup="true" aria-expanded="false">
                                                 Save
                                             </button>
                                         </div>
                                     </li>
                                     <li class="nav-item me-4">
                                         <div class="dropdown">
-                                            <button id="backButton" class="btn border-1 btn-secondary" type="button" aria-haspopup="true" aria-expanded="false">
+                                            <button id="backButton" class="btn border-1 btn-secondary" type="button"
+                                                    aria-haspopup="true" aria-expanded="false">
                                                 Back
                                             </button>
                                         </div>
@@ -42,39 +47,28 @@
                                 </ul>
                             </div>
                         </div>
-            
-                </div>
-            </main>
+
+                    </div>
+                </main>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Salary Data of Employees -->
-<div class="container-fluid" style="background-color: #F4F5F7;">
-    <div class="container-fluid p-3">
-
+    <!-- Salary Data of Employees -->
+    <div class="container-fluid" style="background-color: #F4F5F7;">
+        <div class="container-fluid p-3">
 
 
-
-
-
-
-
-
-
-
-
-            
-
-        <!-- Table Headings  -->
-        <table class="table table-bordered" style="border: 2px solid black !important;">
-            <thead class="text-center center align-baseline">
+            <!-- Table Headings  -->
+            <table class="table table-bordered" style="border: 2px solid black !important;">
+                <thead class="text-center center align-baseline">
                 <tr class="border-bottom" scope="row" style="border: 2px solid !important;">
                     <th scope="col" rowspan="2" class="align-middle" style="background-color: #DFE1E6;">Employee Name
                     </th>
-                    <th scope="col rwo-2" rowspan="2" class="align-middle" style="background-color: #DFE1E6;"> Leave
-                        Taken
-                        For LWP
+                    <th scope="col rwo-2" rowspan="2" class="align-middle" style="background-color: #DFE1E6;"> Working
+                        Hours
+                    </th>
+                    <th scope="col rwo-2" rowspan="2" class="align-middle" style="background-color: #DFE1E6;"> LWP
                     </th>
                     <th scope="row" colspan="8" class="align-middle" style="background-color: #DCFDD9;">Earning</th>
                     <th scope="row col" rowspan="2" class="align-middle" style="background-color: #DFE1E6;">Gross Salary
@@ -101,60 +95,97 @@
                     <th scope="col" class="align-middle" style="background-color: #FDD9DB;">Other Deduction</th>
                     <th scope="col" class="align-middle" style="background-color: #FDD9DB;">Outstanding Adjustment</th>
                 </tr>
-            </thead>
-                    {% for key, data in datas.items() %}
-                    <tr class="ttr text-center">
-                        <th scope="row">{{ data.employeeName }}</th>
-                        <td>{{ data.lwp }}</td>
-                        <td><input type="text" class="form-control text-center" name="{{ key }}_basic"
-                                placeholder="{{ data.basic }}"></td>
-                        <td><input type="text" class="form-control text-center" name="{{ key }}_hra"
-                                placeholder="{{ data.hra }}"></td>
-                        <td><input type="text" class="form-control text-center" name="{{ key }}_da"
-                                placeholder="{{ data.da }}"></td>
-                        <td><input type="text" class="form-control text-center" name="{{ key }}_otherAllowance"
-                                placeholder="{{ data.otherAllowance }}"></td>
-                        <td><input type="text" class="form-control text-center" name="{{ key }}_incentive"
-                                placeholder="{{ data.incentive }}"></td>
-                        <td><input type="text" class="form-control text-center" name="{{ key }}_arrears"
-                                placeholder="{{ data.arrears }}"></td>
-                        <td><input type="text" class="form-control text-center" name="{{ key }}_grsOutstandingAdjustment"
-                                placeholder="{{ data.grsOutstandingAdjustment }}"></td>
-                        <td><input type="text" class="form-control text-center" name="{{ key }}_statutoryBonus"
-                                placeholder="{{ data.statutoryBonus }}"></td>
-                        <td><input type="text" class="form-control text-center" name="{{ key }}_grossSalary"
-                                placeholder="{{ data.grossSalary }}"></td>
-                        <td><input type="text" class="form-control text-center" name="{{ key }}_epfo"
-                                placeholder="{{ data.epfo }}"></td>
-                        <td><input type="text" class="form-control text-center" name="{{ key }}_pt"
-                                placeholder="{{ data.pt }}"></td>
-                        <td><input type="text" class="form-control text-center" name="{{ key }}_tds"
-                                placeholder="{{ data.tds }}"></td>
-                        <td><input type="text" class="form-control text-center" name="{{ key }}_leaveDeduction"
-                                placeholder="{{ data.leaveDeduction }}"></td>
-                        <td><input type="text" class="form-control text-center" name="{{ key }}_otherDeduction"
-                                placeholder="{{ data.otherDeduction }}"></td>
-                        <td><input type="text" class="form-control text-center" name="{{ key }}_dedOutstandingAdjustment"
-                                placeholder="{{ data.dedOutstandingAdjustment }}"></td>
-                        <td><input type="text" class="form-control text-center" name="{{ key }}_netSalary"
-                                placeholder="{{ data.netSalary }}"></td>
-                        <td>
-                            <a href="/salary_sheet/{{ key }}">
-                                <button class="btn border-1 btn-secondary" type="button"
+                </thead>
+                <tbody style="background-color: #ffffff;">
+
+                {% for key, data in datas.items() %}
+                <tr class="ttr text-center">
+                    <th scope="col">{{ data.employeeName }}</th>
+                    <th scope="col">00:00</th>
+                    <td scope="col">
+                        <input type="text" class="form-control text-center" value='{{ data.lwp }}' name="{{ key }}_lwp"
+                               id="{{ key }}_lwp">
+                    </td>
+                    <td scope="col">
+                        <input type="text" class="form-control text-center" value='{{ data.basic }}'
+                               name="{{ key }}_basic"
+                               id="{{ key }}_basic" readonly>
+                    </td>
+                    <td scope="col">
+                        <input type="text" class="form-control text-center" name="{{ key }}_hra" id="{{ key }}_hra"
+                               value='{{ data.hra }}' readonly>
+                    </td>
+                    <th scope="col">
+                        <input type="text" class="form-control text-center" value='{{ data.da }}' name="{{ key }}_da"
+                               id="{{ key }}_da" readonly>
+                    </th>
+                    <td scope="col">
+                        <input type="text" class="form-control text-center" value='{{ data.otherAllowance }}'
+                               id="{{ key }}_otherAllowance" name="{{ key }}_otherAllowance">
+                    </td>
+                    <td scope="col">
+                        <input type="text" class="form-control text-center" value='{{ data.incentive }}'
+                               id="{{ key }}_incentive" name="{{ key }}_incentive">
+                    </td>
+                    <td scope="col">
+                        <input type="text" class="form-control text-center" value='{{ data.arrears }}'
+                               id="{{ key }}_arrears" name="{{ key }}_arrears">
+                    </td>
+                    <td scope="col">
+                        <input type="text" class="form-control text-center" value='{{data.grsOutstandingAdjustment}}'
+                               id="{{ key }}_grsOutstandingAdjustment" name="{{ key }}_grsOutstandingAdjustment">
+                    </td>
+                    <td scope="col">
+                        <input type="text" class="form-control text-center" value='{{ data.statutoryBonus }}'
+                               id="{{ key }}_statutoryBonus" name="{{ key }}_statutoryBonus">
+                    </td>
+                    <td scope="col">
+                        <input type="text" class="form-control text-center" value='{{ data.grossSalary }}'
+                               id="{{ key }}_grossSalary" name="{{ key }}_grossSalary" readonly>
+                    </td>
+                    <td scope="col">
+                        <input type="text" class="form-control text-center" value='{{ data.epfo }}' id="{{ key }}_epfo"
+                               name="{{ key }}_epfo" readonly>
+                    </td>
+                    <td scope="col">
+                        <input type="text" class="form-control text-center" value='{{ data.pt }}' id="{{ key }}_pt"
+                               name="{{ key }}_pt" readonly>
+                    </td>
+                    <td scope="col">
+                        <input type="text" class="form-control text-center" value='{{ data.tds }}' id="{{ key }}_tds"
+                               name="{{ key }}_tds">
+                    </td>
+                    <td scope="col">
+                        <input type="text" class="form-control text-center" value='{{ data.leaveDeduction }}'
+                               id="{{ key }}_leaveDeduction" name="{{ key }}_leaveDeduction">
+                    </td>
+                    <td scope="col">
+                        <input type="text" class="form-control text-center" value='{{ data.otherDeduction }}'
+                               id="{{ key }}_otherDeduction" name="{{ key }}_otherDeduction">
+                    </td>
+                    <td scope="col">
+                        <input type="text" class="form-control text-center" value='{{ data.dedOutstandingAdjustment }}'
+                               id="{{ key }}_dedOutstandingAdjustment" name="{{ key }}_dedOutstandingAdjustment">
+                    </td>
+                    <td scope="col">
+                        <input type="text" class="form-control text-center" value='{{ data.netSalary }}'
+                               id="{{ key }}_netSalary" name="{{ key }}_netSalary" readonly>
+                    </td>
+                    <td>
+                        <a href="/salary_sheet/{{ key }}">
+                            <button class="btn border-1 btn-secondary" type="button"
                                     style="color:#2F3990; border-color:#2F3990; background-color: #FFFFFF">
-                                    Update
-                                </button>
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-
-                </table>
-                </form>
-
-
+                                Update
+                            </button>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
+</form>
 
 
 <script type="text/javascript">
@@ -162,6 +193,8 @@
         $('#datetimepicker1').datetimepicker();
     });
     document.getElementById("datetimepicker1").datetimepicker();
+
+
 
 
 </script>
@@ -186,7 +219,9 @@ function updateActionUrl() {
     form.action = `/save_edited_data?sal_id=${salid}&user_name=${username}`;
 }
 
-  </script>
+
+
+</script>
 
 <script>
     // Get the back button element
@@ -202,8 +237,60 @@ function updateActionUrl() {
         // Redirect the user to the desired URL
         window.location.href = `/${username}/salarysheetview/${salid}`;
     });
+
+
 </script>
 
+
+<script>
+        // Do all your JavaScript in a separate JavaScript section
+var inputs = Array.prototype.slice.call(document.querySelectorAll("td > input"));
+
+inputs.forEach(function(input){
+  input.addEventListener("keyup", function(){
+    var key = input.getAttribute("id").split("_")[0];
+    var basic = document.getElementById(key + "_basic").value;
+    var lwp = document.getElementById(key + "_lwp").value;
+    var hraPercentage = {{ salary_data['hrapercentage'] }};
+    var daPercentage = {{ salary_data['dapercentage'] }};
+    var workingDays = {{ working_days }};
+    var deductionPercentage = {{ salary_data['deductionpercentage'] }};
+
+    var hra = (parseInt(basic, 10) * hraPercentage * 0.01).toFixed(2);
+    var da = (parseInt(basic, 10) * daPercentage * 0.01).toFixed(2);
+    var grossSalary = (
+      parseInt(basic, 10) +
+      parseInt(hra, 10) +
+      parseInt(da, 10) +
+      parseInt(document.getElementById(key + "_otherAllowance").value, 10) +
+      parseInt(document.getElementById(key + "_incentive").value, 10) +
+      parseInt(document.getElementById(key + "_arrears").value, 10) +
+      parseInt(document.getElementById(key + "_grsOutstandingAdjustment").value, 10) +
+      parseInt(document.getElementById(key + "_statutoryBonus").value, 10)
+    ).toFixed(2);
+    var leaveDeduction = (
+      parseInt(lwp, 10) * (parseInt(grossSalary, 10) / workingDays) * deductionPercentage
+    ).toFixed(2);
+    var netSalary = (
+      parseInt(grossSalary, 10) -
+      parseInt(document.getElementById(key + "_epfo").value, 10) -
+      parseInt(document.getElementById(key + "_pt").value, 10) -
+      parseInt(document.getElementById(key + "_tds").value, 10) -
+      parseInt(leaveDeduction, 10) -
+      parseInt(document.getElementById(key + "_otherDeduction").value, 10) -
+      parseInt(document.getElementById(key + "_dedOutstandingAdjustment").value, 10)
+    ).toFixed(2);
+
+    document.getElementById(key + "_hra").value = hra;
+    document.getElementById(key + "_da").value = da;
+    document.getElementById(key + "_grossSalary").value = grossSalary;
+    document.getElementById(key + "_leaveDeduction").value = leaveDeduction;
+    document.getElementById(key + "_netSalary").value = netSalary;
+  });
+});
+
+
+</script>
 
 
 {% endblock %}
