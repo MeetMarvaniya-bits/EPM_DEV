@@ -1,5 +1,3 @@
-import time
-import progressbar
 from openpyxl import load_workbook
 from datetime import datetime, timedelta
 
@@ -15,16 +13,7 @@ def read_excel_rows(file):
 
     data = []
 
-    widgets = [
-        'Processing: ',
-        progressbar.Percentage(),
-        ' ',
-        progressbar.Bar(marker='█'),
-        ' ',
-        progressbar.ETA()
-    ]
 
-    progress_bar = progressbar.ProgressBar(maxval=max_row, widgets=widgets).start()
 
     for row in range(1, max_row + 1):
         row_data = []
@@ -39,7 +28,7 @@ def read_excel_rows(file):
                 row_data.append(cell_value)
 
         data.append(row_data)
-    progress_bar.finish()
+
 
     header_row_index = None
     attendance_start_index = None

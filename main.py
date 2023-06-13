@@ -549,7 +549,7 @@ def save_data(empid, username):
         if key.startswith('increment'):
             increment_data.append({key: value})
 
-    # increment_data = sorted(increment_data, key=lambda x: x[1][list(x[1].keys())[0]]['effectiveDate'])
+    # increment_data= sorted(increment_data, key=lambda x: x[1][list(x[1].keys())[0]]['effectiveDate'])
     increment_list = [(index, content) for index, content in enumerate(increment_data)]
     # increment_list = sorted(increment_list, key=lambda x: x[1][list(x[1].keys())[0]]['effectiveDate'])
     print(increment_list)
@@ -1031,5 +1031,5 @@ def send_employee_salaryslip(username, salid):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=3005)
-    # app.run(debug=True, host="0.0.0.0", port=3005)
+    # app.run(debug=True, port=300)
+    app.run(debug=True, host="0.0.0.0", port=3005)
