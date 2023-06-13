@@ -65,13 +65,23 @@ class SalaryCalculation():
 
             lwp = total_leaves['LWP']
 
-            emp_basic_salary = round(float(emp_salary), 2)
+            emp_basic_salary = round(float(emp_salary * 0.5), 2)
 
-            emp_hra = round(emp_basic_salary * (float(salary_percentage['hrapercentage'])/100), 2)
+            if emp_salary >= 15000:
 
-            emp_da = round(emp_basic_salary * (float(salary_percentage['dapercentage'])/100), 2)
+                emp_hra = 7500
 
-            other_allowance = 0
+                emp_da = 0
+
+                other_allowance = emp_salary - emp_basic_salary - emp_hra - emp_da
+
+            else:
+
+                emp_hra = emp_salary - emp_basic_salary
+
+                emp_da = 0
+
+                other_allowance = emp_salary - emp_basic_salary - emp_hra - emp_da
 
             incentive = 0
 
@@ -81,15 +91,19 @@ class SalaryCalculation():
 
             statutory_bns = 0
 
-            gross_salary = round((emp_basic_salary + emp_hra + emp_da + other_allowance + incentive + arrears +
-                                  grs_outstanding_adjustment + statutory_bns), 2)
+            gross_salary = round((emp_basic_salary + emp_hra + emp_da + other_allowance + incentive + arrears + grs_outstanding_adjustment + statutory_bns), 2)
 
-            epfo = round((emp_basic_salary * 12 / 100), 2)
+            if emp_salary <= 22000:
+                epfo = round(((emp_salary - emp_hra) * 0.24), 2)
 
-            if epfo <= 1800:
-                epfo=epfo
+                if epfo <= 3600:
+                    epfo=epfo
+                else:
+                    epfo=3600
+
             else:
-                epfo=1800
+
+                epfo = 3600
 
             ded_outstanding_adjustment = 0
 
@@ -111,12 +125,12 @@ class SalaryCalculation():
             salary_slip_data = {
                 'employeeName': emp_name, 'userID': empid,'slip_id': f'sal00{current_month-1}', 'lwp': lwp,
                 'basic': emp_basic_salary, 'da': emp_da, 'hra': emp_hra, 'otherAllowance': other_allowance,
-                'incentive': incentive, 'grsOutstandingAdjustment': grs_outstanding_adjustment, 'arrears': 0,
+                'incentive': incentive, 'grsOutstandingAdjustment': grs_outstanding_adjustment, 'arrears': arrears,
                 'statutoryBonus': statutory_bns, 'grossSalary': gross_salary, 'epfo': epfo,
                 'dedOutstandingAdjustment': ded_outstanding_adjustment, 'pt': pt, 'tds': tds,
                 'otherDeduction': other_deduction, 'leaveDeduction': leave_deduction, 'totalDeduction': total_deduction,
                 'netSalary': net_salary, 'month': month, 'year': year
-                            }
+            }
 
             users_ref = self.db.collection(self.companyname).document('employee').collection('employee').document(empid)
 
