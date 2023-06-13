@@ -1,0 +1,122 @@
+{% extends "base_two.html" %}
+{% block title %} Login page {% endblock %}
+{% block head %}
+{{ super() }}
+<style type="text/css">
+.divider:after,
+.divider:before {
+content: "";
+flex: 1;
+height: 1px;
+background: #eee;
+}
+.h-custom {
+height: calc(100% - 73px);
+}
+@media (max-width: 450px) {
+.h-custom {
+height: 100%;
+}
+}
+
+
+</style>
+
+{% endblock %}
+{% block content %}
+
+
+<section class="vh-100">
+    <div class="container-fluid h-custom">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-md-10 col-lg-6 col-xl-5">
+          <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
+            class="img-fluid" alt="Sample image">
+        </div>
+        <div class="col-md-8 col-lg-6 col-xl-3 offset-xl-1">
+          <form action="{{url}}" method="POST">
+            <!-- Email input -->
+            <div class="form-outline mb-4">
+              <label class="form-label" for="form3Example3">Enter Your ID</label>
+              <input type="text" id="form3Example3" class="form-control form-control-lg"
+                placeholder="Enter an UserID" autocomplete="off" name="email" required/>
+            </div>
+  
+            <!-- Password input -->
+            <div class="form-outline mb-3">
+              <label class="form-label" for="form3Example4">Password</label>
+              <input type="password" id="form3Example4" class="form-control form-control-lg"
+                placeholder="Enter password" autocomplete="off" name="password" required/>
+            </div>
+  
+            <label class="text-danger p-2" > {{responce}}</label>
+  
+            <div class="d-flex justify-content-between align-items-center">
+
+            <div class="text-center text-lg-start mt-4 pt-2">
+              <a href="/dashboard">
+                <button type="submit" class="btn btn-primary btn-lg"
+                      style="padding-left: 2.5rem; padding-right: 2.5rem;">
+                  Login
+                </button>
+              </a>
+
+            </div>
+              <div class="dropdown mt-4">
+                                        <button class="btn btn-secondary border-1 " type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                                aria-haspopup="true"
+                                                aria-expanded="false">
+                                           Forgot password?
+                                        </button>
+                                    </div>
+
+
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="exampleModal" tabindex="-1"
+                                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Mail to New Employee Create</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form action="{{url_for('forgot_password')}}" method="POST" id="forgot_password" >
+                                        <div class="modal-body">
+                                            <label for="email">Enter Email</label>
+                                            <input type="email" name="email" id="email" value="" class="form-control">
+                                        </div>
+                                        <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" value="submit" class="btn btn-primary">Send Mail</button>
+                                        </div>
+                                        </form>
+                                    </div>
+                                    </div>
+                                </div>
+
+<script>
+
+
+
+  function sendEmail() {
+  var email = window.prompt("Enter your email:", "");
+
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "/{{companyname}}/forgot_password");
+  xhr.setRequestHeader("Content-Type", "application/json");
+  xhr.send(JSON.stringify({ email: email }));
+}
+
+
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,665 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block head %}
+{{ super() }}
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link rel="shortcut icon" href="img/icons/icon-48x48.png" />
+
+<link rel="canonical" href="https://demo-basic.adminkit.io/" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<!-- <link href="/static/css/app.css" rel="stylesheet"> -->
+
+{% endblock %}
+{% block content %}
+<div class="container-fluid" style="background-color: #ffffff;">
+    <div class="wrapper">
+        <div class="main">
+            <main class="content">
+                <div class="container-fluid p-1">
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12 mt-2">
+                            <ul class="nav justify-content-start">
+                                <li class="nav-item">
+                                    <a class="nav-link active" aria-current="page" href="#">
+                                        <h5><b> Dashboard </b></h5>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-6 col-sm-12">
+                            <ul class="nav justify-content-end mt-2">
+
+                                <li class="nav-item ">
+                                    <div class="dropdown">
+                                        <!-- Button trigger modal -->
+                                        <button class="btn border-1 btn-secondary " type="button"
+                                            data-bs-toggle="modal" data-bs-target="#exampleModal" aria-haspopup="true"
+                                            aria-expanded="false">
+                                            Holidays
+                                        </button>
+                                    </div>
+                                </li>
+
+                            </ul>
+
+
+                            <!-- MODAL -->
+                            <div class="modal" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                                aria-hidden="true">
+                                <div
+                                    class="modal-dialog vh-100  modal-dialog-scrollable justify-content-end p-0 me-0 mt-0 mb-0">
+                                    <div class="modal-content vh-100">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="managmonthdays">Manage Month Days</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="container">
+                                            <form action="{{url_for('dashboard', username=username)}}" method="POST"
+                                            id="monthdata" class="pb-4">
+
+                                            <h6 class="modal-title pt-4" id="addholidays">ADD Holidays</h6>
+
+                                            <div class="modal-body inline">
+
+                                                <input type="date"  name="date" id="date" value="" required
+                                                    class="form-control-sm pe-3">
+
+                                                <input type="text" name="description" id="description" value="" placeholder="Description"
+                                                    class="form-control-sm" required>
+
+                                            </div>
+                                            <div class="modal-footer justify-content-center">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" value="submit"
+                                                    class="btn btn-primary">ADD</button>
+                                            </div>
+
+
+                                        </form>
+                                        </div>
+                                        <hr>
+                                      <div class="container">
+                                        <h6 class="modal-title pb-4" id="exampleModalLabel">Holidays</h6>
+                                       <table>
+                                        {% for month_str, month_data in holidays.items(): %}
+                                        <tr class="p-2">
+                                         <th colspan="2">
+                                            <b class="ps-2 pt-4">  {{month_str}}  </b>
+                                         </th>
+                                        </tr>
+                                         {% for date_str, value in month_data.items():%}
+                                         <tr>
+                                         <td col=1>
+                                            <b class="ps-5">  {{date_str}}  </b>
+                                         </td>
+                                         <td col=1>
+                                            <i class="ps-5">   {{value}}  </i>
+                                         </td>
+                                        </tr>
+                                        {% endfor %}
+                                        {% endfor %}
+                                    </table>
+                                      </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="container-fluid" style="background-color: #E7E7E7;">
+    <div class="wrapper">
+        <div class="main">
+            <main class="content">
+                <div class="container-fluid p-3">
+
+                    <div>
+                        <div class="pt-3">
+                            <p class="p-2 ps-5  error">
+                                {% for key, value in moath_data.items() %}
+                                <b class="pe-4">{{key}} : {{value}} </b>
+                                {% endfor %}
+                                <!--                                <a href="#">Click</a>-->
+                            </p>
+                        </div>
+                    </div>
+
+
+
+                    <div class="row mt-3 p-1">
+
+                        <div class="col-xl-12 col-xxl-12 d-flex">
+                            <div class="w-100">
+                                <div class="row">
+
+                                    <div class="col-3">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-4 mt-4">
+                                                        <div class=" text-primary">
+                                                            <img src="/static/assets/team.png" class="card-img-top"
+                                                                alt="" style="width: 4rem;">
+
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-8 mt-1 text-center">
+                                                        <h4 class="card-title">Total Employees</h4>
+                                                        <br>
+                                                        <h1 class="mt-1">{{ dashboard_data['all_employees']['total_employees'] }}</h1>
+                                                    </div>
+                                                </div>
+                                                <!--                                                <h1 class="mt-1">560</h1>-->
+                                                <!-- <div class="mb-0">
+                                                    <span class="text-danger"> <i class="mdi mdi-arrow-bottom-right"></i> -3.65% </span>
+                                                    <span class="text-muted">Since last week</span>
+                                                </div> -->
+                                            </div>
+                                        </div>
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-4 mt-4">
+                                                        <div class="text-primary">
+                                                            <img src="/static/assets/checklist.png" alt=""
+                                                                style="width: 4rem;">
+                                                            <!-- <i class="align-middle" data-feather="users"></i> -->
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-8 mt-1 text-center">
+                                                        <h4 class="card-title">Employees on Probation</h4>
+                                                        <br>
+                                                        <h1 class="mt-1 ">{{ dashboard_data['all_employees']['emp_on_probation'] }}</h1>
+                                                    </div>
+                                                </div>
+                                                <!--                                                <h1 class="mt-1 ">12</h1>-->
+
+                                            </div>
+                                        </div>
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-4 mt-4">
+                                                        <div class=" text-primary">
+                                                            <img src="/static/assets/presentation.png" alt=""
+                                                                style="width: 4rem;">
+                                                            <!-- <i class="fa-regular fa-chalkboard-user"></i> -->
+                                                            <!-- <i class="align-middle" data-feather="dollar-sign"></i> -->
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-8 mt-1 text-center">
+                                                        <h4 class="card-title">Employees on Internship</h4>
+                                                        <br>
+                                                        <h1 class="mt-0">{{ dashboard_data['all_employees']['emp_on_training'] }}</h1>
+                                                    </div>
+                                                </div>
+                                                <!--                                                <h1 class="mt-0">7</h1>-->
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-3">
+                                        <div class="card flex-fill w-100" style="height: 100%">
+                                            <div class="card-header">
+                                                <h4 class="card-title mb-0">Employees Overview </h4>
+                                            </div>
+                                            <div class="card-body d-flex">
+                                                <div class=" align-self-center w-50 ml-3">
+                                                    <div class="py-0">
+                                                        <div class="chart chart-xs">
+                                                            <canvas id="chartjs-dashboard-pie"></canvas>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div style="vertical-align: middle; " class="mt-5">
+                                                    <table class="table mt-5 me-5" style="font-size: 20px;">
+                                                        <ul>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td class="text-end">
+                                                                        <li style="color:black;"></li>
+                                                                    </td>
+                                                                    <td class="ms-1 text-start">Fulltime</td>
+                                                                <tr>
+                                                                <tr>
+                                                                    <td class="text-end">
+                                                                        <li style="color:black;"></li>
+                                                                    </td>
+                                                                    <td class="ms-1 text-start">Trainee</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="text-end">
+                                                                        <li style="color:black;"></li>
+                                                                    </td>
+                                                                    <td class="ms-1 text-start">Internship</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="text-end">
+                                                                        <li style="color:black;"></li>
+                                                                    </td>
+                                                                    <td class="ms-1 text-start">Probation</td>
+                                                                </tr>
+
+
+                                                            </tbody>
+                                                        </ul>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <div class="card flex-fill w-100" style="height: 100%">
+
+                                            <div class="card-header">
+
+                                                <h4 class="card-title mb-0">Department Wise Employees</h4>
+                                            </div>
+
+                                            <div class="card-body d-flex">
+
+                                                <div class="align-self-center w-50">
+                                                    <div class="py-3">
+                                                        <div class="chart chart-xs">
+                                                            <canvas id="chartjs-dashboard-pie2"></canvas>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <table class="table mt-3" style="font-size: 20px;">
+                                                        <ul>
+                                                            <tbody>
+                                                            {% for dept in dashboard_data['department'] %}
+                                                                <tr>
+                                                                    <td class="text-end">
+                                                                        <li style="color:black;"></li>
+                                                                    </td>
+                                                                    <td class="ms-1 text-start">{{ dept }} Department</td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                            </tbody>
+                                                        </ul>
+                                                    </table>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="row mt-3 p-1">
+                        <div class="col-6 col-lg-6 col-xxl-6 d-flex">
+                            <div class="card flex-fill w-100">
+                                <div class="card-header">
+                                    <h4 class="card-title mb-0">Employees Count By Salary Range</h4>
+                                </div>
+                                <div class="card-body d-flex">
+                                    <div class="align-self-center chart chart-lg">
+                                        <canvas id="chartjs-dashboard-bar1" style="width: 45vw; height: 30vh;"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-12 col-lg-6 col-xxl-6 d-flex">
+                            <div class="card flex-fill w-100">
+                                <div class="card-header">
+
+                                    <h4 class="card-title mb-0">Employees By Experience</h4>
+                                </div>
+                                <div class="card-body d-flex">
+                                    <div class="align-self-center chart chart-lg">
+                                        <canvas id="chartjs-dashboard-bar" style="width: 30vw; height: 30vh;"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row mt-3 p-1">
+                        <div class="col-3 col-lg-3 col-xxl-3 d-flex">
+                            <div class="card flex-fill" style="background-color: #ffffff">
+                                <div class="card-header">
+
+                                    <h4 class="card-title mb-0">Employees On Leave</h4>
+                                </div>
+                                <div class="card p-3" style="border:none !important">
+                                    <table class="table table-hover my-0">
+                                        <thead style="background-color: #DFE1E6">
+                                            <tr>
+                                                <th>Name</th>
+                                                <th class="d-none d-xl-table-cell">Leave Date</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for name,sdate in employee_on_leave.items() %}
+                                            <tr>
+                                                <td>{{name}}</td>
+                                                <td class="d-none d-xl-table-cell align-middle"> {{sdate}}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-3 col-lg-3 col-xxl-3 d-flex">
+                            <div class="card flex-fill">
+                                <div class="card-header">
+
+                                    <h4 class="card-title mb-0">Top 5 Leave Takers</h4>
+                                </div>
+                                <div class="card p-3" style="border:none !important">
+                                    <table class="table table-hover my-0">
+                                        <thead style="background-color: #DFE1E6">
+                                            <tr>
+                                                <th>Name</th>
+                                                <th class="d-none d-xl-table-cell">No of Leave</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for name,days in total_leaves.items() %}
+                                            <tr>
+                                                <td>{{ name }}</td>
+                                                <td class="d-none d-xl-table-cell align-middle">{{ days }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-3 col-lg-3 col-xxl-3 d-flex">
+                            <div class="card flex-fill">
+                                <div class="card-header">
+
+                                    <h4 class="card-title mb-0">Employees Birthday</h4>
+                                </div>
+                                <div class="card p-3" style="border:none !important">
+                                    <table class="table table-hover my-0">
+                                        <thead style="background-color: #DFE1E6">
+                                            <tr>
+                                                <th>Name</th>
+                                                <th class="d-none d-xl-table-cell">Date</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for name,dob in employee_birthday.items() %}
+                                            <tr>
+                                                <td>{{ name }}</td>
+                                                <td class="d-none d-xl-table-cell align-middle">{{ dob }}</td>
+                                            </tr>
+
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-3 col-lg-3 col-xxl-3 d-flex">
+                            <div class="card flex-fill">
+                                <div class="card-header">
+
+                                    <h4 class="card-title mb-0">Work Anniversaries</h4>
+                                </div>
+                                <div class="card p-3" style="border:none !important">
+                                    <table class="table table-hover my-0">
+                                        <thead style="background-color: #DFE1E6">
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Year</th>
+                                                <th class="d-none d-xl-table-cell">Date</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for key,value in employee_anniversary.items() %}
+                                            <tr>
+                                                <td>{{ value['name'] }}</td>
+                                                <td> {{ value['years'] }} </td>
+                                                <td>{{ value['date'] }}</td>
+
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+        </div>
+    </div>
+</div>
+
+
+<script src="/static/js/app.js"></script>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Pie chart
+        new Chart(document.getElementById("chartjs-dashboard-pie"), {
+            type: "pie",
+            data: {
+                labels: ["Fulltime", "Internship", "Trainee", "Probation",],
+                datasets: [{
+                    data: [{{ dashboard_data['employee_overview']['Employee'] }}, {{ dashboard_data['employee_overview']['Internship'] }}, {{ dashboard_data['employee_overview']['Trainee'] }}, {{ dashboard_data['employee_overview']['Probation'] }}],
+                    backgroundColor: [
+                        window.theme.primary,
+                        window.theme.warning,
+                        window.theme.danger,
+                        window.theme.success,
+                        window.theme.info
+                    ],
+                    borderWidth: 5
+                }]
+            },
+            options: {
+                responsive: !window.MSInputMethodContext,
+                maintainAspectRatio: false,
+                legend: {
+                    display: false
+                },
+                cutoutPercentage: 45
+            }
+        });
+    });
+
+
+
+
+
+
+
+
+
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Pie chart
+
+        var department_wise_emp = {{ dashboard_data['department_wise_emp']|tojson }}
+
+        new Chart(document.getElementById("chartjs-dashboard-pie2"), {
+            type: "pie",
+
+
+            data: {
+                labels: Object.keys( department_wise_emp ),
+                datasets: [{
+                    data: Object.values( department_wise_emp ),
+                    backgroundColor: [
+                    window.theme.primary,
+                    window.theme.warning,
+                    window.theme.danger,
+                    window.theme.success,
+                    window.theme.secondary,
+                    "#ff00ff", // Additional color 1
+                    "#00ffff", // Additional color 2
+                    "#ffff00", // Additional color 3
+                    "#ff0000", // Additional color 4
+                    "#00ff00",  // Additional color 5
+                    ],
+                    borderWidth: 5
+                }]
+            },
+            options: {
+                responsive: !window.MSInputMethodContext,
+                maintainAspectRatio: false,
+                legend: {
+                    display: false
+                },
+                cutoutPercentage: 45
+            }
+        });
+    });
+
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Bar chart
+        new Chart(document.getElementById("chartjs-dashboard-bar"), {
+            type: "bar",
+            data: {
+                labels: ["0 to 1 year", "1 to 3 year", "3 to 5 year", "5 to 10 year", "10 Above",],
+                datasets: [{
+                    label: "This year",
+                    backgroundColor: window.theme.primary,
+                    borderColor: window.theme.primary,
+                    hoverBackgroundColor: window.theme.primary,
+                    hoverBorderColor: window.theme.primary,
+                    data: [{{ dashboard_data['exprience_list']['0 to 1'] }},{{ dashboard_data['exprience_list']['1 to 3'] }}, {{ dashboard_data['exprience_list']['3 to 5'] }}, {{ dashboard_data['exprience_list']['5 to 10'] }}, {{ dashboard_data['exprience_list']['Above 10'] }}],
+                    barPercentage: 0.5,
+                    categoryPercentage: 0.6
+                }]
+            },
+            options: {
+                maintainAspectRatio: true,
+                legend: {
+                    display: true
+                },
+                scales: {
+                    yAxes: [{
+                        gridLines: {
+                            display: false
+                        },
+                        stacked: false,
+                        ticks: {
+
+                            stepSize: 2
+                        }
+                    }],
+                    xAxes: [{
+                        stacked: true,
+                        gridLines: {
+                            color: "transparent",
+                            with: 50
+                        }
+                    }]
+                }
+            }
+        });
+    });
+
+
+
+
+
+
+
+
+
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Bar chart
+        new Chart(document.getElementById("chartjs-dashboard-bar1"), {
+            type: "bar",
+            data: {
+                labels: ["0 to 20 k", "20 to 50 k", "50 to 80 k", "80 to 100 k", "100 k+"],
+                datasets: [{
+                    label: "This year",
+                    backgroundColor: "#d224e6",
+                    borderColor: "#dee2e6",
+                    hoverBackgroundColor: "#d224e6",
+                    hoverBorderColor: "#dee2e6",
+                    data: [{{ dashboard_data['salary_wise_emp']['0 to 20 K'] }}, {{ dashboard_data['salary_wise_emp']['20 to 50 K'] }}, {{ dashboard_data['salary_wise_emp']['50 to 80 K']}}, {{ dashboard_data['salary_wise_emp']['80 to 100 K']}}, {{ dashboard_data['salary_wise_emp']['100 K +']}}],
+                    barPercentage: .45,
+                    categoryPercentage: 0.6
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        gridLines: {
+                            display: false
+                        },
+                        stacked: false,
+                          ticks: {
+
+                            stepSize: 2
+                        }
+                    }],
+                    xAxes: [{
+                        stacked: false,
+                        gridLines: {
+                            color: "transparent"
+                        }
+                    }]
+                }
+            }
+        });
+    });
+
+
+
+
+
+
+
+
+
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var date = new Date(Date.now() - 5 * 24 * 60 * 60 * 1000);
+        var defaultDate = date.getUTCFullYear() + "-" + (date.getUTCMonth() + 1) + "-" + date.getUTCDate();
+        document.getElementById("datetimepicker-dashboard").flatpickr({
+            inline: true,
+            prevArrow: "<span title=\"Previous month\">&laquo;</span>",
+            nextArrow: "<span title=\"Next month\">&raquo;</span>",
+            defaultDate: defaultDate
+        });
+    });
+</script>
+{% endblock %}

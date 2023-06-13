@@ -1,0 +1,130 @@
+*,label {
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    ;
+}
+
+nav {
+    background-color: #2f3990 !important;
+    color: azure !important;
+}
+
+tr {
+    border-style: hidden;
+}
+
+table {
+    border-bottom-style: solid 2px !important;
+}
+
+nav a {
+    color: white !important;
+}
+
+a {}
+
+h5 {
+    color: #2f3990;
+}
+
+h4 {
+    color: black;
+}
+
+td a,
+th a {
+    color: black !important;
+}
+
+.error {
+    background-color: rgb(255, 196, 196);
+    border-left-color: red;
+    border-block-start: initial;
+    border-left-style: solid;
+    border-radius: 5px;
+
+}
+
+input[type="range"] {
+    /* -webkit-appearance: none; */
+    /* appearance:initial; */
+    color: #2f3990;
+    outline-color: #2f3990;
+    scrollbar-color: #2f2f2f;
+    cursor: move;
+    width: 15rem;
+    height: 10px;
+    accent-color: currentcolor;
+
+}
+
+/* dropDown */
+.dropdown-item {
+    color: black !important;
+
+    border-style: solid 1px !important;
+    opacity: 0.7;
+    box-shadow: #2f3990 !important;
+}
+
+
+
+/* modal  */
+.modal.show .modal-dialog {
+    transform: none;
+    max-width: 30vw;
+    width: 30vw !important;
+    margin-block-start: auto !important;
+    /* margin: 0px; */
+    margin: 192px 0px 0px 0p;
+    right: 0 !important;
+}
+
+
+.form-modal.show .modal-dialog {
+    transform: none;
+    max-width: 70vw;
+    width: 70vw !important;
+    height: 100vh !important;
+    margin-block-start: auto !important;
+    /* margin: 0px; */
+    margin: 192px 0px 0px 0p;
+    right: 0 !important;
+}
+
+
+#createmodal {
+    transform: none;
+    max-width: 70vw;
+    width: 70vw !important;
+    max-height: 100vh !important;
+    height: 100vh !important;
+    margin-block-start: auto !important;
+    /* margin: 0px; */
+    margin: 192px 0px 0px auto;
+    right: 0 !important;
+}
+
+
+.pending p {
+    text-align: center !important;
+    background: #fae3b8 !important;
+    border-radius: 20%;
+}
+
+.approved p {
+    text-align: center;
+    background: #e5bdfc !important;
+    border-radius: 20%;
+}
+
+.paid p {
+    text-align: center;
+    background: #b9fab9 !important;
+    border-radius: 20%;
+}
+
+.ttr {
+    border: 1px solid;
+}
+
+

@@ -1,0 +1,291 @@
+{% extends "base.html" %}
+{% block title %}Salary{% endblock %}
+{% block head %}
+{{ super() }}
+
+{% endblock %}
+{% block content %}
+<!-- Header  -->
+<div class="container-fluid" style="background-color: #ffffff;">
+    <div class="wrapper">
+        <div class="main">
+            <main class="content">
+                <div class="container-fluid p-1">
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12 mt-2">
+                            <ul class="nav justify-content-start">
+                                <li class="nav-item">
+                                    <a class="nav-link active" aria-current="page">
+                                        <h5><b>Salary Sheet</b></h5>
+
+                                    </a>
+                                </li>
+                                <li>
+                                    <div class="form-outline  text-start ">
+                    <input type="text" class="form-control" id="forminput" placeholder="{{year-1}}-{{year}}" readonly/>
+                </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-6 col-sm-12 mt-2">
+                            <ul class="nav justify-content-end  end-0">
+
+                                <!-- SALARY PERCENTAGE MODAL -->
+                                <div class="modal " id="exampleModal1" tabindex="-1"
+                                     aria-labelledby="exampleModalLabel1" aria-hidden="true">
+                                    <div class="modal-dialog vh-100  modal-dialog-scrollable justify-content-end p-0 me-0 mt-0 mb-0">
+                                        <div class="modal-content vh-100">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel1"> Salary Data </h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                            </div>
+                                            <form action="{{url_for('salary', username=username)}}" method="POST" id="salarydata">
+                                                <div class="modal-body inline">
+                                                    <label for="hrapercentage" class="col-3">HRA</label>
+                                                    <input type="text" name="hrapercentage" id="hrapercentage" value=""
+                                                           placeholder="{{salary_criteria['hrapercentage']}}"
+                                                           class="form-control-sm">
+                                                </div>
+                                                <div class="modal-body inline">
+                                                    <label for="dapercentage" class="col-3">DA</label>
+                                                    <input type="text" name="dapercentage" id="dapercentage" value=""
+                                                           placeholder="{{salary_criteria['dapercentage']}}"
+                                                           class="form-control-sm">
+                                                </div>
+                                                <div class="modal-body inline">
+                                                    <label for="deductionpercentage" class="col-3">Leave
+                                                        Deduction </label>
+                                                    <input type="text" name="deductionpercentage"
+                                                           placeholder="{{salary_criteria['deductionpercentage']}}"
+                                                           id="deductionpercentage" value="" class="form-control-sm">
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Close
+                                                    </button>
+                                                    <button type="submit" value="submit" class="btn btn-primary">Save
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <li class="nav-item me-2">
+                                    <div class="dropdown">
+                                        <button class="btn border-1 btn-secondary " type="button" aria-haspopup="true"
+                                                data-bs-toggle="modal" data-bs-target="#exampleModal1"
+                                                aria-expanded="false">
+                                            Salary Percentage
+                                        </button>
+                                    </div>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</div>
+
+
+<!-- Monthly Salary Data -->
+<div class="container-fluid" style="background-color: #F4F5F7;">
+    <div class="container-fluid p-3">
+
+
+        <table class="table table-hover mt-4" data-sort-direction="asc">
+            <!-- Table Heading -->
+            <thead class="table-secondary" style="background-color:#DFE1E6;">
+
+            <tr class="bg-dark">
+                <th scope="col" onclick="sortTable(0)">Month</th>
+                <th scope="col" onclick="sortTable(1)">Gross Salary(₹)</th>
+                <th scope="col" onclick="sortTable(2)">Total PF (₹)</th>
+                <th scope="col" onclick="sortTable(3)">Total PT (₹)</th>
+                <th scope="col" onclick="sortTable(4)">Total TDS (₹)</th>
+                <th scope="col" onclick="sortTable(5)">Net Salary (₹)</th>
+                <th scope="col" onclick="sortTable(6)">Status</th>
+                <th scope="col" onclick="sortTable(7)">Action</th>
+            </tr>
+
+            </thead>
+            <tr class="table-light">
+                <tbody style="background-color:#ffffff;">
+
+                <!-- Salary Data -->
+                {% for i in data %}
+                {% set month_dict = {'001': 'January', '002': 'February', '003': 'March', '004': 'April', '005': 'May',
+                '006': 'June', '007': 'July', '008': 'August', '009': 'September', '0010': 'October', '0011':
+                'November',
+                '0012': 'December'} %}
+                <td scope="col" id="demo">{{ month_dict[i[3:]] }}</td>
+                <td scope="col">{{ i }}</td>
+                <td scope="col">{{ data[i]['epfo'] }}</td>
+                <td scope="col">{{ data[i]['pt'] }}</td>
+                <td scope="col">{{ data[i]['tds'] }}</td>
+                <td scope="col">{{ data[i]['netSalary'] }}</td>
+                <td scope="col" class="text-start">
+                    <label class="status-label p-1" style="border-radius: 50px; align: center;     width: 100px;
+    text-align: center;">{{salary_status[ month_dict[i[3:]] ]}}</label>
+                </td>
+
+                <td scope="col d-flex">
+                    <ul class="nav ">
+                   
+                        <!-- Eye icon  -->
+                        <li class="nav-item  d-inline"><a class="nav-link"
+                                                          href="{{url_for('salary_sheet_view', username=username, salid=i)}}">
+                            <i class="fa fa-eye" aria-hidden="true"></i>
+                        </a>
+                        </li>
+                             <!-- Download icon  -->
+                        {% if salary_status[ month_dict[i[3:]] ]=='Paid' %}
+                        <li class="nav-item d-inline"><a class="nav-link" href="{{url_for('pdf', username=username, salid=i)}}">
+                            <i class="fa fa-download"></i>
+                        </a>
+                        </li>
+                        {% endif%}
+                    </ul>
+
+                </td>
+            </tr>
+
+            {% endfor %}
+
+            <tbody>
+        </table>
+
+    </div>
+</div>
+
+
+<!--JavaScript For Salary Status Background Color-->
+
+<script>
+
+var statusLabels = document.getElementsByClassName("status-label");
+
+for (var i = 0; i < statusLabels.length; i++) {
+  var statusLabel = statusLabels[i];
+  var status = statusLabel.textContent.trim();
+
+  if (status === "Pending") {
+    statusLabel.style.background = "#FF9128";
+    statusLabel.style.color = "#FFF";
+  } else if (status === "Approved") {
+    statusLabel.style.background = "#7367F0";
+    statusLabel.style.color = "#FFF";
+
+  } else if (status === "Paid") {
+    statusLabel.style.background = "#28C76F";
+    statusLabel.style.color = "#FFF";
+
+  }else if (status === "Inreview") {
+    statusLabel.style.background = "#7367F0";
+    statusLabel.style.color = "#FFF";
+  }
+   else if (status === "None") {
+    statusLabel.style.background = "#DFE1E6";
+  }
+}
+
+</script>
+
+
+
+<!--JavaScript code for storage location-->
+
+<script>
+
+  function setStoragePath() {
+  var path = window.prompt("Enter the path where you want to store files:", "");
+
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "/set-storage-path");
+  xhr.setRequestHeader("Content-Type", "application/json");
+  xhr.send(JSON.stringify({ path: path }));
+}
+
+</script>
+
+
+<!--JavaScript For Sorting-->
+
+<script>
+
+  function sortTable(columnIndex) {
+    const table = document.getElementById("table_salary");
+    const rows = Array.from(table.rows).slice(1); // exclude the header row
+    const direction = table.getAttribute("data-sort-direction") || "asc"; // get the current sort direction or set it to ascending by default
+
+    // fix for sorting more than 10 rows:
+    table.rows.length = table.rows.length;
+    const rows = Array.from(table.rows).slice(1);
+
+    rows.sort((row1, row2) => {
+      const cell1 = row1.cells[columnIndex].textContent.toLowerCase();
+      const cell2 = row2.cells[columnIndex].textContent.toLowerCase();
+      return direction === "asc" ? cell1.localeCompare(cell2) : cell2.localeCompare(cell1);
+    });
+
+    // remove the sort icon from all the column headers
+    table.querySelectorAll("th").forEach((th) => {
+      // only remove the sort icon if it exists in the header text
+      if (th.textContent.includes("▲") || th.textContent.includes("▼")) {
+        th.textContent = th.textContent.replace("▲", "").replace("▼", "");
+      }
+    });
+
+    // update the sort direction and icon for the clicked column header
+    const icon = direction === "asc" ? "▲" : "▼";
+    const th = table.querySelector(`th:nth-child(${columnIndex + 1})`);
+    th.textContent += ` ${icon}`;
+    table.setAttribute("data-sort-direction", direction === "asc" ? "desc" : "asc");
+
+    // re-attach the sorted rows to the table
+    rows.forEach((row) => table.tBodies[0].appendChild(row));
+  }
+
+</script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const uploadButton = document.getElementById('uploadButton');
+
+    uploadButton.addEventListener('click', () => {
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+
+        fileInput.addEventListener('change', () => {
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response from the server
+                console.log(data);
+            })
+            .catch(error => {
+                // Handle any errors
+                console.error(error);
+            });
+        });
+
+        fileInput.click();
+    });
+});
+</script>
+
+
+
+{% endblock %}

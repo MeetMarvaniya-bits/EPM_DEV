@@ -1,0 +1,112 @@
+{% extends "base_two.html" %}
+{% block title %} Add Employees {% endblock %}
+{% block head %}
+{{ super() }}
+<style type="text/css">
+.divider:after,
+.divider:before {
+content: "";
+flex: 1;
+height: 1px;
+background: #eee;
+}
+.h-custom {
+height: calc(100% - 73px);
+}
+@media (max-width: 450px) {
+.h-custom {
+height: 100%;
+}
+}
+
+
+</style>
+
+{% endblock %}
+{% block content %}
+
+
+
+<div class="container-fluid" style="background-color: #ffffff;">
+    <div class="wrapper">
+        <div class="main">
+            <main class="content">
+                <div class="container-fluid p-1">
+                    <div class="row">
+
+                        <div class="col-lg-6 col-sm-12 mt-2">
+                            <ul class="nav justify-content-start">
+                                <li class="nav-item">
+                                    <a class="nav-link active" aria-current="page" href="#">
+                                        <h5><b>Add Employees Data</b></h5>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="col-lg-6 col-sm-12 mt-2">
+                            <ul class="nav justify-content-end mb-0 mt-0">
+
+                                <!-- EXCEL SHEET DOWNLOAD BUTTON -->
+                                <li class="nav-item me-2">
+                                    <div class="">
+                                        <a href="/create_excel">
+                                            <button class="btn btn-secondary border-1 " type="button"
+                                                    aria-haspopup="true"
+                                                    aria-expanded="false">
+                                                Excel Sheet
+                                            </button>
+                                        </a>
+                                    </div>
+                                </li>
+
+
+                                <!-- IMPORT BUTTON -->
+                                <li class="nav-item me-2">
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary border-1 " type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                                aria-haspopup="true"
+                                                aria-expanded="false">
+                                         Excelsheet Path
+                                        </button>
+                                    </div>
+                                </li>
+
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</div>
+
+
+
+                 <!-- Modal -->
+                                <div class="modal fade" id="exampleModal" tabindex="-1"
+                                     aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Excelsheet Path</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <form action="{{url_for('add_data', username=username)}}" method="POST" id="Admin" >
+                                        <div class="modal-body">
+                                            <label for="new_email">Enter Email</label>
+                                            <input type="text" name="path" id="new_email" value="" class="form-control">
+                                        </div>
+                                        <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" value="submit" class="btn btn-primary">Save</button>
+                                        </div>
+                                        </form>
+                                    </div>
+                                    </div>
+                                </div>
+
+
+
+{% endblock %}

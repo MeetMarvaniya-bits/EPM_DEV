@@ -1,0 +1,329 @@
+{% extends "base.html" %}
+{% block title %} Department {% endblock %}
+{% block head %}
+{{ super() }}
+
+{% endblock %}
+{% block content %}
+
+<!-- header section -->
+<div class="container-fluid" style="background-color: #ffffff;">
+    <div class="container-fluid p-1">
+        <div class="row">
+            <div class="col-lg-6 col-sm-12 mt-2">
+                <ul class="nav justify-content-start">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">
+                            <h5><b>
+                                Department
+                            </b>
+                            </h5>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-lg-6 col-sm-12">
+                <ul class="nav justify-content-end mt-2">
+
+                    <!-- CREATE DEPARTMENT MODAL -->
+
+                    <div class="modal" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                         tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div
+                                class="modal-dialog vh-100  modal-dialog-scrollable justify-content-end p-0 me-0 mt-0 mb-0">
+                            <div class="modal-content vh-100">
+                                <!-- MODAL HEADER -->
+
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="staticBackdropLabel">Add New Department</h5>
+                                    <button type="button" class="btn-close close-button" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                                </div>
+
+                                <!-- MODAL BODY -->
+
+                                <div class="modal-body">
+                                    <div class="container">
+                                        <div class="row">
+                                            <div class="col-md-12">
+
+                                                <form action="{{url_for('department', username=username)}}" method="post">
+                                                    <table class="justify-content-between">
+                                                        <thead>
+                                                        <tr>
+                                                            <td class="p-2">
+                                                                <h6><b> Department Name </b></h6>
+                                                            </td>
+                                                            <td class="p-2"><input type="text" id="deptname"
+                                                                                   class="form-control-sm"
+                                                                                   name="deptname" value="" id="deptname" pattern="^[a-zA-Z0-9]*$" required>
+                                                                                   <div><label for="deptname-status" id="deptname-status" title="Invalid Department Name"></label></div>
+        
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="pt-2">
+                                                                <h6><b> position </b></h6>
+                                                            </td>
+                                                            <td class="p-2">
+                                                                <h6><b> salary </b></h6>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td id='input-cont1' class="p-1">
+                                                                <input type="text" class="form-control-sm" id="pos"
+                                                                       name="pos0" value="" pattern="^[a-zA-Z0-9]*$" title="Special characters are not allowed" required>
+                                                            </td>
+                                                            <td id='input-cont2' class="p-1">
+                                                                <input type="text" class="form-control-sm" id="sal"
+                                                                       name="sal0" value="" pattern="^\d*\.?\d*$" required>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+
+                                                            <td colspan="2">
+                                                       <button type="submit" class="btn border-1 mt-2" id="submit_btn">Submit</button>
+                                                            </td>
+                                                        </tr>
+                                                        </thead>
+                                                    </table>
+
+                                                </form>
+                                                <button onclick='addInput()' class="btn border-1 mt-2" id="add_input">+Add input</button>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- MODAL FOOTER -->
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary close-button" data-bs-dismiss="modal">
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ADD NEW DEPARTMENT BUTTON -->
+
+                    <li class="nav-item">
+                        <div class="dropdown">
+                            
+                            <button class="btn border-1 btn-secondary " type="button"
+                                    onclick="add_modal()"
+                                    data-bs-target="#staticBackdrop"
+                                    aria-haspopup="true"
+                                    data-bs-toggle="modal"
+                                    aria-expanded="false">
+                                Add New Department
+                            </button>
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- header section  End-->
+
+<div class="container-fluid" style="background-color: #E7E7E7;">
+    <div class="wrapper">
+        <div class="main">
+            <main class="content">
+                <div class="container-fluid p-3">
+
+
+                <!-- TABLE -->
+                <table class="table" id="table_dept">
+                    <thead style="background-color:#DFE1E6;">
+                        <tr>
+                            <th scope="col" onclick="sortTable(0)">Department Name</th>
+                            <th scope="col" onclick="sortTable(1)">Postition</th>
+                            <th scope="col" onclick="sortTable(2)">Salary</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody style="background-color: #ffffff;">
+                        {% if data != None %}
+                        {% for i in data%}
+
+                        {% for j in data[i] %}
+                        <tr>
+                            <td scope="col">{{i}}</td>
+
+                            <td scope="col">{{ j }}</td>
+                            <td scope="col">{{data[i][j]}}</td>
+
+                            <td scope="col">
+                                <a type="btn" class="btn" onclick="open_modal('{{i}}','{{j}}','{{data[i][j]}}')"
+                                   value="{{[i,j,data[i][j]]}}">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a type="btn" class="btn" href="delete_department/{{i,j}}" onclick="" value="{{[i,j]}}">
+                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                </a>
+                            </td>
+
+                        </tr>
+                        {% endfor %}
+                        {% endfor%}
+                        {% endif%}
+
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+</div>
+
+<script>
+
+
+       const input = document.getElementById("deptname");
+  input.addEventListener("input", function(evt) {
+    const value = input.value;
+    const num = parseFloat(value);
+    if (!isNaN(num)) {
+      input.value = "";
+    }
+  });
+    const deptList = "{{data}}"
+
+const cleanStr = deptList.replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+console.log(cleanStr);
+
+    console.log(deptList)
+    const deptnameInput = document.getElementById('deptname');
+    const deptnameStatus = document.getElementById('deptname-status');
+    const submit_btn = document.getElementById('submit_btn');
+
+    const checkDeptname = () => {
+        const deptname = deptnameInput.value.trim();
+        if (deptname === '') {
+            deptnameStatus.textContent = 'Department name cannot be empty.';
+            deptnameStatus.style.color = 'red';
+        } else if (deptname.length < 2) {
+            deptnameStatus.textContent = 'Department name should be at least 2 characters long.';
+            deptnameStatus.style.color = 'orange';
+        } else if(cleanStr.includes(deptname)) {
+            deptnameStatus.textContent = ' Department  is already exist.';
+            deptnameStatus.style.color = 'red';
+            submit_btn.disabled = true;
+        }
+        else{
+            deptnameStatus.textContent = '';
+            deptnameStatus.style.color = '';
+            submit_btn.disabled = '';
+        }
+        console.log(deptname)
+    };
+    deptnameInput.addEventListener('input', checkDeptname);
+
+   function open_modal(dept,pos,sal) {
+    console.log(dept,pos,sal)
+      var modal = document.querySelector('.modal');
+      var modalInput = document.getElementById('deptname');
+      var positionInput= document.getElementById('pos');
+      var salaryInput = document.getElementById('sal');
+      var submit_btn = document.getElementById('submit_btn');
+      var add_input = document.getElementById('add_input');
+
+
+      // Set the value of the input element when the modal opens
+      modal.addEventListener('show.bs.modal', function () {
+          add_input.style.display= "none";
+          modalInput.value='';
+        modalInput.value = dept;
+
+        positionInput.value= pos;
+     
+        salaryInput.value= sal;
+  
+      });
+        // Clear the input values when the modal is closed
+      modal.addEventListener('hidden.bs.modal', function () {
+
+    add_input.style.display= "block";
+
+    modalInput.value = '';
+    positionInput.value = '';
+    salaryInput.value = '';
+  });
+
+      // Show the modal
+      var modalInstance = new bootstrap.Modal(modal);
+      modalInstance.show();
+      add_modal();
+    };
+    function add_modal(){
+      var modal = document.querySelector('.modal');
+
+      modal.addEventListener('show.bs.modal', function () {
+          var modalInput = document.getElementById('deptname');
+      var positionInput= document.getElementById('pos');
+      var salaryInput = document.getElementById('sal');
+      var add_input = document.getElementById('add_input');
+          add_input.style.display= "block";
+        modalInput.value = '';
+
+        positionInput.value= '';
+
+        salaryInput.value= '';
+      });
+
+
+    }
+
+
+
+
+
+
+
+    const container1 = document.getElementById('input-cont1');
+    const container2 = document.getElementById('input-cont2');
+    var maxInputAllowed = 5;
+    var inputCount = 0;
+
+    // Call addInput() function on button click
+    function addInput() {
+        
+        inputCount++; // Increment input count by one
+        if (inputCount > 5) {
+            alert('You can add maximum 5 input fields.');
+            return;
+        }
+
+        let input = document.createElement('input');
+        // input.placeholder = 'Type something';
+        input.className = 'form-control-sm mt-2'
+        input.id =  'pos' + inputCount
+        input.name='pos'+inputCount
+        input.pattern="^[a-zA-Z0-9]*$"
+        input.required = true;
+
+
+        let salinput = document.createElement('input');
+        // salinput.placeholder = 'Type something';
+        salinput.className = 'form-control-sm mt-2 ';
+        salinput.id = 'sal' + inputCount;
+        salinput.name='sal'+inputCount;
+        salinput.pattern="[1-9][0-9]{0,10}";
+        salinput.required = true;
+        container1.appendChild(input);
+        container2.appendChild(salinput);
+    }
+
+
+</script>
+
+
+
+{% endblock %}
