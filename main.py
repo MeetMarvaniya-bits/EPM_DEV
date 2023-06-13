@@ -817,10 +817,14 @@ def upload(username,salid):
             if len(new_data) != 0:
                 for details in new_data:
                     document_name = details.to_dict()['userID']
-                    print(dict(data))
-                    # db.collection(companyname).document(u'employee').collection('employee').document(document_name).collection('salaryslips').document(salid).update(dict(data))
+                    emp_salary_data = {'cosecID': data["User ID"], 'WO': data["WO"], 'UL': data["UL"],
+                                       'Auth_OT': data["Auth OT"], 'WrkHrs': data["WrkHrs"], 'CL': data["C_L"],
+                                       'PL': data["P_L"], 'SL': data["S_L"]}
+                    print(document_name)
+                    print(data)
+                    print(emp_salary_data)
+                    db.collection(companyname).document(u'employee').collection('employee').document(document_name).collection('salaryslips').document(salid).update(emp_salary_data)
                     # print(details.to_dict())
-                print(data)
         return redirect(url_for('salary', username=username))
     return redirect(url_for('salary', username=username))
 
@@ -908,17 +912,28 @@ def save_edited_data():
     username = request.args.get('user_name')
     # print(f"{salid} is salid and {username} is username")
 
+    print(form_dict)
+
+    all_data = {}
+
     for key, value in form_dict.items():
         if value != '':
             document_name = key.split('_')[0]  # Extracting the document name from the key
             field_name = key.split('_')[1]  # Extracting the field name from the key
-            print(document_name)
-            print({field_name: value})
+            if len(all_data) == 0 or document_name not in all_data.keys():
+                all_data.update({document_name: {field_name: value}})
+            else:
+                # print(all_data)
+                for key,value2 in all_data.items():
+                    all_data[key].update({field_name: value})
 
-            # Updating the document in Firestore
-            doc_ref = db.collection(companyname).document('employee').collection('employee').document(document_name).collection(
-            'salaryslips').document(salid)
-            doc_ref.update({field_name: value})
+    print(all_data)
+
+    for emp_id, sal_data in all_data.items():
+        print(emp_id)
+        print(sal_data)
+        # Updating the document in Firestore
+        # db.collection(companyname).document('employee').collection('employee').document(emp_id).collection('salaryslips').document(salid).update(sal_data)
 
     # Return a response to the client
     return redirect(url_for('salary_sheet_view', username=username, salid=salid))
