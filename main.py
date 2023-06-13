@@ -414,7 +414,12 @@ def employee_profile(username, id):
 
     increment_data = sorted(increment_data, key=lambda x: x[list(x.keys())[0]]['effectiveDate'])
     increment_list = [(index, content) for index, content in enumerate(increment_data)]
-    effective_dates = [item[1][f'increment_0{i + 1}']['effectiveDate'] for i, item in enumerate(increment_list)]
+    print(increment_list)
+
+    keys = [next(iter(item[1])) for item in increment_list]
+    print(keys)
+    effective_dates = [item[1][keys[i]]['effectiveDate'] for i, item in enumerate(increment_list)]
+    print(effective_dates)
 
     contract_data = []
     personal_data = personal_data_future.result()
@@ -450,7 +455,7 @@ def employee_profile(username, id):
         department_data = executor.submit(get_department_data)
     department = department_data.result()
 
-    print(increment_list)
+
     return render_template('employee_profile.html', leave=leave_status, data=data, total_leave=total_leave,
                            leave_list=leave_list, leave_date=leave_status_date,username=username, department=department,
                            increment_data=increment_list, contract_data=contract_list, effective_dates=effective_dates)
@@ -606,7 +611,6 @@ def save_data(empid, username):
                         }
                     }
                     contract_increment_data.update(new_data)
-
                 elif key.startswith(f'new_ctr_'):
                     new_data = {f'contract_0{len(contract_list) + 1}':
                         {
@@ -626,25 +630,35 @@ def save_data(empid, username):
             print(inc_key[-1])
 
             contract_increment_data[inc_key[-1]]['empid'] = empid
-            contract_increment_data[inc_key[-1]]['incrementDate']=datetime.datetime.today().date()
+            contract_increment_data[inc_key[-1]]['incrementDate']= (datetime.datetime.today().date()).strftime("%Y-%m-%d")
 
             doc_ref = db.collection(companyname).document('increments')
             data = contract_increment_data[inc_key[-1]]
             print(data)
+            print(type(data))
             doc_ref.update({'increments': firestore.ArrayUnion([data])})
         elif "increment_01" in contract_increment_data :
             last_key = list(contract_increment_data.keys())[-1]
             last_record = contract_increment_data[last_key]
+            print(last_record['effectiveDate'])
             effective_date = datetime.datetime.strptime(last_record['effectiveDate'], '%Y-%m-%d').date()
             today = datetime.datetime.today().date()
             print(today,effective_date)
 
             if effective_date <= today:
+                doc_ref = db.collection(companyname).document('increments')
+                increments = db.collection('alian_software').document('increments').get().to_dict()['increments']
+
                 db.collection(companyname).document('employee').collection('employee').document(empid).update({'salary':round(float(last_record['total']))* 12})
                 print("updated")
             else:
+                doc_ref = db.collection(companyname).document('increments')
+                increments = doc_ref.get().to_dict()['increments']
                 inc_key = list(contract_increment_data.keys())
-                contract_increment_data[inc_key[-1]]['updateIncrementDate'] = datetime.datetime.today().date()
+                contract_increment_data[inc_key[-1]]['updateIncrementDate'] = str(datetime.datetime.today().date())
+                print(contract_increment_data)
+                doc_ref = db.collection(companyname).document('increments')
+                doc_ref.update({'increments': firestore.ArrayUnion([contract_increment_data[inc_key[-1]]])})
                 print("update date")
 
 
