@@ -549,47 +549,53 @@ def save_data(empid, username):
 
     # # INCREMENT DATA
     increment_data = []
+    contract_data = []
     personal_data = personal_data_future.result()
     for key, value in personal_data.items():
         if key.startswith('increment'):
             increment_data.append({key: value})
-
-    # increment_data= sorted(increment_data, key=lambda x: x[1][list(x[1].keys())[0]]['effectiveDate'])
-    increment_list = [(index, content) for index, content in enumerate(increment_data)]
-    # increment_list = sorted(increment_list, key=lambda x: x[1][list(x[1].keys())[0]]['effectiveDate'])
-    print(increment_list)
-
-    # # CONTRACT DATA
-    contract_data = []
-    personal_data = personal_data_future.result()
-    for key, value in personal_data.items():
-        if key.startswith('contract'):
+        elif key.startswith('contract'):
             contract_data.append({key: value})
+
+    increment_list = [(index, content) for index, content in enumerate(increment_data)]
+    print(increment_list)
+    increment_keys = [next(iter(item[1])) for item in increment_list]
+    increment_keys.sort()
+    print(increment_keys)
     contract_list = [(index, content) for index, content in enumerate(contract_data)]
+    contract_keys = [next(iter(item[1])) for item in contract_list]
+    contract_keys.sort()
+
 
     if request.method == 'POST':
         data = request.form.to_dict()
         contract_increment_data = {}
-        for n in range(1, 10):
+        for n in range(0, max(len(increment_keys),len(contract_keys))+1):
             for key, value in data.items():
-                if key.startswith(f'increment_0{n}'):
-                    new_data = {f'increment_0{n}':
-                            {
-                                f'grossSalary': data[f'increment_0{n}_grossSalary'],
-                                f'jobPosition': data[f'increment_0{n}_jobPosition'],
-                                f'effectiveDate': data[f'increment_0{n}_effectiveDate'],
-                                f'increment': data[f'increment_0{n}_increment'],
-                                f'incrementType': data[f'increment_0{n}_increment_type'],
-                                f'total': data[f'increment_0{n}_total'],
-                                f'note': data[f'increment_0{n}_note']}
-                        }
-                    contract_increment_data.update(new_data)
+                if len(increment_keys)>n:
+                    if key.startswith(increment_keys[n]):
+                        new_data = { increment_keys[n]:
+                                {
+                                    f'grossSalary': data[f'{increment_keys[n]}_grossSalary'],
+                                    f'jobPosition': data[f'{increment_keys[n]}_jobPosition'],
+                                    f'effectiveDate': data[f'{increment_keys[n]}_effectiveDate'],
+                                    f'increment': data[f'{increment_keys[n]}_increment'],
+                                    f'incrementType': data[f'{increment_keys[n]}_increment_type'],
+                                    f'total': data[f'{increment_keys[n]}_total'],
+                                    f'note': data[f'{increment_keys[n]}_note']}
+                            }
+                        contract_increment_data.update(new_data)
                 elif key.startswith(f'new_inc_'):
-
                     if data[f'new_inc_grossSalary'] != "" and data[f'new_inc_jobPosition'] != "":
-                        print(data)
+                        key=0
+                        if len(increment_keys)>0:
+                            key=int(increment_keys[-1][-2:])
+                        if key<9:
+                            key=f'0{key+1}'
+                        else:
+                            key=key+1
 
-                        new_data = {f'increment_0{len(increment_list) + 1}':
+                        new_data = {f'increment_{key}':
 
                             {
                                 f'grossSalary': data[f'new_inc_grossSalary'],
@@ -601,18 +607,26 @@ def save_data(empid, username):
                                 f'note': data[f'new_inc_note']}
                         }
                         contract_increment_data.update(new_data)
-
-                elif key.startswith(f'contract_0{n}'):
-                    new_data = {f'contract_0{n}':
-                        {
-                            f'contractDate': data[f'contract_0{n}_contractDate'],
-                            f'contractPeriod': data[f'contract_0{n}_contractPeriod'],
-                            f'nextContractDate': data[f'contract_0{n}_nextContractDate']
+                elif len(contract_keys)>n:
+                    if key.startswith(contract_keys[n]):
+                        new_data = {contract_keys[n]:
+                            {
+                                f'contractDate': data[f'{contract_keys[n]}_contractDate'],
+                                f'contractPeriod': data[f'{contract_keys[n]}_contractPeriod'],
+                                f'nextContractDate': data[f'{contract_keys[n]}_nextContractDate']
+                            }
                         }
-                    }
-                    contract_increment_data.update(new_data)
+                        contract_increment_data.update(new_data)
                 elif key.startswith(f'new_ctr_'):
-                    new_data = {f'contract_0{len(contract_list) + 1}':
+                    key = 0
+                    if len(contract_keys) > 0:
+                        key = int(contract_keys[-1][-2:])
+                    if key < 9:
+                        key = f'0{key + 1}'
+                    else:
+                        key = key + 1
+
+                    new_data = {f'contract_{key}':
                         {
                             f'contractDate': data[f'new_ctr_contractDate'],
                             f'contractPeriod': data[f'new_ctr_contractPeriod'],
@@ -660,9 +674,6 @@ def save_data(empid, username):
                 doc_ref = db.collection(companyname).document('increments')
                 doc_ref.update({'increments': firestore.ArrayUnion([contract_increment_data[inc_key[-1]]])})
                 print("update date")
-
-
-
 
     return redirect(url_for('employee_profile', id=empid, username=username))
 
@@ -911,10 +922,6 @@ def save_edited_data():
 
     # Return a response to the client
     return redirect(url_for('salary_sheet_view', username=username, salid=salid))
-
-
-
-
 
 @app.route('/<username>/set_status/<salid>/<status>')
 def set_status(username, salid, status):
