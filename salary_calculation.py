@@ -128,7 +128,8 @@ class SalaryCalculation():
                 'statutoryBonus': statutory_bns, 'grossSalary': gross_salary, 'epfo': epfo,
                 'dedOutstandingAdjustment': ded_outstanding_adjustment, 'pt': pt, 'tds': tds,
                 'otherDeduction': other_deduction, 'leaveDeduction': leave_deduction, 'totalDeduction': total_deduction,
-                'netSalary': net_salary, 'month': month, 'year': year
+                'netSalary': net_salary, 'month': month, 'year': year, 'cosecID': emp_data['cosecID'], 'WO': 0,
+                'UL': 0, 'Auth_OT': "00:00", 'WrkHrs': "00:00", 'CL': 0, 'PL': 0, 'SL': 0
             }
 
             users_ref = self.db.collection(self.companyname).document('employee').collection('employee').document(empid)

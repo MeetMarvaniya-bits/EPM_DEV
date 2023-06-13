@@ -58,7 +58,15 @@ def read_excel_rows(file):
     #     print("Invalid data format. Unable to find header row or attendance data.")
     #     exit()
 
-    column_headers_personal = data[header_row_index]
+    original_list = data[header_row_index]
+
+    column_headers_personal = []
+
+    for item in original_list:
+        modified_item = item.replace('-', '_')
+        column_headers_personal.append(modified_item)
+
+    print(column_headers_personal)
 
     column_headers_for_hours = data[attendance_start_index]
 

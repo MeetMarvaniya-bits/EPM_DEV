@@ -60,7 +60,7 @@
 
 
             <!-- Table Headings  -->
-            <table class="table table-bordered" style="border: 2px solid black !important;">
+            <table class="table table-bordered table-hover" style="border: 2px solid black !important;">
                 <thead class="text-center center align-baseline">
                 <tr class="border-bottom" scope="row" style="border: 2px solid !important;">
                     <th scope="col" rowspan="2" class="align-middle" style="background-color: #DFE1E6;">Employee Name
@@ -70,10 +70,12 @@
                     </th>
                     <th scope="col rwo-2" rowspan="2" class="align-middle" style="background-color: #DFE1E6;"> LWP
                     </th>
-                    <th scope="row" colspan="8" class="align-middle" style="background-color: #DCFDD9;">Earning</th>
+                    <th scope="col rwo-2" rowspan="2" class="align-middle" style="background-color: #DFE1E6;"> Overtime Hours
+                    </th>
+                    <th scope="row" colspan="10" class="align-middle" style="background-color: #DCFDD9;">Earning</th>
                     <th scope="row col" rowspan="2" class="align-middle" style="background-color: #DFE1E6;">Gross Salary
                     </th>
-                    <th scope="col-6" colspan="6" class="align-middle" style="background-color: #FDD9DB;">Deduction</th>
+                    <th scope="col-6" colspan="7" class="align-middle" style="background-color: #FDD9DB;">Deduction</th>
                     <th scope="row-2 col" rowspan="2" class="align-middle" style="background-color: #DFE1E6;">Net
                         Payable
                     </th>
@@ -88,12 +90,15 @@
                     <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Arrears</th>
                     <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Outstanding Adjustments</th>
                     <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Statutory Bonus</th>
+                    <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Overtime Amount</th>
+                    <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Total Salary</th>
                     <th scope="col" class="align-middle" style="background-color: #FDD9DB;">EPFO</th>
                     <th scope="col" class="align-middle" style="background-color: #FDD9DB;">PT</th>
                     <th scope="col" class="align-middle" style="background-color: #FDD9DB;">TDS</th>
                     <th scope="col" class="align-middle" style="background-color: #FDD9DB;">Leave Deduction</th>
                     <th scope="col" class="align-middle" style="background-color: #FDD9DB;">Other Deduction</th>
                     <th scope="col" class="align-middle" style="background-color: #FDD9DB;">Outstanding Adjustment</th>
+                    <th scope="col" class="align-middle" style="background-color: #FDD9DB;">Total Deduction</th>
                 </tr>
                 </thead>
                 <tbody style="background-color: #ffffff;">
@@ -101,11 +106,12 @@
                 {% for key, data in datas.items() %}
                 <tr class="ttr text-center">
                     <th scope="col">{{ data.employeeName }}</th>
-                    <th scope="col">00:00</th>
+                    <th scope="col">{{ data.WrkHrs }}</th>
                     <td scope="col">
                         <input type="text" class="form-control text-center" value='{{ data.lwp }}' name="{{ key }}_lwp"
                                id="{{ key }}_lwp">
                     </td>
+                    <td scope="col">{{ data.Auth_OT }}</td>
                     <td scope="col">
                         <input type="text" class="form-control text-center" value='{{ data.basic }}'
                                name="{{ key }}_basic"
@@ -140,6 +146,14 @@
                                id="{{ key }}_statutoryBonus" name="{{ key }}_statutoryBonus">
                     </td>
                     <td scope="col">
+                        <input type="text" class="form-control text-center" value='{{ data.statutoryBonus }}'
+                               id="{{ key }}_statutoryBonus" name="{{ key }}_statutoryBonus">
+                    </td>
+                    <td scope="col">
+                        <input type="text" class="form-control text-center" value='{{ data.statutoryBonus }}'
+                               id="{{ key }}_statutoryBonus" name="{{ key }}_statutoryBonus">
+                    </td>
+                    <td scope="col">
                         <input type="text" class="form-control text-center" value='{{ data.grossSalary }}'
                                id="{{ key }}_grossSalary" name="{{ key }}_grossSalary" readonly>
                     </td>
@@ -166,6 +180,10 @@
                     <td scope="col">
                         <input type="text" class="form-control text-center" value='{{ data.dedOutstandingAdjustment }}'
                                id="{{ key }}_dedOutstandingAdjustment" name="{{ key }}_dedOutstandingAdjustment">
+                    </td>
+                    <td scope="col">
+                        <input type="text" class="form-control text-center" value='{{ data.netSalary }}'
+                               id="{{ key }}_netSalary" name="{{ key }}_netSalary" readonly>
                     </td>
                     <td scope="col">
                         <input type="text" class="form-control text-center" value='{{ data.netSalary }}'
