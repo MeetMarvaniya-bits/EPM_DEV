@@ -551,7 +551,7 @@ def save_data(empid, username):
         if key.startswith('increment'):
             increment_data.append({key: value})
 
-    increment_data= sorted(increment_data, key=lambda x: x[1][list(x[1].keys())[0]]['effectiveDate'])
+    # increment_data= sorted(increment_data, key=lambda x: x[1][list(x[1].keys())[0]]['effectiveDate'])
     increment_list = [(index, content) for index, content in enumerate(increment_data)]
     # increment_list = sorted(increment_list, key=lambda x: x[1][list(x[1].keys())[0]]['effectiveDate'])
     print(increment_list)
@@ -581,10 +581,6 @@ def save_data(empid, username):
                                 f'note': data[f'increment_0{n}_note']}
                         }
                     contract_increment_data.update(new_data)
-
-
-
-
                 elif key.startswith(f'new_inc_'):
 
                     if data[f'new_inc_grossSalary'] != "" and data[f'new_inc_jobPosition'] != "":
