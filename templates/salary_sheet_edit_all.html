@@ -242,6 +242,7 @@ function updateActionUrl() {
 </script>
 
 
+<!--Script For Automated Calculation of Edit data -->
 <script>
         // Do all your JavaScript in a separate JavaScript section
 var inputs = Array.prototype.slice.call(document.querySelectorAll("td > input"));
@@ -251,6 +252,11 @@ inputs.forEach(function(input){
     var key = input.getAttribute("id").split("_")[0];
     var basic = document.getElementById(key + "_basic").value;
     var lwp = document.getElementById(key + "_lwp").value;
+    var otherAllowance = document.getElementById(key + "_otherAllowance").value;
+    var incentive = document.getElementById(key + "_incentive").value;
+    var arrears = document.getElementById(key + "_arrears").value;
+    var grsOutstandingAdjustment = document.getElementById(key + "_grsOutstandingAdjustment").value;
+    var statutoryBonus = document.getElementById(key + "_statutoryBonus").value;
     var hraPercentage = {{ salary_data['hrapercentage'] }};
     var daPercentage = {{ salary_data['dapercentage'] }};
     var workingDays = {{ working_days }};
@@ -262,14 +268,14 @@ inputs.forEach(function(input){
       parseInt(basic, 10) +
       parseInt(hra, 10) +
       parseInt(da, 10) +
-      parseInt(document.getElementById(key + "_otherAllowance").value, 10) +
-      parseInt(document.getElementById(key + "_incentive").value, 10) +
-      parseInt(document.getElementById(key + "_arrears").value, 10) +
-      parseInt(document.getElementById(key + "_grsOutstandingAdjustment").value, 10) +
-      parseInt(document.getElementById(key + "_statutoryBonus").value, 10)
+      parseInt(otherAllowance, 10) +
+      parseInt(incentive, 10) +
+      parseInt(arrears, 10) +
+      parseInt(grsOutstandingAdjustment, 10) +
+      parseInt(statutoryBonus, 10)
     ).toFixed(2);
     var leaveDeduction = (
-      parseInt(lwp, 10) * (parseInt(grossSalary, 10) / workingDays) * deductionPercentage
+      parseInt(lwp, 10) * (( parseInt(basic, 10) + parseInt(hra, 10) + parseInt(da, 10) + parseInt(otherAllowance, 10)) / workingDays) * deductionPercentage
     ).toFixed(2);
     var netSalary = (
       parseInt(grossSalary, 10) -

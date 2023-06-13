@@ -720,7 +720,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const formData = new FormData();
             formData.append('file', file);
 
-            fetch('/upload', {
+            fetch('/{{username}}/upload/{{salid}}', {
                 method: 'POST',
                 body: formData
             })

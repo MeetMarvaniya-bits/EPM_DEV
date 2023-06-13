@@ -1,7 +1,6 @@
-
 import datetime
 from concurrent.futures import ThreadPoolExecutor
-from flask import Flask, render_template, request, redirect, url_for, session, send_file, Response, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, send_file, Response
 import io
 from leave_manage import Leavemanage
 from firebase_admin import credentials
@@ -535,7 +534,6 @@ def personal_data_update(username, id):
         update_obj.update_personal_info(companyname, form, id)
     return redirect(url_for('employee_profile', id=id, username=username))
 
-""" Update/Add Data in Contract And Increment """
 
 @app.route('/save_data/<empid>/<username>', methods=['POST'])
 def save_data(empid, username):
@@ -780,14 +778,24 @@ def salary(username):
 
 
 
-@app.route('/upload', methods=['POST'])
-def upload():
+@app.route('/<username>/upload/<salid>', methods=['POST'])
+def upload(username,salid):
     ''' IMPORT EXCEL SHEET FOR SALARY DATA '''
-    username = 'Admin'
+    print(salid)
     if request.method == 'POST':
         file = request.files['file']
-        data = read_excel_leave_data.read_excel_rows(file)
-        print(data)
+        all_data = read_excel_leave_data.read_excel_rows(file)
+        # GET ALL EMPLOYEE USER ID FROM EXCEL SHEET
+        for data in all_data:
+            # print(data)
+            new_data = db.collection(companyname).document(u'employee').collection('employee').where('cosecID', '==', data["User ID"]).get()
+            if len(new_data) != 0:
+                for details in new_data:
+                    document_name = details.to_dict()['userID']
+                    print(dict(data))
+                    # db.collection(companyname).document(u'employee').collection('employee').document(document_name).collection('salaryslips').document(salid).update(dict(data))
+                    # print(details.to_dict())
+                print(data)
         return redirect(url_for('salary', username=username))
     return redirect(url_for('salary', username=username))
 
@@ -795,9 +803,6 @@ def upload():
 
 @app.route('/<username>/salarysheetview/<salid>', methods=['GET', 'POST'])
 def salary_sheet_view(username, salid):
-
-
-
     # month = int(salid[5:])
 
     if request.method == 'POST':
