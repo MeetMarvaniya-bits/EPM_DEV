@@ -579,10 +579,6 @@ def save_data(empid, username):
                                 f'note': data[f'increment_0{n}_note']}
                         }
                     contract_increment_data.update(new_data)
-
-
-
-
                 elif key.startswith(f'new_inc_'):
 
                     if data[f'new_inc_grossSalary'] != "" and data[f'new_inc_jobPosition'] != "":
