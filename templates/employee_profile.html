@@ -298,6 +298,7 @@
                                                                                                                                            placeholder="Select">
                                                                                                                                 </div>
                                                                                                                                 <span class="pmd-textfield-focused"></span>
+                                                                                                                                <p id="dojerror" style="color: red;"></p>
                                                                                                                             </div>
                                                                                                                             <br>
                                                                                                                         </div>
@@ -3177,6 +3178,25 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
 </div>
 
 </div>
+
+
+<script>
+    function compareDates() {
+      var firstDate = new Date(document.getElementById("doj").value);
+      var secondDate = new Date(document.getElementById("inctextBox0_3").value);
+
+      if (firstDate > secondDate) {
+        document.getElementById("dojerror").textContent = "Error: The first date cannot be greater than the second date.";
+        console.log("Error: The first date cannot be greater than the second date.")
+        return false; // Prevent form submission
+      } else {
+        document.getElementById("dojerror").textContent = "";
+        console.log("Error: The first date  greater than the second date.")
+
+        return true; // Allow form submission
+      }
+    }
+  </script>
 
 
 
