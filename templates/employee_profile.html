@@ -313,6 +313,7 @@
                                                                                                                                            name="doj"
                                                                                                                                            id="doj"
                                                                                                                                            value=""
+                                                                                                                                           onchange="compareDates()"
                                                                                                                                            placeholder="Select">
                                                                                                                                 </div>
                                                                                                                                 <span class="pmd-textfield-focused"></span>
@@ -2056,7 +2057,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                           </tr>
                                                                                           <tr>
                                                                                               <td colspan="6">
-                                                                                                  <a href="#" id="addNewDataLinkCtr">
+                                                                                                  <a  id="addNewDataLinkCtr">
                                                                                                   <span class="hidden">+ ADD NEW DATA</span></a></td>
                                                                                           </tr>
                                                                                           </tbody>
@@ -2097,7 +2098,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                           <th scope="col">Gross Salary (₹)</th>
                                                                                           <th scope="col">Job Position</th>
                                                                                           <th scope="col">Effective Date</th>
-                                                                                          <th scope="col" onclick="toggleIncrementType()">Increment</th>
+                                                                                          <th scope="col">Increment</th>
                                                                                           <th scope="col">Total (₹)</th>
                                                                                           <th scope="col">Note</th>
                                                                                           <th></th>
@@ -2118,7 +2119,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
 <td scope="col">
   <p id="incinformation{{ index }}_3">{{ content[key]['effectiveDate'] }}</p>
   <span id="error" style="color: red;"></span>
-  <input type="date" id="inctextBox{{ index }}_3" name="{{key}}_effectiveDate"  min="{% if key == 'increment_01' %}{{data['personal_data']['doj']}}{% else %}{{effective_dates[index-1]}}{% endif %}" class="hidden form-control-sm storedDate" size="8" >
+  <input type="date" id="inctextBox{{ index }}_3" name="{{key}}_effectiveDate"  min="{% if key == 'increment_01' %}{{data['personal_data']['doj']}}{% else %}{{effective_dates[index-1]}}{% endif %}" class="hidden form-control-sm storedDate" size="8" required>
 </td>
 <td scope="col" class="d-flex">
   <div class="icon-box">
@@ -2182,7 +2183,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                           </td>
                                                                                           <td scope="col">
                                                                                             <p id="incinformation10_3">
-                                                                                              <input type="date" id="inctextBox10_3" name="new_inc_effectiveDate"   min="{% if key == 'increment_01' %}{{data['personal_data']['doj']}}{% else %}{{effective_dates[index]}}{% endif %}" class="form-control-sm storedDate" size="8" onclick="validateDate()">
+                                                                                              <input type="date" id="inctextBox10_3" name="new_inc_effectiveDate"   min="{% if key == 'increment_01' %}{{data['personal_data']['doj']}}{% else %}{{effective_dates[index]}}{% endif %}" class="form-control-sm storedDate" size="8"  onchange="compareDates()" onclick="validateDate()" required>
                                                                                               <script> console.log("{{effective_dates[index]}}")</script>
                                                                                             </p>
                                                                                           </td>
@@ -2203,7 +2204,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                           </td>
                                                                                         </tr>
                                                                                         <tr>
-                                                                                          <td colspan="6"><a class="hidden" href="#" id="addNewDataLink">+ ADD NEW DATA</a></td>
+                                                                                          <td colspan="6"><a class="hidden"  id="addNewDataLink">+ ADD NEW DATA</a></td>
                                                                                         </tr>
                                                                                       </tbody>
                                                                                     </table>
@@ -3174,16 +3175,12 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                             </tr>
                                                                                             {% endif %}
                                                                                             {% endfor%}
-
-
                                                                                             <tbody>
                                                                                         </table>
 
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-
-
                                                                         </div>
 
                                                                     </div>
@@ -3220,26 +3217,19 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
     function compareDates() {
       var firstDate = new Date(document.getElementById("doj").value);
       var secondDate = new Date(document.getElementById("inctextBox0_3").value);
-
-      if (firstDate > secondDate) {
+      var additionalDate = new Date(document.getElementById("incinformation0_3").textContent);
+      if (firstDate > secondDate || firstDate > additionalDate) {
         document.getElementById("dojerror").textContent = "Error: The first date cannot be greater than the second date.";
-        console.log("Error: The first date cannot be greater than the second date.")
+        console.log("The  date of joining cannot be greater than the first increment date.");
         return false; // Prevent form submission
       } else {
         document.getElementById("dojerror").textContent = "";
-        console.log("Error: The first date  greater than the second date.")
+        console.log("Error: The first date  greater than the second date.");
 
         return true; // Allow form submission
       }
     }
   </script>
-
-
-
-
-
-
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
       // Get all the increment dropdown elements
@@ -3974,49 +3964,6 @@ return daysDiff;
 
 
     </script>
-
-
-
-
-
-
-<!--Script For Increment Type Rs/Percentage-->
-<script>
-    var incrementType = 'INR';
-
-function toggleIncrementType() {
-  var incrementCells = document.querySelectorAll("#tableBody td:nth-child(4) p");
-
-  if (incrementType === 'INR') {
-    for (var i = 0; i < incrementCells.length; i++) {
-      var incrementValue = parseFloat(incrementCells[i].textContent);
-      var grossSalary = parseFloat(incrementCells[i].parentNode.parentNode.querySelector("td:nth-child(1) p").textContent);
-      var incrementPercentage = (incrementValue / grossSalary) * 100;
-
-      incrementCells[i].textContent = incrementPercentage.toFixed(2) + '%';
-    }
-
-    incrementType = 'Percentage';
-  } else {
-    for (var i = 0; i < incrementCells.length; i++) {
-      var incrementPercentage = parseFloat(incrementCells[i].textContent);
-      var grossSalary = parseFloat(incrementCells[i].parentNode.parentNode.querySelector("td:nth-child(1) p").textContent);
-      var incrementValue = (incrementPercentage / 100) * grossSalary;
-
-      incrementCells[i].textContent = incrementValue.toFixed(2);
-    }
-
-    incrementType = 'INR';
-  }
-}
-  </script>
-
-
-
-
-
-
-
 <!-- script for editing priviously added increments -->
 
 

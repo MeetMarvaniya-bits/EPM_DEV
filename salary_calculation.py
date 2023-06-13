@@ -12,9 +12,6 @@ class SalaryCalculation():
     def generate_salary(self, workingday):
 
         working_days = workingday
-
-        current_month = datetime.datetime.now().month
-
         current_month =datetime.datetime.today().month
 
         if current_month == 1:
