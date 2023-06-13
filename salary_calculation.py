@@ -13,6 +13,8 @@ class SalaryCalculation():
 
         working_days = workingday
 
+        current_month = datetime.datetime.now().month
+
         current_month =datetime.datetime.today().month
 
         if current_month == 1:
@@ -21,7 +23,6 @@ class SalaryCalculation():
             month = current_month - 1
 
         year = datetime.datetime.now().year
-
         if current_month == 1:
             year = year - 1
         else:
