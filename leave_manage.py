@@ -32,7 +32,6 @@ class Leavemanage():
 
     def take_leave(self, ref_obj, data=None):
         if data == None:
-            print('Error')
         else:
             data_dict = {}
             leaves = ref_obj.document('total_leaves').get().to_dict()
@@ -51,7 +50,6 @@ class Leavemanage():
                 })
             
             leave_id = len(ref_obj.get())
-            print(data_dict)
             if leave_id < 9:
                 doc_name = f'leave00{leave_id}'
             else:
@@ -60,7 +58,6 @@ class Leavemanage():
 
     def take_leave_edit(self, ref_obj, data=None):
         if data == None:
-            print('Error')
         else:
             data_dict = data
             leaves = ref_obj.document('total_leaves').get().to_dict()
@@ -74,7 +71,6 @@ class Leavemanage():
                 })
 
             leave_id = len(ref_obj.get())
-            print(data_dict)
             doc_name = (f'leave00{leave_id}')
             data = ref_obj.document(doc_name).set(data_dict)
 

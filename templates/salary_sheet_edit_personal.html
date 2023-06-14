@@ -95,23 +95,23 @@
                 <label name="" ></label>
                 <th scope="col">{{ data[id]["employeeName"] }}</th>
                 <th scope="col">{{ data[id]["WrkHrs"] }}</th>
-                <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["lwp"] }}' name="lwp" id="lwp"></td>
-                <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["basic"] }}' name="basic" id="basic"readonly></td>
-                <td scope="col"><input type="text" class="form-control text-center"  name="hra" id="hra" value='{{ data[id]["hra"] }}'readonly ></td>
-                <th scope="col"><input type="text" class="form-control text-center  " value='{{ data[id]["da"] }}' name="da" id="da"  readonly></th>
-                <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["otherAllowance"] }}' id="otherAllowance" name="otherAllowance"></td>
-                <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["incentive"] }}' id="incentive" name="incentive"></td>
-                <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["arrears"] }}' id="arrears" name="arrears"></td>
-                <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["grsOutstandingAdjustment"] }}' id="grsOutstandingAdjustment" name="grsOutstandingAdjustment">
-                <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["statutoryBonus"] }}' id="statutoryBonus" name="statutoryBonus"></td>
-                <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["grossSalary"] }}' id="grossSalary" name="grossSalary" readonly></td>
-                <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["epfo"] }}' id="epfo" name="epfo" readonly></td>
-                <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["pt"] }}' id="pt" name="pt" readonly></td>
-                <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["tds"] }}' id="tds" name="tds"></td>
-                <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["leaveDeduction"] }}' id="leaveDeduction" name="leaveDeduction"></td>
-                <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["otherDeduction"] }}' id="otherDeduction" name="otherDeduction"></td>
-                <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["dedOutstandingAdjustment"] }}' id="dedOutstandingAdjustment" name="dedOutstandingAdjustment"></td>
-                <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["netSalary"] }}' id="netSalary" name="netSalary"  readonly></td>
+                <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["lwp"] }}' name="lwp" id="lwp" onkeypress="onlyNumber(event)"></td>
+                <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["basic"] }}' name="basic" id="basic"readonly onkeypress="onlyNumber(event)"></td>
+                <td scope="col"><input type="text" class="form-control text-center"  name="hra" id="hra" value='{{ data[id]["hra"] }}'readonly onkeypress="onlyNumber(event)"></td>
+                <th scope="col"><input type="text" class="form-control text-center  " value='{{ data[id]["da"] }}' name="da" id="da"  readonly onkeypress="onlyNumber(event)"></th>
+                <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["otherAllowance"] }}' id="otherAllowance" name="otherAllowance" onkeypress="onlyNumber(event)"></td>
+                <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["incentive"] }}' id="incentive" name="incentive" onkeypress="onlyNumber(event)"></td>
+                <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["arrears"] }}' id="arrears" name="arrears" onkeypress="onlyNumber(event)"></td>
+                <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["grsOutstandingAdjustment"] }}' id="grsOutstandingAdjustment" name="grsOutstandingAdjustment" onkeypress="onlyNumber(event)">
+                <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["statutoryBonus"] }}' id="statutoryBonus" name="statutoryBonus" onkeypress="onlyNumber(event)"></td>
+                <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["grossSalary"] }}' id="grossSalary" name="grossSalary" readonly onkeypress="onlyNumber(event)"></td>
+                <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["epfo"] }}' id="epfo" name="epfo" readonly onkeypress="onlyNumber(event)"></td>
+                <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["pt"] }}' id="pt" name="pt" readonly onkeypress="onlyNumber(event)"></td>
+                <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["tds"] }}' id="tds" name="tds" onkeypress="onlyNumber(event)"></td>
+                <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["leaveDeduction"] }}' id="leaveDeduction" name="leaveDeduction" onkeypress="onlyNumber(event)"></td>
+                <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["otherDeduction"] }}' id="otherDeduction" name="otherDeduction" onkeypress="onlyNumber(event)"></td>
+                <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["dedOutstandingAdjustment"] }}' id="dedOutstandingAdjustment" name="dedOutstandingAdjustment" onkeypress="onlyNumber(event)"></td>
+                <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["netSalary"] }}' id="netSalary" name="netSalary"  readonly onkeypress="onlyNumber(event)"></td>
                 <td>
                         <button class="btn border-1 btn-secondary"aria-haspopup="true" type="submit"
                                 aria-expanded="false"
@@ -127,47 +127,92 @@
     </div>
 </div>
 
-    <script>
-        // Do all your JavaScript in a separate JavaScript section
-    var basic = (document.getElementById("basic"));
-    var hra = (document.getElementById("hra"));
-    var lwp = (document.getElementById("lwp"));
-    var da = (document.getElementById("da"));
-    var otherAllowance = (document.getElementById("otherAllowance"));
-    var incentive = (document.getElementById("incentive"));
-    var arrears = (document.getElementById("arrears"));
-    var grsOutstandingAdjustment = (document.getElementById("grsOutstandingAdjustment"));
-    var statutoryBonus = (document.getElementById("statutoryBonus"));
-    var grossSalary = (document.getElementById("grossSalary"));
-    var epfo = (document.getElementById("epfo"));
-    var pt = (document.getElementById("pt"));
-    var tds = (document.getElementById("tds"));
-    var leaveDeduction = (document.getElementById("leaveDeduction"));
-    var otherDeduction = (document.getElementById("otherDeduction"));
-    var dedOutstandingAdjustment = (document.getElementById("dedOutstandingAdjustment"));
-    var netSalary = (document.getElementById("netSalary"));
 
-
+<script>
+    // Do all your JavaScript in a separate JavaScript section
+    var basic = document.getElementById("basic");
+    var hra = document.getElementById("hra");
+    var lwp = document.getElementById("lwp");
+    var da = document.getElementById("da");
+    var otherAllowance = document.getElementById("otherAllowance");
+    var incentive = document.getElementById("incentive");
+    var arrears = document.getElementById("arrears");
+    var grsOutstandingAdjustment = document.getElementById("grsOutstandingAdjustment");
+    var statutoryBonus = document.getElementById("statutoryBonus");
+    var grossSalary = document.getElementById("grossSalary");
+    var epfo = document.getElementById("epfo");
+    var pt = document.getElementById("pt");
+    var tds = document.getElementById("tds");
+    var leaveDeduction = document.getElementById("leaveDeduction");
+    var otherDeduction = document.getElementById("otherDeduction");
+    var dedOutstandingAdjustment = document.getElementById("dedOutstandingAdjustment");
+    var netSalary = document.getElementById("netSalary");
 
     var inputs = Array.prototype.slice.call(document.querySelectorAll("td > input"));
 
-    inputs.forEach(function(input){
+    inputs.forEach(function(input) {
+        input.addEventListener("keyup", function() {
+            // Function to handle blank or none values
+            function handleEmptyValue(value) {
+                return value === "" || value === null || value === undefined ? 0 : parseFloat(value);
+            }
 
-      input.addEventListener("keyup", function(){
-        // Always supply the second argument to parseInt() (the radix) so you
-        // dont' get non-base 10 answers.
-        console.log(basic.value)
-        hra.value = (parseInt(hra.value, 10)).toFixed(2);
-        da.value = (parseInt(da.value, 10)).toFixed(2);
-        grossSalary.value = (parseInt(basic.value, 10) +  parseInt(hra.value, 10)+ parseInt(da.value, 10)+ parseInt(otherAllowance.value, 10)
-        + parseInt(incentive.value, 10)+ parseInt(arrears.value, 10)+parseInt(grsOutstandingAdjustment.value, 10) +parseInt(statutoryBonus.value, 10)).toFixed(2);
-        leaveDeduction.value=(parseInt(lwp.value, 10)*( (parseInt(basic.value, 10) + parseInt(hra.value, 10) + parseInt(da.value, 10) + parseInt(otherAllowance.value, 10)) / {{ working_days}} ) * {{salary_data['deductionpercentage']}}).toFixed(2);
-        netSalary.value = (parseInt(grossSalary.value, 10) - parseInt(epfo.value, 10) - parseInt(pt.value, 10) - parseInt(tds.value, 10) - parseInt(leaveDeduction.value, 10)
-        - parseInt(otherDeduction.value, 10)- parseInt(dedOutstandingAdjustment.value, 10)).toFixed(2);
+            var lwpValue = handleEmptyValue(lwp.value);
+            var basicValue = handleEmptyValue(basic.value);
+            var hraValue = handleEmptyValue(hra.value);
+            var daValue = handleEmptyValue(da.value);
+            var otherAllowanceValue = handleEmptyValue(otherAllowance.value);
+            var incentiveValue = handleEmptyValue(incentive.value);
+            var arrearsValue = handleEmptyValue(arrears.value);
+            var grsOutstandingAdjustmentValue = handleEmptyValue(grsOutstandingAdjustment.value);
+            var statutoryBonusValue = handleEmptyValue(statutoryBonus.value);
+            var epfoValue = handleEmptyValue(epfo.value);
+            var ptValue = handleEmptyValue(pt.value);
+            var tdsValue = handleEmptyValue(tds.value);
+            var leaveDeductionValue = handleEmptyValue(leaveDeduction.value);
+            var otherDeductionValue = handleEmptyValue(otherDeduction.value);
+            var dedOutstandingAdjustmentValue = handleEmptyValue(dedOutstandingAdjustment.value);
 
-      });
+            hra.value = (hraValue);
+            da.value = (daValue);
+            grossSalary.value = (
+                basicValue +
+                hraValue +
+                daValue +
+                otherAllowanceValue +
+                incentiveValue +
+                arrearsValue +
+                grsOutstandingAdjustmentValue +
+                statutoryBonusValue
+            ).toFixed(2);
+            leaveDeduction.value = (
+                lwpValue * ((basicValue + hraValue + daValue + otherAllowanceValue) / {{working_days}}) * 1
+            ).toFixed(2);
+            netSalary.value = (
+                grossSalary.value -
+                epfoValue -
+                ptValue -
+                tdsValue -
+                leaveDeductionValue -
+                otherDeductionValue -
+                dedOutstandingAdjustmentValue
+            ).toFixed(2);
+        });
     });
-    </script>
+</script>
+
+
+
+<!--Script for only number input -->
+<script>
+    const onlyNumber = (event) => {
+        let keyCode = event.keyCode ? event.keyCode : event.which;
+        if ((keyCode < 48 || keyCode > 57) && keyCode !== 46) {
+            event.preventDefault();
+        }
+    };
+</script>
+
 
 
 {% endblock %}

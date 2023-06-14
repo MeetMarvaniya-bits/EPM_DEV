@@ -41,10 +41,6 @@ class SalaryCalculation():
                 employee_list.update({doc.id: doc.to_dict()})
             else:
                 pass
-
-        for employee in employee_list:
-            print(employee)
-
         for key, value in employee_list.items():
 
             empid = key

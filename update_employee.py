@@ -26,7 +26,6 @@ class Update_information():
     def update_personal_info_concurrent(self,companyname, data_list):
         with concurrent.futures.ThreadPoolExecutor() as executor:
             futures = [executor.submit(self.update_personal_info,companyname, data, id) for data, id in data_list]
-            print(futures)
             for future in concurrent.futures.as_completed(futures):
                 result = future.result()
 

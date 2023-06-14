@@ -31,7 +31,7 @@ class MonthCount():
         data = {}
         if holidays != None:
             for day in range(1, num_days + 1):
-                # print(dates[day - 1])
+
 
                 if dates[day-1] in holidays:
                     holiday += 1
@@ -75,8 +75,6 @@ class MonthCount():
         data = {}
         if holidays != None:
             for day in range(1, num_days + 1):
-                # print(dates[day - 1])
-
                 if dates[day-1] in holidays:
                     holiday += 1
                 elif calendar.weekday(year, month, day) not in (calendar.SATURDAY, calendar.SUNDAY):

@@ -103,72 +103,72 @@
                     <th scope="col">{{ data.WrkHrs }}</th>
                     <td scope="col">
                         <input type="text" class="form-control text-center" value='{{ data.lwp }}' name="{{ key }}_lwp"
-                               id="{{ key }}_lwp">
+                               id="{{ key }}_lwp" onkeypress="onlyNumber(event)">
                     </td>
                     <td scope="col">
                         <input type="text" class="form-control text-center" value='{{ data.basic }}'
                                name="{{ key }}_basic"
-                               id="{{ key }}_basic" readonly>
+                               id="{{ key }}_basic" onkeypress="onlyNumber(event)" readonly>
                     </td>
                     <td scope="col">
                         <input type="text" class="form-control text-center" name="{{ key }}_hra" id="{{ key }}_hra"
-                               value='{{ data.hra }}' readonly>
+                               value='{{ data.hra }}' onkeypress="onlyNumber(event)" readonly>
                     </td>
                     <th scope="col">
                         <input type="text" class="form-control text-center" value='{{ data.da }}' name="{{ key }}_da"
-                               id="{{ key }}_da" readonly>
+                               id="{{ key }}_da" onkeypress="onlyNumber(event)" readonly>
                     </th>
                     <td scope="col">
                         <input type="text" class="form-control text-center" value='{{ data.otherAllowance }}'
-                               id="{{ key }}_otherAllowance" name="{{ key }}_otherAllowance">
+                               id="{{ key }}_otherAllowance" name="{{ key }}_otherAllowance" onkeypress="onlyNumber(event)">
                     </td>
                     <td scope="col">
                         <input type="text" class="form-control text-center" value='{{ data.incentive }}'
-                               id="{{ key }}_incentive" name="{{ key }}_incentive">
+                               id="{{ key }}_incentive" name="{{ key }}_incentive" onkeypress="onlyNumber(event)">
                     </td>
                     <td scope="col">
                         <input type="text" class="form-control text-center" value='{{ data.arrears }}'
-                               id="{{ key }}_arrears" name="{{ key }}_arrears">
+                               id="{{ key }}_arrears" name="{{ key }}_arrears" onkeypress="onlyNumber(event)">
                     </td>
                     <td scope="col">
                         <input type="text" class="form-control text-center" value='{{data.grsOutstandingAdjustment}}'
-                               id="{{ key }}_grsOutstandingAdjustment" name="{{ key }}_grsOutstandingAdjustment">
+                               id="{{ key }}_grsOutstandingAdjustment" name="{{ key }}_grsOutstandingAdjustment" onkeypress="onlyNumber(event)">
                     </td>
                     <td scope="col">
                         <input type="text" class="form-control text-center" value='{{ data.statutoryBonus }}'
-                               id="{{ key }}_statutoryBonus" name="{{ key }}_statutoryBonus">
+                               id="{{ key }}_statutoryBonus" name="{{ key }}_statutoryBonus" onkeypress="onlyNumber(event)">
                     </td>
                     <td scope="col">
                         <input type="text" class="form-control text-center" value='{{ data.grossSalary }}'
-                               id="{{ key }}_grossSalary" name="{{ key }}_grossSalary" readonly>
+                               id="{{ key }}_grossSalary" name="{{ key }}_grossSalary" onkeypress="onlyNumber(event)" readonly>
                     </td>
                     <td scope="col">
                         <input type="text" class="form-control text-center" value='{{ data.epfo }}' id="{{ key }}_epfo"
-                               name="{{ key }}_epfo" readonly>
+                               name="{{ key }}_epfo" onkeypress="onlyNumber(event)" readonly>
                     </td>
                     <td scope="col">
                         <input type="text" class="form-control text-center" value='{{ data.pt }}' id="{{ key }}_pt"
-                               name="{{ key }}_pt" readonly>
+                               name="{{ key }}_pt" onkeypress="onlyNumber(event)" readonly>
                     </td>
                     <td scope="col">
                         <input type="text" class="form-control text-center" value='{{ data.tds }}' id="{{ key }}_tds"
-                               name="{{ key }}_tds">
+                               name="{{ key }}_tds" onkeypress="onlyNumber(event)">
                     </td>
                     <td scope="col">
                         <input type="text" class="form-control text-center" value='{{ data.leaveDeduction }}'
-                               id="{{ key }}_leaveDeduction" name="{{ key }}_leaveDeduction">
+                               id="{{ key }}_leaveDeduction" name="{{ key }}_leaveDeduction" onkeypress="onlyNumber(event)">
                     </td>
                     <td scope="col">
                         <input type="text" class="form-control text-center" value='{{ data.otherDeduction }}'
-                               id="{{ key }}_otherDeduction" name="{{ key }}_otherDeduction">
+                               id="{{ key }}_otherDeduction" name="{{ key }}_otherDeduction" onkeypress="onlyNumber(event)">
                     </td>
                     <td scope="col">
                         <input type="text" class="form-control text-center" value='{{ data.dedOutstandingAdjustment }}'
-                               id="{{ key }}_dedOutstandingAdjustment" name="{{ key }}_dedOutstandingAdjustment">
+                               id="{{ key }}_dedOutstandingAdjustment" name="{{ key }}_dedOutstandingAdjustment" onkeypress="onlyNumber(event)">
                     </td>
                     <td scope="col">
                         <input type="text" class="form-control text-center" value='{{ data.netSalary }}'
-                               id="{{ key }}_netSalary" name="{{ key }}_netSalary" readonly>
+                               id="{{ key }}_netSalary" name="{{ key }}_netSalary" onkeypress="onlyNumber(event)" readonly>
                     </td>
                 </tr>
                 {% endfor %}
@@ -235,58 +235,99 @@ function updateActionUrl() {
 
 <!--Script For Automated Calculation of Edit data -->
 <script>
-        // Do all your JavaScript in a separate JavaScript section
-var inputs = Array.prototype.slice.call(document.querySelectorAll("td > input"));
+    // Do all your JavaScript in a separate JavaScript section
+    var inputs = Array.prototype.slice.call(document.querySelectorAll("td > input"));
 
-inputs.forEach(function(input){
-  input.addEventListener("keyup", function(){
-    var key = input.getAttribute("id").split("_")[0];
-    var basic = document.getElementById(key + "_basic").value;
-    var lwp = document.getElementById(key + "_lwp").value;
-    var otherAllowance = document.getElementById(key + "_otherAllowance").value;
-    var incentive = document.getElementById(key + "_incentive").value;
-    var arrears = document.getElementById(key + "_arrears").value;
-    var grsOutstandingAdjustment = document.getElementById(key + "_grsOutstandingAdjustment").value;
-    var statutoryBonus = document.getElementById(key + "_statutoryBonus").value;
-    var hraPercentage = {{ salary_data['hrapercentage'] }};
-    var daPercentage = {{ salary_data['dapercentage'] }};
-    var workingDays = {{ working_days }};
-    var deductionPercentage = {{ salary_data['deductionpercentage'] }};
+    inputs.forEach(function(input) {
+        input.addEventListener("keyup", function() {
+            var key = input.getAttribute("id").split("_")[0];
+            var basic = document.getElementById(key + "_basic").value;
+            var hra = document.getElementById(key + "_hra").value;
+            var da = document.getElementById(key + "_da").value;
+            var lwp = document.getElementById(key + "_lwp").value;
+            var otherAllowance = document.getElementById(key + "_otherAllowance").value;
+            var incentive = document.getElementById(key + "_incentive").value;
+            var arrears = document.getElementById(key + "_arrears").value;
+            var grsOutstandingAdjustment = document.getElementById(key + "_grsOutstandingAdjustment").value;
+            var statutoryBonus = document.getElementById(key + "_statutoryBonus").value;
+            var grossSalary = document.getElementById(key + "_grossSalary").value;
+            var epfo = document.getElementById(key + "_epfo").value;
+            var pt = document.getElementById(key + "_pt").value;
+            var tds = document.getElementById(key + "_tds").value;
+            var leaveDeduction = document.getElementById(key + "_leaveDeduction").value;
+            var otherDeduction = document.getElementById(key + "_otherDeduction").value;
+            var dedOutstandingAdjustment = document.getElementById(key + "_dedOutstandingAdjustment").value;
+            var netSalary = document.getElementById(key + "_netSalary").value;
+            var hraPercentage = {{ salary_data['hrapercentage'] }};
+            var daPercentage = {{ salary_data['dapercentage'] }};
+            var workingDays = {{ working_days }};
+            var deductionPercentage = {{ salary_data['deductionpercentage'] }};
 
-    var hra = document.getElementById(key + "_hra").value;
-    var da = document.getElementById(key + "_da").value;
-    var grossSalary = (
-      parseInt(basic, 10) +
-      parseInt(hra, 10) +
-      parseInt(da, 10) +
-      parseInt(otherAllowance, 10) +
-      parseInt(incentive, 10) +
-      parseInt(arrears, 10) +
-      parseInt(grsOutstandingAdjustment, 10) +
-      parseInt(statutoryBonus, 10)
-    ).toFixed(2);
-    var leaveDeduction = (
-      parseInt(lwp, 10) * (( parseInt(basic, 10) + parseInt(hra, 10) + parseInt(da, 10) + parseInt(otherAllowance, 10)) / workingDays) * deductionPercentage
-    ).toFixed(2);
-    var netSalary = (
-      parseInt(grossSalary, 10) -
-      parseInt(document.getElementById(key + "_epfo").value, 10) -
-      parseInt(document.getElementById(key + "_pt").value, 10) -
-      parseInt(document.getElementById(key + "_tds").value, 10) -
-      parseInt(leaveDeduction, 10) -
-      parseInt(document.getElementById(key + "_otherDeduction").value, 10) -
-      parseInt(document.getElementById(key + "_dedOutstandingAdjustment").value, 10)
-    ).toFixed(2);
-
-    document.getElementById(key + "_hra").value = hra;
-    document.getElementById(key + "_da").value = da;
-    document.getElementById(key + "_grossSalary").value = grossSalary;
-    document.getElementById(key + "_leaveDeduction").value = leaveDeduction;
-    document.getElementById(key + "_netSalary").value = netSalary;
-  });
-});
+            // Function to handle NaN values and set them to 0
+            function handleEmptyValue(value) {
+                return value === "" || value === null || value === undefined ? 0 : parseFloat(value);
+            }
 
 
+            var lwpValue = handleEmptyValue(lwp);
+            var basicValue = handleEmptyValue(basic);
+            var hraValue = handleEmptyValue(hra);
+            var daValue = handleEmptyValue(da);
+            var otherAllowanceValue = handleEmptyValue(otherAllowance);
+            var incentiveValue = handleEmptyValue(incentive);
+            var arrearsValue = handleEmptyValue(arrears);
+            var grsOutstandingAdjustmentValue = handleEmptyValue(grsOutstandingAdjustment);
+            var statutoryBonusValue = handleEmptyValue(statutoryBonus);
+            var epfoValue = handleEmptyValue(epfo);
+            var ptValue = handleEmptyValue(pt);
+            var tdsValue = handleEmptyValue(tds);
+            var leaveDeductionValue = handleEmptyValue(leaveDeduction);
+            var otherDeductionValue = handleEmptyValue(otherDeduction);
+            var dedOutstandingAdjustmentValue = handleEmptyValue(dedOutstandingAdjustment);
+
+            hra = (hraValue);
+            da = (daValue);
+            grossSalary = (
+                basicValue +
+                hraValue +
+                daValue +
+                otherAllowanceValue +
+                incentiveValue +
+                arrearsValue +
+                grsOutstandingAdjustmentValue +
+                statutoryBonusValue
+            ).toFixed(2);
+            leaveDeduction = (
+                lwpValue * ((basicValue + hraValue + daValue + otherAllowanceValue) / {{working_days}}) * {{salary_data['deductionpercentage']}}
+            ).toFixed(2);
+            netSalary = (
+                grossSalary -
+                epfoValue -
+                ptValue -
+                tdsValue -
+                leaveDeductionValue -
+                otherDeductionValue -
+                dedOutstandingAdjustmentValue
+            ).toFixed(2);
+
+            document.getElementById(key + "_hra").value = hra;
+            document.getElementById(key + "_da").value = da;
+            document.getElementById(key + "_grossSalary").value = grossSalary;
+            document.getElementById(key + "_leaveDeduction").value = leaveDeduction;
+            document.getElementById(key + "_netSalary").value = netSalary;
+        });
+    });
+</script>
+
+
+<!--Script for only number input -->
+<script>
+    const onlyNumber = (event) => {
+        let keyCode = event.keyCode ? event.keyCode : event.which;
+        if ((keyCode < 48 || keyCode > 57) && keyCode !== 46) {
+            event.preventDefault();
+        }
+    };
 </script>
 
 

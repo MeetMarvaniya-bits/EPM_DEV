@@ -8,15 +8,14 @@ class Salarymanage():
         self.db = db
 
     def salary_update(self, companyname, empid, salid, data=None):
-
         data_dict = {}
         for key, value in data.items():
+            # Check if value id empty then replace with 0
+            if value == "":
+                value = 0
             data_dict.update({key: value})
         self.db.collection(companyname).document('employee').collection('employee').document(empid).collection(
             'salaryslips').document(salid).update(data_dict)
-
-
-    from concurrent.futures import ThreadPoolExecutor
 
     def process_employee(self, emp, companyname):
         docs = self.db.collection(companyname).document(u'employee').collection('employee')

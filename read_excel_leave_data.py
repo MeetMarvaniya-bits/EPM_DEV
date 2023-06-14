@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 def read_excel_rows(file):
     workbook = load_workbook(filename=file)
 
-    print('workbook')
+
 
     sheet = workbook['Sheet']
 
@@ -42,10 +42,6 @@ def read_excel_rows(file):
                      'GS']:
             attendance_start_index = i - 1
 
-    #
-    # if header_row_index is None or attendance_start_index is None:
-    #     print("Invalid data format. Unable to find header row or attendance data.")
-    #     exit()
 
     original_list = data[header_row_index]
 
@@ -54,8 +50,6 @@ def read_excel_rows(file):
     for item in original_list:
         modified_item = item.replace('-', '_')
         column_headers_personal.append(modified_item)
-
-    print(column_headers_personal)
 
     column_headers_for_hours = data[attendance_start_index]
 
@@ -77,7 +71,6 @@ def read_excel_rows(file):
 
             elif row[0].startswith('WrkHrs'):
                 record = row[1:]
-                # print(record)
                 total_time = timedelta()
                 for t in record:
                     if t != '-':
