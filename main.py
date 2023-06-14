@@ -30,8 +30,6 @@ import os
 import platform
 import read_excel_leave_data
 
-
-
 # FLASK APP
 app = Flask(__name__)
 app.secret_key = 'tO$&!|0wkamvVia0?n$NqIRVWOG'
@@ -558,14 +556,11 @@ def save_data(empid, username):
             contract_data.append({key: value})
 
     increment_list = [(index, content) for index, content in enumerate(increment_data)]
-    print(increment_list)
     increment_keys = [next(iter(item[1])) for item in increment_list]
     increment_keys.sort()
-    print(increment_keys)
     contract_list = [(index, content) for index, content in enumerate(contract_data)]
     contract_keys = [next(iter(item[1])) for item in contract_list]
     contract_keys.sort()
-
 
     if request.method == 'POST':
         data = request.form.to_dict()
@@ -676,9 +671,6 @@ def save_data(empid, username):
                 print("update date")
 
     return redirect(url_for('employee_profile', id=empid, username=username))
-
-
-
 @app.route('/<username>/tds_data_update/<id>', methods=['GET', 'POST'])
 def tds_data_update(username, id):
     """ UPDATE EMPLOYEE TDS DETAILS """
