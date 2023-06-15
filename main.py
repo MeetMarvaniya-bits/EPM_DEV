@@ -214,7 +214,7 @@ def employee_list(username):
         increments=db.collection('alian_software').document('increments').get().to_dict()['increments']
         for increment in increments:
             converted_date = datetime.datetime.strptime(increment['effectiveDate'], '%Y-%m-%d').date()
-            if datetime.datetime.today().date()==  converted_date:
+            if datetime.datetime.today().date() ==  converted_date:
                 print(increment['empid'],(increment['total']))
                 db.collection('alian_software').document('employee').collection('employee').document(increment['empid']).update({'salary':round(float(increment['total']))* 12})
         session['increment'] = 'Done'
@@ -859,7 +859,7 @@ def salary_sheet_edit_(username, empid, salid):
         return redirect(url_for('salary_sheet_view', salid=salid, username=username))
 
     holidays = db.collection(companyname).document('holidays').get().to_dict()
-    moath_data = moth_count.count(holidays)
+    moath_data = moth_count.count_previous_month(holidays=holidays, salid=salid)
     working_days = moath_data['workingDays']
     employee_salary_data = Salarymanage(db).get_salary_data(companyname, empid, salid)
     salary_percentage = (db.collection(companyname).document('salary_calc').get()).to_dict()
@@ -871,7 +871,7 @@ def salary_sheet_edit_(username, empid, salid):
 @app.route('/<username>/salarysheeteditall/<salid>', methods=["GET","POST"])
 def salary_sheet_edit_all(username, salid):
     holidays = db.collection(companyname).document('holidays').get().to_dict()
-    moath_data = moth_count.count(holidays)
+    moath_data = moth_count.count_previous_month(holidays=holidays, salid=salid)
     working_days = moath_data['workingDays']
     salary_percentage = (db.collection(companyname).document('salary_calc').get()).to_dict()
     salary_list = Salarymanage(db).get_all_emp_salary_data(companyname, salid)
@@ -884,41 +884,30 @@ def salary_sheet_edit_all(username, salid):
 def save_edited_data():
     # Get the form data from request.form
     form_data = request.form
-    # form_dict = form_data.to_dict()
     form_dict = dict(form_data)
-    # print(f'data  = {form_dict}')
     salid = request.args.get('sal_id')
     username = request.args.get('user_name')
-    # print(f"{salid} is salid and {username} is username")
-
-    print(form_dict)
 
     all_data = {}
 
     for key, value in form_dict.items():
-        if value != '':
-            document_name = key.split('_')[0]  # Extracting the document name from the key
-            field_name = key.split('_')[1]  # Extracting the field name from the key
-            if len(all_data) == 0 or document_name not in all_data.keys():
-                all_data.update({document_name: {field_name: value}})
-            else:
-                # print(all_data)
-                for key,value2 in all_data.items():
-                    all_data[key].update({field_name: value})
+        if value == '':
+            value = 0
+        document_name = key.split('_')[0]  # Extracting the document name from the key
+        field_name = key.split('_')[1]  # Extracting the field name from the key
+        # If key not exist then add new key
+        if len(all_data) == 0 or document_name not in all_data.keys():
+            all_data.update({document_name: {field_name: value}})
+        # If key already exist then add field in key value
+        else:
+            all_data[document_name].update({field_name: value})
 
-    print(all_data)
-
+    # Updating the document in Firestore
     for emp_id, sal_data in all_data.items():
-        print(emp_id)
-        print(sal_data)
-        # Updating the document in Firestore
-        # db.collection(companyname).document('employee').collection('employee').document(emp_id).collection('salaryslips').document(salid).update(sal_data)
+        db.collection(companyname).document('employee').collection('employee').document(emp_id).collection('salaryslips').document(salid).update(sal_data)
 
     # Return a response to the client
     return redirect(url_for('salary_sheet_view', username=username, salid=salid))
-
-
-
 
 
 @app.route('/<username>/set_status/<salid>/<status>')
@@ -968,14 +957,22 @@ def download_pdf():
 
 
 @app.route('/<username>/pdf/<salid>')
-def pdf(username, salid):
+def pdf_all(username, salid):
     ''' SALARY SLIP PDF GENERATION '''
-    global companyname
-
-    path = get_download_folder()
-    salary = SalarySlip(db)
-    salary.salary_slip(companyname, salid, path)
+    salary_list = Salarymanage(db).get_all_emp_salary_data(salid=salid, companyname=companyname)
+    print(salary_list)
+    responses = []
+    for i in salary_list:
+        empid = salary_list[i]["userID"]
+        path = get_download_folder()
+        salary = SalarySlip(db)
+        responcedata = salary.salary_slip_personal(companyname, empid, salid, path)
+        return responcedata
+    # for response in responses:
+    #     # CHECK THE USER
+    #     return response
     return redirect(url_for('salary', username=username, salid=salid))
+
 
 
 # @app.route('/<username>/excel/<salid>')
@@ -1031,5 +1028,5 @@ def send_employee_salaryslip(username, salid):
 
 
 if __name__ == '__main__':
-    # app.run(debug=True, port=300)
+    # app.run(debug=True, port=3000)
     app.run(debug=True, host="0.0.0.0", port=3005)

@@ -57,9 +57,9 @@ class SalarySlip():
         month = calendar.month_name[mont_in_num]
 
         # PDF STORAGE LOCATION
-        pdf_location = f"{path}/EPMS/Salaryslips/{empid}/{month}_{salary_data['year']}/"
-        if not os.path.exists(pdf_location):
-            os.makedirs(pdf_location)
+        # pdf_location = f"{path}/EPMS/Salaryslips/{empid}/{month}_{salary_data['year']}/"
+        # if not os.path.exists(pdf_location):
+        #     os.makedirs(pdf_location)
 
         # PDF FILE NAME
         filename = f'{empid}_{salid}.pdf'
@@ -306,9 +306,9 @@ class SalarySlip():
         month = calendar.month_name[mont_in_num]
         #
         # # DEFINE PDF LOCATION
-        # pdf_location = f"{path}/EPMS/Salaryslips/{month}_{salary_data['year']}/"
-        # if not os.path.exists(pdf_location):
-        #     os.makedirs(pdf_location)
+        pdf_location = f"{path}/EPMS/Salaryslips/{month}_{salary_data['year']}/"
+        if not os.path.exists(pdf_location):
+            os.makedirs(pdf_location)
 
         # PDF FILE NAME
         filename = f'{empid}_{salid}.pdf'
@@ -543,7 +543,7 @@ class SalarySlip():
         threads = []
         for i in salary_list:
             empid = salary_list[i]["userID"]
-            thread = threading.Thread(target=self.generate_slip, args=(empid, companyname, salid, path))
+            thread = threading.Thread(target=self.salary_slip_personal, args=(empid, companyname, salid, path))
             thread.start()
             threads.append(thread)
         for thread in threads:

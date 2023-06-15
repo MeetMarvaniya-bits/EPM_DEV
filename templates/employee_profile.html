@@ -326,7 +326,7 @@
                                                                                                                                            name="doj"
                                                                                                                                            id="doj"
                                                                                                                                            value='{{ data["personal_data"]["doj"] }}'
-                                                                                                                                           placeholder="Select" disabled>
+                                                                                                                                           placeholder="Select">
                                                                                                                                 </div>
                                                                                                                                 <span class="pmd-textfield-focused"></span>
                                                                                                                                 <p id="dojerror" style="color: red;"></p>
@@ -2117,64 +2117,64 @@
                                                                                         {% for index, content in increment_data %}
                                                                                         {% for key in content %}
                                                                                         <tr class="table-light col-12">
-  <td scope="col">
-    <p id="incinformation{{ index }}_1">{{ content[key]['grossSalary'] }}</p>
-    <input type="text" id="inctextBox{{ index }}_1" name="{{key}}_grossSalary" class="hidden form-control-sm" size="8" onkeypress="onlyNumber(event)">
-  </td>
-  <td scope="col">
-    <p id="incinformation{{ index }}_2">{{ content[key]['jobPosition'] }}</p>
-    <input type="text" id="inctextBox{{ index }}_2" name="{{key}}_jobPosition" class="hidden form-control-sm" size="8">
-  </td>
-<td scope="col">
-  <p id="incinformation{{ index }}_3">{{ content[key]['effectiveDate'] }}</p>
-  <span id="error" style="color: red;"></span>
-  <input type="date" id="inctextBox{{ index }}_3" name="{{key}}_effectiveDate"  min="{% if key == 'increment_01' %}{{data['personal_data']['doj']}}{% else %}{{effective_dates[index-1]}}{% endif %}" class="hidden form-control-sm storedDate" size="8" >
-</td>
-<td scope="col" class="d-flex">
-  <div class="icon-box">
-    {% if content[key]['incrementType'] == 'full_amount' %}
-      <p id="incinformation{{ index }}_4" class="icon-text">{{ content[key]['increment'] }}<span> Rs</span></p>
-    {% elif content[key]['incrementType'] == 'percentage' %}
-      <p id="incinformation{{ index }}_4" class="icon-text">{{ content[key]['increment'] }}<span> %</span></p>
-    {% endif %}
-  </div>
-  <select id="incdrop{{ index }}_4" name="{{key}}_increment_type" class="hidden form-control-sm increment-dropdown" onchange="calculateTotal({{ index }})">
-    <option {% if content[key]['incrementType'] == 'percentage' %}selected{% endif %} value="percentage">%</option>
-    <option {% if content[key]['incrementType'] == 'full_amount' %}selected{% endif %} value="full_amount">₹</option>
-  </select>
-  <input type="text" id="inctextBox{{ index }}_4_input" name="{{key}}_increment" class="hidden form-control-sm" size="8" value="{{ content[key]['increment'] }}"  onkeypress="calculateTotal({{ index }}),onlyNumber(event)">
-</td>
+                                                                                          <td scope="col">
+                                                                                            <p id="incinformation{{ index }}_1">{{ content[key]['grossSalary'] }}</p>
+                                                                                            <input type="text" id="inctextBox{{ index }}_1" name="{{key}}_grossSalary" class="hidden form-control-sm" size="8" onkeypress="onlyNumber(event)">
+                                                                                          </td>
+                                                                                          <td scope="col">
+                                                                                            <p id="incinformation{{ index }}_2">{{ content[key]['jobPosition'] }}</p>
+                                                                                            <input type="text" id="inctextBox{{ index }}_2" name="{{key}}_jobPosition" class="hidden form-control-sm" size="8">
+                                                                                          </td>
+                                                                                        <td scope="col">
+                                                                                          <p id="incinformation{{ index }}_3">{{ content[key]['effectiveDate'] }}</p>
+                                                                                          <span id="error" style="color: red;"></span>
+                                                                                          <input type="date" id="inctextBox{{ index }}_3" name="{{key}}_effectiveDate"  min="{% if key == 'increment_01' %}{{data['personal_data']['doj']}}{% else %}{{effective_dates[index-1]}}{% endif %}" class="hidden form-control-sm storedDate" size="8" required>
+                                                                                        </td>
+                                                                                        <td scope="col" class="d-flex">
+                                                                                          <div class="icon-box">
+                                                                                            {% if content[key]['incrementType'] == 'full_amount' %}
+                                                                                              <p id="incinformation{{ index }}_4" class="icon-text">{{ content[key]['increment'] }}<span> Rs</span></p>
+                                                                                            {% elif content[key]['incrementType'] == 'percentage' %}
+                                                                                              <p id="incinformation{{ index }}_4" class="icon-text">{{ content[key]['increment'] }}<span> %</span></p>
+                                                                                            {% endif %}
+                                                                                          </div>
+                                                                                          <select id="incdrop{{ index }}_4" name="{{key}}_increment_type" class="hidden form-control-sm increment-dropdown" onchange="calculateTotal({{ index }})">
+                                                                                            <option {% if content[key]['incrementType'] == 'percentage' %}selected{% endif %} value="percentage">%</option>
+                                                                                            <option {% if content[key]['incrementType'] == 'full_amount' %}selected{% endif %} value="full_amount">₹</option>
+                                                                                          </select>
+                                                                                          <input type="text" id="inctextBox{{ index }}_4_input" name="{{key}}_increment" class="hidden form-control-sm" size="8" value="{{ content[key]['increment'] }}"  onkeypress="calculateTotal({{ index }}),onlyNumber(event)">
+                                                                                        </td>
 
-  <td scope="col">
-    <p id="incinformation{{ index }}_5">{{ content[key]['total'] }}</p>
-    <input type="text" id="inctextBox{{ index }}_5" name="{{key}}_total" class="hidden form-control-sm" size="8" onkeypress="onlyNumber(event)">
-  </td>
-  <td scope="col">
-    <p id="incinformation{{ index }}_6" class="note-column" title="{{ content[key]['note'] }}">{{ content[key]['note'] }}</p>
-    <input type="text" id="inctextBox{{ index }}_6" name="{{key}}_note" class="hidden form-control-sm" size="8">
-  </td>
-  <td> <a type="btn" class="btn" href="/delete_increment/{{data['personal_data']['userID'] }}/{{username}}/{{key}}/{{content[key]}}">
-    <i class="fa fa-trash" aria-hidden="true"></i>
-    </a></td>
-</tr>
+                                                                                          <td scope="col">
+                                                                                            <p id="incinformation{{ index }}_5">{{ content[key]['total'] }}</p>
+                                                                                            <input type="text" id="inctextBox{{ index }}_5" name="{{key}}_total" class="hidden form-control-sm" size="8" onkeypress="onlyNumber(event)">
+                                                                                          </td>
+                                                                                          <td scope="col">
+                                                                                            <p id="incinformation{{ index }}_6" class="note-column" title="{{ content[key]['note'] }}">{{ content[key]['note'] }}</p>
+                                                                                            <input type="text" id="inctextBox{{ index }}_6" name="{{key}}_note" class="hidden form-control-sm" size="8">
+                                                                                          </td>
+                                                                                          <td> <a type="btn" class="btn" href="/delete_increment/{{data['personal_data']['userID'] }}/{{username}}/{{key}}/{{content[key]}}">
+                                                                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                                                                            </a></td>
+                                                                                        </tr>
 
-<div class="modal fade" id="deletionPopUp" tabindex="-1" aria-labelledby="exampleModalLabel{{ index }}" aria-hidden="true">
-    <div class="modal-dialog d-flex align-items-center justify-content-center">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel{{ index }}">Confirm Deletion</h5>
-          <button type="button" class="btn-close bg-transparent" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <p>Are you sure you want to delete this increment?</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-light custom-cancle-btn" data-bs-dismiss="modal">Cancel</button>
-          <a type="button" class="btn btn-danger" href="/delete_increment/{{ data['personal_data']['userID'] }}/{{ username }}/{{ key }}/{{ content[key] }}">Delete</a>
-        </div>
-      </div>
-    </div>
-  </div>
+                                                                                        <div class="modal fade" id="deletionPopUp" tabindex="-1" aria-labelledby="exampleModalLabel{{ index }}" aria-hidden="true">
+                                                                                            <div class="modal-dialog d-flex align-items-center justify-content-center">
+                                                                                              <div class="modal-content">
+                                                                                                <div class="modal-header">
+                                                                                                  <h5 class="modal-title" id="exampleModalLabel{{ index }}">Confirm Deletion</h5>
+                                                                                                  <button type="button" class="btn-close bg-transparent" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                                                </div>
+                                                                                                <div class="modal-body">
+                                                                                                  <p>Are you sure you want to delete this increment?</p>
+                                                                                                </div>
+                                                                                                <div class="modal-footer">
+                                                                                                  <button type="button" class="btn btn-light custom-cancle-btn" data-bs-dismiss="modal">Cancel</button>
+                                                                                                  <a type="button" class="btn btn-danger" href="/delete_increment/{{ data['personal_data']['userID'] }}/{{ username }}/{{ key }}/{{ content[key] }}">Delete</a>
+                                                                                                </div>
+                                                                                              </div>
+                                                                                            </div>
+                                                                                          </div>
 
 
                                                                                         {% endfor %}

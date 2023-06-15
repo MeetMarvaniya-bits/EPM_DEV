@@ -198,7 +198,7 @@
                     {% if salary_status=='Paid' %}
                     <li class="nav-item me-2">
                         <div class="dropdown">
-                            <a href="{{url_for('pdf', username=username, salid=salid)}}">
+                            <a href="{{url_for('pdf_all', username=username, salid=salid)}}">
                             <button class="btn border-1 btn-secondary " type="button" aria-haspopup="true" id="btn_4"
                                     aria-expanded="false">
                                 Download All
@@ -249,161 +249,137 @@
     <div class="container-fluid p-3">
         <div>
             <div class="pt-3">
-                <p class="p-2 ps-5 error">
+                <p class="p-2 ps-5  error">
                     {% for key, value in moath_data.items() %}
                     <b class="pe-4">{{key}} : {{value}} </b>
                     {% endfor %}
-                    <!--                                <a href="#">Click</a>-->
+                    <!-- <a href="#">Click</a> -->
                 </p>
             </div>
         </div>
+        <!-- Employees Salary Data -->
         <div style="overflow-x: auto;">
-            <!-- Employees Salary Data -->
             <table class="table table-bordered table-hover" style="border: 2px solid black !important;">
                 <!-- Table Header  -->
                 <thead class="text-center center align-baseline">
-                <tr class="border-bottom" scope="row" style="border: 2px solid !important;">
-                    <th scope="col" rowspan="2" class="align-middle" style="background-color: #DFE1E6;">Employee Name
-                    </th>
-                    <th scope="col" rowspan="2" class="align-middle" style="background-color: #DFE1E6;">Working Hours
-                    </th>
-                    <th scope="col rwo-2" rowspan="2" class="align-middle" style="background-color: #DFE1E6;">LWP</th>
-                    <th scope="col rwo-2" rowspan="2" class="align-middle" style="background-color: #DFE1E6;">Overtime
-                        Hours
-                    </th>
-                    <th scope="row" colspan="10" class="align-middle"
-                        style="background-color: #DCFDD9;">Earning
-                    </th>
-                    <th scope="row col" rowspan="2" class="align-middle"
-                        style="background-color: #DFE1E6;">Gross Salary
-                    </th>
-                    <th scope="col-6" colspan="7" class="align-middle"
-                        style="background-color: #FDD9DB;">Deduction
-                    </th>
-                    <th scope="row-2 col" rowspan="2" class="align-middle"
-                        style="background-color: #DFE1E6;">Net Payable
-                    </th>
-                    <th rowspan="2" class="align-middle"
-                        style="background-color: #DFE1E6;"></th>
-                </tr>
-                <tr class="border-bottom" style="border:2px solid black !important;">
-                    <th scope="col" class="align-middle"
-                        style="background-color: #DCFDD9;">Basic
-                    </th>
-                    <th scope="col" class="align-middle"
-                        style="background-color: #DCFDD9;">HRA
-                    </th>
-                    <th scope="col" class="align-middle"
-                        style="background-color: #DCFDD9;">DA
-                    </th>
-                    <th scope="col" class="align-middle"
-                        style="background-color: #DCFDD9;">Other Allowance
-                    </th>
-                    <th scope="col" class="align-middle"
-                        style="background-color: #DCFDD9;">Incentive
-                    </th>
-                    <th scope="col" class="align-middle"
-                        style="background-color: #DCFDD9;">Arrears
-                    </th>
-                    <th scope="col" class="align-middle"
-                        style="background-color: #DCFDD9;">Outstanding Adjustments
-                    </th>
-                    <th scope="col" class="align-middle"
-                        style="background-color: #DCFDD9;">Statutory Bonus
-                    </th>
-                    <th scope="col" class="align-middle"
-                        style="background-color: #DCFDD9;">Overtime Amount
-                    </th>
-                    <th scope="col" class="align-middle"
-                        style="background-color: #DCFDD9;">Total Salary
-                    </th>
-                    <th scope="col" class="align-middle"
-                        style="background-color: #FDD9DB;">EPFO
-                    </th>
-                    <th scope="col" class="align-middle"
-                        style="background-color: #FDD9DB;">PT
-                    </th>
-                    <th scope="col" class="align-middle"
-                        style="background-color: #FDD9DB;">TDS
-                    </th>
-                    <th scope="col" class="align-middle"
-                        style="background-color: #FDD9DB;">Leave Deduction
-                    </th>
-                    <th scope="col" class="align-middle"
-                        style="background-color: #FDD9DB;">Other Deduction
-                    </th>
-                    <th scope="col" class="align-middle"
-                        style="background-color: #FDD9DB;">Outstanding Adjustment
-                    </th>
-                    <th scope="col" class="align-middle"
-                        style="background-color: #FDD9DB;">Total Deduction
-                    </th>
-                </tr>
+                    <tr class="border-bottom" scope="row" style="border: 2px solid !important;">
+                        <th scope="col" rowspan="2" class="align-middle" style="background-color: #DFE1E6;">Employee
+                            Name</th>
+                        <th scope="col" rowspan="2" class="align-middle" style="background-color: #DFE1E6;">Working
+                            Hours</th>
+                        <th scope="col rwo-2" rowspan="2" class="align-middle" style="background-color: #DFE1E6;">LWP</th>
+                        <th scope="col rwo-2" rowspan="2" class="align-middle" style="background-color: #DFE1E6;">Overtime
+                            Hours</th>
+                        <th scope="row" colspan="10" class="align-middle"
+                            style="background-color: #DCFDD9;">Earning</th>
+                        <th scope="row-2 col" rowspan="2" class="align-middle"
+                            style="background-color: #DFE1E6;">Gross Salary</th>
+                        <th scope="row" colspan="7" class="align-middle" style="background-color: #FDD9DB;">Deduction</th>
+                        <th scope="row-2 col" rowspan="2" class="align-middle"
+                            style="background-color: #DFE1E6;">Net Payable</th>
+                        <th rowspan="2" class="align-middle" style="background-color: #DFE1E6;"></th>
+                    </tr>
+                    <tr class="border-bottom" style="border:2px solid black !important;">
+                        <th scope="col" class="align-middle"
+                            style="background-color: #DCFDD9;">Basic</th>
+                        <th scope="col" class="align-middle"
+                            style="background-color: #DCFDD9;">HRA</th>
+                        <th scope="col" class="align-middle"
+                            style="background-color: #DCFDD9;">DA</th>
+                        <th scope="col" class="align-middle"
+                            style="background-color: #DCFDD9;">Other Allowance</th>
+                        <th scope="col" class="align-middle"
+                            style="background-color: #DCFDD9;">Incentive</th>
+                        <th scope="col" class="align-middle"
+                            style="background-color: #DCFDD9;">Arrears</th>
+                        <th scope="col" class="align-middle"
+                            style="background-color: #DCFDD9;">Outstanding Adjustments</th>
+                        <th scope="col" class="align-middle"
+                            style="background-color: #DCFDD9;">Statutory Bonus</th>
+                        <th scope="col" class="align-middle"
+                            style="background-color: #DCFDD9;">Overtime Amount</th>
+                        <th scope="col" class="align-middle"
+                            style="background-color: #DCFDD9;">Total Salary</th>
+                        <th scope="col" class="align-middle"
+                            style="background-color: #FDD9DB;">EPFO</th>
+                        <th scope="col" class="align-middle"
+                            style="background-color: #FDD9DB;">PT</th>
+                        <th scope="col" class="align-middle"
+                            style="background-color: #FDD9DB;">TDS</th>
+                        <th scope="col" class="align-middle"
+                            style="background-color: #FDD9DB;">Leave Deduction</th>
+                        <th scope="col" class="align-middle"
+                            style="background-color: #FDD9DB;">Other Deduction</th>
+                        <th scope="col" class="align-middle"
+                            style="background-color: #FDD9DB;">Outstanding Adjustment</th>
+                        <th scope="col" class="align-middle"
+                            style="background-color: #FDD9DB;">Total Deduction</th>
+                    </tr>
                 </thead>
 
                 <!-- Salary data  -->
                 <tbody style="background-color:#ffffff;" class="text-center">
-                {% for i in data%}
+                    {% for i in data%}
 
-                <tr class="border-bottom" style="border:2px solid black !important;">
-                    <td scope="col">{{data[i]['employeeName']}}</td>
-                    <td scope="col">{{data[i]['WrkHrs']}}</td>
-                    <td scope="col">{{ data[i]['lwp'] }}</td>
-                    <td scope="col">{{ data[i]['Auth_OT'] }}</td>
-                    <td scope="col">{{data[i]['basic']}}</td>
-                    <td scope="col">{{data[i]['hra']}}</td>
-                    <td scope="col">{{data[i]['da']}}</td>
-                    <td scope="col">{{data[i]['otherAllowance']}}</td>
-                    <td scope="col">{{data[i]['incentive']}}</td>
-                    <td scope="col">{{data[i]['arrears']}}</td>
-                    <td scope="col">{{data[i]['grsOutstandingAdjustment']}}</td>
-                    <td scope="col">{{data[i]['statutoryBonus']}}</td>
-                    <td scope="col">{{data[i]['Auth_OT']}}</td>
-                    <td scope="col">{{data[i]['statutoryBonus']}}</td>
-                    <td scope="col">{{data[i]['grossSalary']}}</td>
-                    <td scope="col">{{data[i]['epfo']}}</td>
-                    <td scope="col">{{data[i]['pt']}}</td>
-                    <td scope="col">{{data[i]['tds']}}</td>
-                    <td scope="col">{{data[i]['leaveDeduction']}}</td>
-                    <td scope="col">{{data[i]['otherDeduction']}}</td>
-                    <td scope="col">{{data[i]['dedOutstandingAdjustment']}}</td>
-                    <td scope="col">{{data[i]['dedOutstandingAdjustment']}}</td>
-                    <td scope="col">{{data[i]['netSalary']}}</td>
+                    <tr class="border-bottom" style="border:2px solid black !important;">
+                        <td scope="col">{{data[i]['employeeName']}}</td>
+                        <td scope="col">{{data[i]['WrkHrs']}}</td>
+                        <td scope="col">{{ data[i]['lwp'] }}</td>
+                        <td scope="col">{{ data[i]['Auth_OT'] }}</td>
+                        <td scope="col">{{data[i]['basic']}}</td>
+                        <td scope="col">{{data[i]['hra']}}</td>
+                        <td scope="col">{{data[i]['da']}}</td>
+                        <td scope="col">{{data[i]['otherAllowance']}}</td>
+                        <td scope="col">{{data[i]['incentive']}}</td>
+                        <td scope="col">{{data[i]['arrears']}}</td>
+                        <td scope="col">{{data[i]['grsOutstandingAdjustment']}}</td>
+                        <td scope="col">{{data[i]['statutoryBonus']}}</td>
+                        <td scope="col">{{data[i]['Auth_OT']}}</td>
+                        <td scope="col">{{data[i]['statutoryBonus']}}</td>
+                        <td scope="col">{{data[i]['grossSalary']}}</td>
+                        <td scope="col">{{data[i]['epfo']}}</td>
+                        <td scope="col">{{data[i]['pt']}}</td>
+                        <td scope="col">{{data[i]['tds']}}</td>
+                        <td scope="col">{{data[i]['leaveDeduction']}}</td>
+                        <td scope="col">{{data[i]['otherDeduction']}}</td>
+                        <td scope="col">{{data[i]['dedOutstandingAdjustment']}}</td>
+                        <td scope="col">{{data[i]['totalDeduction']}}</td>
+                        <td scope="col">{{data[i]['netSalary']}}</td>
 
-                    <!-- Edit Button  -->
-                    {% if salary_status=='Paid' or salary_status=='Approved'%}
-                    <td scope="col">
-                        <a href="#" disabled>
-                            <button class="btn border-1 btn-secondary" type="button" aria-haspopup="true"
+                        <!-- Edit Button  -->
+                        {% if salary_status=='Paid' or salary_status=='Approved'%}
+                        <td scope="col">
+                            <a href="#" disabled>
+                                <button class="btn border-1 btn-secondary" type="button" aria-haspopup="true"
                                     aria-expanded="false"
                                     style="color:#2F3990; border-color:#2F3990; background-color: #FFFFFF" disabled>
-                                Edit
-                            </button>
-                        </a>
-                    </td>
-                    {% else %}
-                    <td scope="col">
-                        <a href="{{url_for('salary_sheet_edit_', username=username,empid=data[i]['userID'],salid=salid)}}">
-                            <button class="btn border-1 btn-secondary" type="button" aria-haspopup="true"
+                                    Edit
+                                </button>
+                            </a>
+                        </td>
+                        {% else %}
+                        <td scope="col">
+                            <a href="{{url_for('salary_sheet_edit_', username=username,empid=data[i]['userID'],salid=salid)}}">
+                                <button class="btn border-1 btn-secondary" type="button" aria-haspopup="true"
                                     aria-expanded="false"
                                     style="color:#2F3990; border-color:#2F3990; background-color: #FFFFFF">
-                                Edit
-                            </button>
-                        </a>
+                                    Edit
+                                </button>
+                            </a>
 
-                    </td>
+                        </td>
 
-                    {% endif %}
-                </tr>
+                        {% endif %}
+                    </tr>
 
 
-                {% endfor%}
+                    {% endfor%}
                 </tbody>
             </table>
         </div>
-
     </div>
 </div>
+
 
 <div class="modal " id="exampleModal1" tabindex="-1"
                          aria-labelledby="exampleModalLabel1" aria-hidden="true">
