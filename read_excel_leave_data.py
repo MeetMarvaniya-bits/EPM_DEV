@@ -1,5 +1,3 @@
-import time
-import progressbar
 from openpyxl import load_workbook
 from datetime import datetime, timedelta
 
@@ -15,16 +13,7 @@ def read_excel_rows(file):
 
     data = []
 
-    widgets = [
-        'Processing: ',
-        progressbar.Percentage(),
-        ' ',
-        progressbar.Bar(marker='█'),
-        ' ',
-        progressbar.ETA()
-    ]
 
-    progress_bar = progressbar.ProgressBar(maxval=max_row, widgets=widgets).start()
 
     for row in range(1, max_row + 1):
         row_data = []
@@ -39,7 +28,7 @@ def read_excel_rows(file):
                 row_data.append(cell_value)
 
         data.append(row_data)
-    progress_bar.finish()
+
 
     header_row_index = None
     attendance_start_index = None
@@ -58,7 +47,15 @@ def read_excel_rows(file):
     #     print("Invalid data format. Unable to find header row or attendance data.")
     #     exit()
 
-    column_headers_personal = data[header_row_index]
+    original_list = data[header_row_index]
+
+    column_headers_personal = []
+
+    for item in original_list:
+        modified_item = item.replace('-', '_')
+        column_headers_personal.append(modified_item)
+
+    print(column_headers_personal)
 
     column_headers_for_hours = data[attendance_start_index]
 

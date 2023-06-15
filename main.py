@@ -414,7 +414,12 @@ def employee_profile(username, id):
 
     increment_data = sorted(increment_data, key=lambda x: x[list(x.keys())[0]]['effectiveDate'])
     increment_list = [(index, content) for index, content in enumerate(increment_data)]
-    effective_dates = [item[1][f'increment_0{i + 1}']['effectiveDate'] for i, item in enumerate(increment_list)]
+    print(increment_list)
+
+    keys = [next(iter(item[1])) for item in increment_list]
+    print(keys)
+    effective_dates = [item[1][keys[i]]['effectiveDate'] for i, item in enumerate(increment_list)]
+    print(effective_dates)
 
     contract_data = []
     personal_data = personal_data_future.result()
@@ -450,7 +455,7 @@ def employee_profile(username, id):
         department_data = executor.submit(get_department_data)
     department = department_data.result()
 
-    print(increment_list)
+
     return render_template('employee_profile.html', leave=leave_status, data=data, total_leave=total_leave,
                            leave_list=leave_list, leave_date=leave_status_date,username=username, department=department,
                            increment_data=increment_list, contract_data=contract_list, effective_dates=effective_dates)
@@ -544,47 +549,50 @@ def save_data(empid, username):
 
     # # INCREMENT DATA
     increment_data = []
+    contract_data = []
     personal_data = personal_data_future.result()
     for key, value in personal_data.items():
         if key.startswith('increment'):
             increment_data.append({key: value})
-
-    # increment_data= sorted(increment_data, key=lambda x: x[1][list(x[1].keys())[0]]['effectiveDate'])
-    increment_list = [(index, content) for index, content in enumerate(increment_data)]
-    # increment_list = sorted(increment_list, key=lambda x: x[1][list(x[1].keys())[0]]['effectiveDate'])
-    print(increment_list)
-
-    # # CONTRACT DATA
-    contract_data = []
-    personal_data = personal_data_future.result()
-    for key, value in personal_data.items():
-        if key.startswith('contract'):
+        elif key.startswith('contract'):
             contract_data.append({key: value})
+
+    increment_list = [(index, content) for index, content in enumerate(increment_data)]
+    increment_keys = [next(iter(item[1])) for item in increment_list]
+    increment_keys.sort()
     contract_list = [(index, content) for index, content in enumerate(contract_data)]
+    contract_keys = [next(iter(item[1])) for item in contract_list]
+    contract_keys.sort()
 
     if request.method == 'POST':
         data = request.form.to_dict()
         contract_increment_data = {}
-        for n in range(1, 10):
+        for n in range(0, max(len(increment_keys),len(contract_keys))+1):
             for key, value in data.items():
-                if key.startswith(f'increment_0{n}'):
-                    new_data = {f'increment_0{n}':
-                            {
-                                f'grossSalary': data[f'increment_0{n}_grossSalary'],
-                                f'jobPosition': data[f'increment_0{n}_jobPosition'],
-                                f'effectiveDate': data[f'increment_0{n}_effectiveDate'],
-                                f'increment': data[f'increment_0{n}_increment'],
-                                f'incrementType': data[f'increment_0{n}_increment_type'],
-                                f'total': data[f'increment_0{n}_total'],
-                                f'note': data[f'increment_0{n}_note']}
-                        }
-                    contract_increment_data.update(new_data)
+                if len(increment_keys)>n:
+                    if key.startswith(increment_keys[n]):
+                        new_data = { increment_keys[n]:
+                                {
+                                    f'grossSalary': data[f'{increment_keys[n]}_grossSalary'],
+                                    f'jobPosition': data[f'{increment_keys[n]}_jobPosition'],
+                                    f'effectiveDate': data[f'{increment_keys[n]}_effectiveDate'],
+                                    f'increment': data[f'{increment_keys[n]}_increment'],
+                                    f'incrementType': data[f'{increment_keys[n]}_increment_type'],
+                                    f'total': data[f'{increment_keys[n]}_total'],
+                                    f'note': data[f'{increment_keys[n]}_note']}
+                            }
+                        contract_increment_data.update(new_data)
                 elif key.startswith(f'new_inc_'):
-
                     if data[f'new_inc_grossSalary'] != "" and data[f'new_inc_jobPosition'] != "":
-                        print(data)
+                        key=0
+                        if len(increment_keys)>0:
+                            key=int(increment_keys[-1][-2:])
+                        if key<9:
+                            key=f'0{key+1}'
+                        else:
+                            key=key+1
 
-                        new_data = {f'increment_0{len(increment_list) + 1}':
+                        new_data = {f'increment_{key}':
 
                             {
                                 f'grossSalary': data[f'new_inc_grossSalary'],
@@ -596,19 +604,26 @@ def save_data(empid, username):
                                 f'note': data[f'new_inc_note']}
                         }
                         contract_increment_data.update(new_data)
-
-                elif key.startswith(f'contract_0{n}'):
-                    new_data = {f'contract_0{n}':
-                        {
-                            f'contractDate': data[f'contract_0{n}_contractDate'],
-                            f'contractPeriod': data[f'contract_0{n}_contractPeriod'],
-                            f'nextContractDate': data[f'contract_0{n}_nextContractDate']
+                elif len(contract_keys)>n:
+                    if key.startswith(contract_keys[n]):
+                        new_data = {contract_keys[n]:
+                            {
+                                f'contractDate': data[f'{contract_keys[n]}_contractDate'],
+                                f'contractPeriod': data[f'{contract_keys[n]}_contractPeriod'],
+                                f'nextContractDate': data[f'{contract_keys[n]}_nextContractDate']
+                            }
                         }
-                    }
-                    contract_increment_data.update(new_data)
-
+                        contract_increment_data.update(new_data)
                 elif key.startswith(f'new_ctr_'):
-                    new_data = {f'contract_0{len(contract_list) + 1}':
+                    key = 0
+                    if len(contract_keys) > 0:
+                        key = int(contract_keys[-1][-2:])
+                    if key < 9:
+                        key = f'0{key + 1}'
+                    else:
+                        key = key + 1
+
+                    new_data = {f'contract_{key}':
                         {
                             f'contractDate': data[f'new_ctr_contractDate'],
                             f'contractPeriod': data[f'new_ctr_contractPeriod'],
@@ -626,34 +641,38 @@ def save_data(empid, username):
             print(inc_key[-1])
 
             contract_increment_data[inc_key[-1]]['empid'] = empid
-            contract_increment_data[inc_key[-1]]['incrementDate']=datetime.datetime.today().date()
+            contract_increment_data[inc_key[-1]]['incrementDate']= (datetime.datetime.today().date()).strftime("%Y-%m-%d")
 
             doc_ref = db.collection(companyname).document('increments')
             data = contract_increment_data[inc_key[-1]]
             print(data)
+            print(type(data))
             doc_ref.update({'increments': firestore.ArrayUnion([data])})
         elif "increment_01" in contract_increment_data :
             last_key = list(contract_increment_data.keys())[-1]
             last_record = contract_increment_data[last_key]
+            print(last_record['effectiveDate'])
             effective_date = datetime.datetime.strptime(last_record['effectiveDate'], '%Y-%m-%d').date()
             today = datetime.datetime.today().date()
             print(today,effective_date)
 
             if effective_date <= today:
+                doc_ref = db.collection(companyname).document('increments')
+                increments = db.collection('alian_software').document('increments').get().to_dict()['increments']
+
                 db.collection(companyname).document('employee').collection('employee').document(empid).update({'salary':round(float(last_record['total']))* 12})
                 print("updated")
             else:
+                doc_ref = db.collection(companyname).document('increments')
+                increments = doc_ref.get().to_dict()['increments']
                 inc_key = list(contract_increment_data.keys())
-                contract_increment_data[inc_key[-1]]['updateIncrementDate'] = datetime.datetime.today().date()
+                contract_increment_data[inc_key[-1]]['updateIncrementDate'] = str(datetime.datetime.today().date())
+                print(contract_increment_data)
+                doc_ref = db.collection(companyname).document('increments')
+                doc_ref.update({'increments': firestore.ArrayUnion([contract_increment_data[inc_key[-1]]])})
                 print("update date")
 
-
-
-
     return redirect(url_for('employee_profile', id=empid, username=username))
-
-
-
 @app.route('/<username>/tds_data_update/<id>', methods=['GET', 'POST'])
 def tds_data_update(username, id):
     """ UPDATE EMPLOYEE TDS DETAILS """
@@ -792,10 +811,14 @@ def upload(username,salid):
             if len(new_data) != 0:
                 for details in new_data:
                     document_name = details.to_dict()['userID']
-                    print(dict(data))
-                    # db.collection(companyname).document(u'employee').collection('employee').document(document_name).collection('salaryslips').document(salid).update(dict(data))
+                    emp_salary_data = {'cosecID': data["User ID"], 'WO': data["WO"], 'UL': data["UL"],
+                                       'Auth_OT': data["Auth OT"], 'WrkHrs': data["WrkHrs"], 'CL': data["C_L"],
+                                       'PL': data["P_L"], 'SL': data["S_L"]}
+                    print(document_name)
+                    print(data)
+                    print(emp_salary_data)
+                    db.collection(companyname).document(u'employee').collection('employee').document(document_name).collection('salaryslips').document(salid).update(emp_salary_data)
                     # print(details.to_dict())
-                print(data)
         return redirect(url_for('salary', username=username))
     return redirect(url_for('salary', username=username))
 
@@ -851,7 +874,7 @@ def salary_sheet_edit_(username, empid, salid):
         return redirect(url_for('salary_sheet_view', salid=salid, username=username))
 
     holidays = db.collection(companyname).document('holidays').get().to_dict()
-    moath_data = moth_count.count(holidays)
+    moath_data = moth_count.count_previous_month(holidays=holidays, salid=salid)
     working_days = moath_data['workingDays']
     employee_salary_data = Salarymanage(db).get_salary_data(companyname, empid, salid)
     salary_percentage = (db.collection(companyname).document('salary_calc').get()).to_dict()
@@ -863,7 +886,7 @@ def salary_sheet_edit_(username, empid, salid):
 @app.route('/<username>/salarysheeteditall/<salid>', methods=["GET","POST"])
 def salary_sheet_edit_all(username, salid):
     holidays = db.collection(companyname).document('holidays').get().to_dict()
-    moath_data = moth_count.count(holidays)
+    moath_data = moth_count.count_previous_month(holidays=holidays, salid=salid)
     working_days = moath_data['workingDays']
     salary_percentage = (db.collection(companyname).document('salary_calc').get()).to_dict()
     salary_list = Salarymanage(db).get_all_emp_salary_data(companyname, salid)
@@ -883,23 +906,28 @@ def save_edited_data():
     username = request.args.get('user_name')
     # print(f"{salid} is salid and {username} is username")
 
-    for key, value in form_dict.items():
-        if value != '':
-            document_name = key.split('_')[0]  # Extracting the document name from the key
-            field_name = key.split('_')[1]  # Extracting the field name from the key
-            print(document_name)
-            print({field_name: value})
+    print(form_dict)
 
-            # Updating the document in Firestore
-            doc_ref = db.collection(companyname).document('employee').collection('employee').document(document_name).collection(
-            'salaryslips').document(salid)
-            doc_ref.update({field_name: value})
+    all_data = {}
+
+    for key, value in form_dict.items():
+        if value == '':
+            value = 0
+        document_name = key.split('_')[0]  # Extracting the document name from the key
+        field_name = key.split('_')[1]  # Extracting the field name from the key
+        # If key not exist then add new key
+        if len(all_data) == 0 or document_name not in all_data.keys():
+            all_data.update({document_name: {field_name: value}})
+        # If key already exist then add field in key value
+        else:
+            all_data[document_name].update({field_name: value})
+
+    # Updating the document in Firestore
+    for emp_id, sal_data in all_data.items():
+        db.collection(companyname).document('employee').collection('employee').document(emp_id).collection('salaryslips').document(salid).update(sal_data)
 
     # Return a response to the client
     return redirect(url_for('salary_sheet_view', username=username, salid=salid))
-
-
-
 
 
 @app.route('/<username>/set_status/<salid>/<status>')
@@ -949,14 +977,22 @@ def download_pdf():
 
 
 @app.route('/<username>/pdf/<salid>')
-def pdf(username, salid):
+def pdf_all(username, salid):
     ''' SALARY SLIP PDF GENERATION '''
-    global companyname
-
-    path = get_download_folder()
-    salary = SalarySlip(db)
-    salary.salary_slip(companyname, salid, path)
+    salary_list = Salarymanage(db).get_all_emp_salary_data(salid=salid, companyname=companyname)
+    print(salary_list)
+    responses = []
+    for i in salary_list:
+        empid = salary_list[i]["userID"]
+        path = get_download_folder()
+        salary = SalarySlip(db)
+        responcedata = salary.salary_slip_personal(companyname, empid, salid, path)
+        return responcedata
+    # for response in responses:
+    #     # CHECK THE USER
+    #     return response
     return redirect(url_for('salary', username=username, salid=salid))
+
 
 
 # @app.route('/<username>/excel/<salid>')
