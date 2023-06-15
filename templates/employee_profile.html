@@ -62,7 +62,6 @@
   </style>
 {% endblock %}
 {% block content %}
-
 <!-- Header Section  -->
 <div class="container-fluid" style="background-color: #FFFFFF;">
     <div class="row mt-2">
@@ -326,6 +325,7 @@
                                                                                                                                            name="doj"
                                                                                                                                            id="doj"
                                                                                                                                            value='{{ data["personal_data"]["doj"] }}'
+                                                                                                                                           onchange="compareDates()"
                                                                                                                                            placeholder="Select">
                                                                                                                                 </div>
                                                                                                                                 <span class="pmd-textfield-focused"></span>
@@ -2066,7 +2066,7 @@
                                                                                           </tr>
                                                                                           <tr>
                                                                                               <td colspan="6">
-                                                                                                  <a href="#" id="addNewDataLinkCtr">
+                                                                                                  <a  id="addNewDataLinkCtr">
                                                                                                   <span class="hidden">+ ADD NEW DATA</span></a></td>
                                                                                           </tr>
                                                                                           </tbody>
@@ -2107,7 +2107,7 @@
                                                                                           <th scope="col">Gross Salary (₹)</th>
                                                                                           <th scope="col">Job Position</th>
                                                                                           <th scope="col">Effective Date</th>
-                                                                                          <th scope="col" onclick="toggleIncrementType()">Increment</th>
+                                                                                          <th scope="col">Increment</th>
                                                                                           <th scope="col">Total (₹)</th>
                                                                                           <th scope="col">Note</th>
                                                                                           <th></th>
@@ -2117,64 +2117,64 @@
                                                                                         {% for index, content in increment_data %}
                                                                                         {% for key in content %}
                                                                                         <tr class="table-light col-12">
-                                                                                          <td scope="col">
-                                                                                            <p id="incinformation{{ index }}_1">{{ content[key]['grossSalary'] }}</p>
-                                                                                            <input type="text" id="inctextBox{{ index }}_1" name="{{key}}_grossSalary" class="hidden form-control-sm" size="8" onkeypress="onlyNumber(event)">
-                                                                                          </td>
-                                                                                          <td scope="col">
-                                                                                            <p id="incinformation{{ index }}_2">{{ content[key]['jobPosition'] }}</p>
-                                                                                            <input type="text" id="inctextBox{{ index }}_2" name="{{key}}_jobPosition" class="hidden form-control-sm" size="8">
-                                                                                          </td>
-                                                                                        <td scope="col">
-                                                                                          <p id="incinformation{{ index }}_3">{{ content[key]['effectiveDate'] }}</p>
-                                                                                          <span id="error" style="color: red;"></span>
-                                                                                          <input type="date" id="inctextBox{{ index }}_3" name="{{key}}_effectiveDate"  min="{% if key == 'increment_01' %}{{data['personal_data']['doj']}}{% else %}{{effective_dates[index-1]}}{% endif %}" class="hidden form-control-sm storedDate" size="8" required>
-                                                                                        </td>
-                                                                                        <td scope="col" class="d-flex">
-                                                                                          <div class="icon-box">
-                                                                                            {% if content[key]['incrementType'] == 'full_amount' %}
-                                                                                              <p id="incinformation{{ index }}_4" class="icon-text">{{ content[key]['increment'] }}<span> Rs</span></p>
-                                                                                            {% elif content[key]['incrementType'] == 'percentage' %}
-                                                                                              <p id="incinformation{{ index }}_4" class="icon-text">{{ content[key]['increment'] }}<span> %</span></p>
-                                                                                            {% endif %}
-                                                                                          </div>
-                                                                                          <select id="incdrop{{ index }}_4" name="{{key}}_increment_type" class="hidden form-control-sm increment-dropdown" onchange="calculateTotal({{ index }})">
-                                                                                            <option {% if content[key]['incrementType'] == 'percentage' %}selected{% endif %} value="percentage">%</option>
-                                                                                            <option {% if content[key]['incrementType'] == 'full_amount' %}selected{% endif %} value="full_amount">₹</option>
-                                                                                          </select>
-                                                                                          <input type="text" id="inctextBox{{ index }}_4_input" name="{{key}}_increment" class="hidden form-control-sm" size="8" value="{{ content[key]['increment'] }}"  onkeypress="calculateTotal({{ index }}),onlyNumber(event)">
-                                                                                        </td>
+  <td scope="col">
+    <p id="incinformation{{ index }}_1">{{ content[key]['grossSalary'] }}</p>
+    <input type="text" id="inctextBox{{ index }}_1" name="{{key}}_grossSalary" class="hidden form-control-sm" size="8" onkeypress="onlyNumber(event)">
+  </td>
+  <td scope="col">
+    <p id="incinformation{{ index }}_2">{{ content[key]['jobPosition'] }}</p>
+    <input type="text" id="inctextBox{{ index }}_2" name="{{key}}_jobPosition" class="hidden form-control-sm" size="8">
+  </td>
+<td scope="col">
+  <p id="incinformation{{ index }}_3">{{ content[key]['effectiveDate'] }}</p>
+  <span id="error" style="color: red;"></span>
+  <input type="date" id="inctextBox{{ index }}_3" name="{{key}}_effectiveDate"  min="{% if key == 'increment_01' %}{{data['personal_data']['doj']}}{% else %}{{effective_dates[index-1]}}{% endif %}" class="hidden form-control-sm storedDate" size="8" required>
+</td>
+<td scope="col" class="d-flex">
+  <div class="icon-box">
+    {% if content[key]['incrementType'] == 'full_amount' %}
+      <p id="incinformation{{ index }}_4" class="icon-text">{{ content[key]['increment'] }}<span> Rs</span></p>
+    {% elif content[key]['incrementType'] == 'percentage' %}
+      <p id="incinformation{{ index }}_4" class="icon-text">{{ content[key]['increment'] }}<span> %</span></p>
+    {% endif %}
+  </div>
+  <select id="incdrop{{ index }}_4" name="{{key}}_increment_type" class="hidden form-control-sm increment-dropdown" onchange="calculateTotal({{ index }})">
+    <option {% if content[key]['incrementType'] == 'percentage' %}selected{% endif %} value="percentage">%</option>
+    <option {% if content[key]['incrementType'] == 'full_amount' %}selected{% endif %} value="full_amount">₹</option>
+  </select>
+  <input type="text" id="inctextBox{{ index }}_4_input" name="{{key}}_increment" class="hidden form-control-sm" size="8" value="{{ content[key]['increment'] }}"  onkeypress="calculateTotal({{ index }}),onlyNumber(event)">
+</td>
 
-                                                                                          <td scope="col">
-                                                                                            <p id="incinformation{{ index }}_5">{{ content[key]['total'] }}</p>
-                                                                                            <input type="text" id="inctextBox{{ index }}_5" name="{{key}}_total" class="hidden form-control-sm" size="8" onkeypress="onlyNumber(event)">
-                                                                                          </td>
-                                                                                          <td scope="col">
-                                                                                            <p id="incinformation{{ index }}_6" class="note-column" title="{{ content[key]['note'] }}">{{ content[key]['note'] }}</p>
-                                                                                            <input type="text" id="inctextBox{{ index }}_6" name="{{key}}_note" class="hidden form-control-sm" size="8">
-                                                                                          </td>
-                                                                                          <td> <a type="btn" class="btn" href="/delete_increment/{{data['personal_data']['userID'] }}/{{username}}/{{key}}/{{content[key]}}">
-                                                                                            <i class="fa fa-trash" aria-hidden="true"></i>
-                                                                                            </a></td>
-                                                                                        </tr>
+  <td scope="col">
+    <p id="incinformation{{ index }}_5">{{ content[key]['total'] }}</p>
+    <input type="text" id="inctextBox{{ index }}_5" name="{{key}}_total" class="hidden form-control-sm" size="8" onkeypress="onlyNumber(event)">
+  </td>
+  <td scope="col">
+    <p id="incinformation{{ index }}_6" class="note-column" title="{{ content[key]['note'] }}">{{ content[key]['note'] }}</p>
+    <input type="text" id="inctextBox{{ index }}_6" name="{{key}}_note" class="hidden form-control-sm" size="8">
+  </td>
+  <td> <a type="btn" class="btn" href="/delete_increment/{{data['personal_data']['userID'] }}/{{username}}/{{key}}/{{content[key]}}">
+    <i class="fa fa-trash" aria-hidden="true"></i>
+    </a></td>
+</tr>
 
-                                                                                        <div class="modal fade" id="deletionPopUp" tabindex="-1" aria-labelledby="exampleModalLabel{{ index }}" aria-hidden="true">
-                                                                                            <div class="modal-dialog d-flex align-items-center justify-content-center">
-                                                                                              <div class="modal-content">
-                                                                                                <div class="modal-header">
-                                                                                                  <h5 class="modal-title" id="exampleModalLabel{{ index }}">Confirm Deletion</h5>
-                                                                                                  <button type="button" class="btn-close bg-transparent" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                                                </div>
-                                                                                                <div class="modal-body">
-                                                                                                  <p>Are you sure you want to delete this increment?</p>
-                                                                                                </div>
-                                                                                                <div class="modal-footer">
-                                                                                                  <button type="button" class="btn btn-light custom-cancle-btn" data-bs-dismiss="modal">Cancel</button>
-                                                                                                  <a type="button" class="btn btn-danger" href="/delete_increment/{{ data['personal_data']['userID'] }}/{{ username }}/{{ key }}/{{ content[key] }}">Delete</a>
-                                                                                                </div>
-                                                                                              </div>
-                                                                                            </div>
-                                                                                          </div>
+<div class="modal fade" id="deletionPopUp" tabindex="-1" aria-labelledby="exampleModalLabel{{ index }}" aria-hidden="true">
+    <div class="modal-dialog d-flex align-items-center justify-content-center">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel{{ index }}">Confirm Deletion</h5>
+          <button type="button" class="btn-close bg-transparent" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete this increment?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light custom-cancle-btn" data-bs-dismiss="modal">Cancel</button>
+          <a type="button" class="btn btn-danger" href="/delete_increment/{{ data['personal_data']['userID'] }}/{{ username }}/{{ key }}/{{ content[key] }}">Delete</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
                                                                                         {% endfor %}
@@ -2192,7 +2192,7 @@
                                                                                           </td>
                                                                                           <td scope="col">
                                                                                             <p id="incinformation10_3">
-                                                                                              <input type="date" id="inctextBox10_3" name="new_inc_effectiveDate"   min="{% if key == 'increment_01' %}{{data['personal_data']['doj']}}{% else %}{{effective_dates[index]}}{% endif %}" class="form-control-sm storedDate" size="8" onclick="validateDate()">
+                                                                                              <input type="date" id="inctextBox10_3" name="new_inc_effectiveDate"   min="{% if key == 'increment_01' %}{{data['personal_data']['doj']}}{% else %}{{effective_dates[index]}}{% endif %}" class="form-control-sm storedDate" size="8"  onchange="compareDates()" onclick="validateDate()" required>
                                                                                               <script> console.log("{{effective_dates[index]}}")</script>
                                                                                             </p>
                                                                                           </td>
@@ -2213,7 +2213,7 @@
                                                                                           </td>
                                                                                         </tr>
                                                                                         <tr>
-                                                                                          <td colspan="6"><a class="hidden" href="#" id="addNewDataLink">+ ADD NEW DATA</a></td>
+                                                                                          <td colspan="6"><a class="hidden"  id="addNewDataLink">+ ADD NEW DATA</a></td>
                                                                                         </tr>
                                                                                       </tbody>
                                                                                     </table>
@@ -3184,16 +3184,12 @@
                                                                                             </tr>
                                                                                             {% endif %}
                                                                                             {% endfor%}
-
-
                                                                                             <tbody>
                                                                                         </table>
 
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-
-
                                                                         </div>
 
                                                                     </div>
@@ -3230,26 +3226,19 @@
     function compareDates() {
       var firstDate = new Date(document.getElementById("doj").value);
       var secondDate = new Date(document.getElementById("inctextBox0_3").value);
-
-      if (firstDate > secondDate) {
+      var additionalDate = new Date(document.getElementById("incinformation0_3").textContent);
+      if (firstDate > secondDate || firstDate > additionalDate) {
         document.getElementById("dojerror").textContent = "Error: The first date cannot be greater than the second date.";
-        console.log("Error: The first date cannot be greater than the second date.")
+        console.log("The  date of joining cannot be greater than the first increment date.");
         return false; // Prevent form submission
       } else {
         document.getElementById("dojerror").textContent = "";
-        console.log("Error: The first date  greater than the second date.")
+        console.log("Error: The first date  greater than the second date.");
 
         return true; // Allow form submission
       }
     }
   </script>
-
-
-
-
-
-
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
       // Get all the increment dropdown elements
@@ -3984,49 +3973,6 @@ return daysDiff;
 
 
     </script>
-
-
-
-
-
-
-<!--Script For Increment Type Rs/Percentage-->
-<script>
-    var incrementType = 'INR';
-
-function toggleIncrementType() {
-  var incrementCells = document.querySelectorAll("#tableBody td:nth-child(4) p");
-
-  if (incrementType === 'INR') {
-    for (var i = 0; i < incrementCells.length; i++) {
-      var incrementValue = parseFloat(incrementCells[i].textContent);
-      var grossSalary = parseFloat(incrementCells[i].parentNode.parentNode.querySelector("td:nth-child(1) p").textContent);
-      var incrementPercentage = (incrementValue / grossSalary) * 100;
-
-      incrementCells[i].textContent = incrementPercentage.toFixed(2) + '%';
-    }
-
-    incrementType = 'Percentage';
-  } else {
-    for (var i = 0; i < incrementCells.length; i++) {
-      var incrementPercentage = parseFloat(incrementCells[i].textContent);
-      var grossSalary = parseFloat(incrementCells[i].parentNode.parentNode.querySelector("td:nth-child(1) p").textContent);
-      var incrementValue = (incrementPercentage / 100) * grossSalary;
-
-      incrementCells[i].textContent = incrementValue.toFixed(2);
-    }
-
-    incrementType = 'INR';
-  }
-}
-  </script>
-
-
-
-
-
-
-
 <!-- script for editing priviously added increments -->
 
 
