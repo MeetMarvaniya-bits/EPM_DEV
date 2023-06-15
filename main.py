@@ -26,8 +26,6 @@ from concurrent.futures import ThreadPoolExecutor
 from generate_excel import create_excel_file
 from read_data import ExcelData
 from apscheduler.schedulers.background import BackgroundScheduler
-import os
-import platform
 import read_excel_leave_data
 
 
@@ -61,11 +59,6 @@ def clear_session_data():
 scheduler = BackgroundScheduler()
 scheduler.add_job(clear_session_data, 'interval', days=1, start_date=datetime.datetime.now().replace(hour=0, minute=0, second=0))
 scheduler.start()
-
-
-
-
-
 
 @app.route('/', methods=["POST", "GET"])
 def login():
@@ -806,19 +799,18 @@ def upload(username,salid):
         all_data = read_excel_leave_data.read_excel_rows(file)
         # GET ALL EMPLOYEE USER ID FROM EXCEL SHEET
         for data in all_data:
-            # print(data)
-            new_data = db.collection(companyname).document(u'employee').collection('employee').where('cosecID', '==', data["User ID"]).get()
+            print(data)
+            new_data = db.collection(companyname).document(u'employee').collection('employee').where('cosecID', '==', data[" User ID"]).get()
             if len(new_data) != 0:
                 for details in new_data:
                     document_name = details.to_dict()['userID']
-                    emp_salary_data = {'cosecID': data["User ID"], 'WO': data["WO"], 'UL': data["UL"],
-                                       'Auth_OT': data["Auth OT"], 'WrkHrs': data["WrkHrs"], 'CL': data["C_L"],
+                    emp_salary_data = {'cosecID': data[" User ID"], 'WO': data["WO"], 'UL': data["UL"],
+                                       'OT': data["OT"], 'WrkHrs': data["WrkHrs"],'paidLeave':data["PL"], 'CL': data["C_L"],
                                        'PL': data["P_L"], 'SL': data["S_L"]}
-                    print(document_name)
-                    print(data)
+
                     print(emp_salary_data)
-                    db.collection(companyname).document(u'employee').collection('employee').document(document_name).collection('salaryslips').document(salid).update(emp_salary_data)
-                    # print(details.to_dict())
+                    # db.collection(companyname).document(u'employee').collection('employee').document(document_name).collection('salaryslips').document(salid).update(emp_salary_data)
+                    print(details.to_dict())
         return redirect(url_for('salary', username=username))
     return redirect(url_for('salary', username=username))
 
