@@ -371,17 +371,7 @@
                     <td scope="col">{{data[i]['netSalary']}}</td>
 
                     <!-- Edit Button  -->
-                    {% if salary_status=='Paid' or salary_status=='Approved'%}
-                    <td scope="col">
-                        <a href="#" disabled>
-                            <button class="btn border-1 btn-secondary" type="button" aria-haspopup="true"
-                                    aria-expanded="false"
-                                    style="color:#2F3990; border-color:#2F3990; background-color: #FFFFFF" disabled>
-                                Edit
-                            </button>
-                        </a>
-                    </td>
-                    {% else %}
+
                     <td scope="col">
                         <a href="{{url_for('salary_sheet_edit_', username=username,empid=data[i]['userID'],salid=salid)}}">
                             <button class="btn border-1 btn-secondary" type="button" aria-haspopup="true"
@@ -393,7 +383,7 @@
 
                     </td>
 
-                    {% endif %}
+
                 </tr>
 
 
