@@ -26,9 +26,9 @@ from concurrent.futures import ThreadPoolExecutor
 from generate_excel import create_excel_file
 from read_data import ExcelData
 from apscheduler.schedulers.background import BackgroundScheduler
-import os
-import platform
 import read_excel_leave_data
+
+
 
 # FLASK APP
 app = Flask(__name__)
@@ -59,11 +59,6 @@ def clear_session_data():
 scheduler = BackgroundScheduler()
 scheduler.add_job(clear_session_data, 'interval', days=1, start_date=datetime.datetime.now().replace(hour=0, minute=0, second=0))
 scheduler.start()
-
-
-
-
-
 
 @app.route('/', methods=["POST", "GET"])
 def login():
@@ -801,19 +796,18 @@ def upload(username,salid):
         all_data = read_excel_leave_data.read_excel_rows(file)
         # GET ALL EMPLOYEE USER ID FROM EXCEL SHEET
         for data in all_data:
-            # print(data)
-            new_data = db.collection(companyname).document(u'employee').collection('employee').where('cosecID', '==', data["User ID"]).get()
+            print(data)
+            new_data = db.collection(companyname).document(u'employee').collection('employee').where('cosecID', '==', data[" User ID"]).get()
             if len(new_data) != 0:
                 for details in new_data:
                     document_name = details.to_dict()['userID']
-                    emp_salary_data = {'cosecID': data["User ID"], 'WO': data["WO"], 'UL': data["UL"],
-                                       'Auth_OT': data["Auth OT"], 'WrkHrs': data["WrkHrs"], 'CL': data["C_L"],
+                    emp_salary_data = {'cosecID': data[" User ID"], 'WO': data["WO"], 'UL': data["UL"],
+                                       'OT': data["OT"], 'WrkHrs': data["WrkHrs"],'paidLeave':data["PL"], 'CL': data["C_L"],
                                        'PL': data["P_L"], 'SL': data["S_L"]}
-                    print(document_name)
-                    print(data)
+
                     print(emp_salary_data)
-                    db.collection(companyname).document(u'employee').collection('employee').document(document_name).collection('salaryslips').document(salid).update(emp_salary_data)
-                    # print(details.to_dict())
+                    # db.collection(companyname).document(u'employee').collection('employee').document(document_name).collection('salaryslips').document(salid).update(emp_salary_data)
+                    print(details.to_dict())
         return redirect(url_for('salary', username=username))
     return redirect(url_for('salary', username=username))
 
@@ -869,7 +863,7 @@ def salary_sheet_edit_(username, empid, salid):
         return redirect(url_for('salary_sheet_view', salid=salid, username=username))
 
     holidays = db.collection(companyname).document('holidays').get().to_dict()
-    moath_data = moth_count.count(holidays)
+    moath_data = moth_count.count_previous_month(holidays=holidays, salid=salid)
     working_days = moath_data['workingDays']
     employee_salary_data = Salarymanage(db).get_salary_data(companyname, empid, salid)
     salary_percentage = (db.collection(companyname).document('salary_calc').get()).to_dict()
@@ -881,7 +875,7 @@ def salary_sheet_edit_(username, empid, salid):
 @app.route('/<username>/salarysheeteditall/<salid>', methods=["GET","POST"])
 def salary_sheet_edit_all(username, salid):
     holidays = db.collection(companyname).document('holidays').get().to_dict()
-    moath_data = moth_count.count(holidays)
+    moath_data = moth_count.count_previous_month(holidays=holidays, salid=salid)
     working_days = moath_data['workingDays']
     salary_percentage = (db.collection(companyname).document('salary_calc').get()).to_dict()
     salary_list = Salarymanage(db).get_all_emp_salary_data(companyname, salid)
@@ -906,26 +900,24 @@ def save_edited_data():
     all_data = {}
 
     for key, value in form_dict.items():
-        if value != '':
-            document_name = key.split('_')[0]  # Extracting the document name from the key
-            field_name = key.split('_')[1]  # Extracting the field name from the key
-            if len(all_data) == 0 or document_name not in all_data.keys():
-                all_data.update({document_name: {field_name: value}})
-            else:
-                # print(all_data)
-                for key,value2 in all_data.items():
-                    all_data[key].update({field_name: value})
+        if value == '':
+            value = 0
+        document_name = key.split('_')[0]  # Extracting the document name from the key
+        field_name = key.split('_')[1]  # Extracting the field name from the key
+        # If key not exist then add new key
+        if len(all_data) == 0 or document_name not in all_data.keys():
+            all_data.update({document_name: {field_name: value}})
+        # If key already exist then add field in key value
+        else:
+            all_data[document_name].update({field_name: value})
 
-    print(all_data)
-
+    # Updating the document in Firestore
     for emp_id, sal_data in all_data.items():
-        print(emp_id)
-        print(sal_data)
-        # Updating the document in Firestore
-        # db.collection(companyname).document('employee').collection('employee').document(emp_id).collection('salaryslips').document(salid).update(sal_data)
+        db.collection(companyname).document('employee').collection('employee').document(emp_id).collection('salaryslips').document(salid).update(sal_data)
 
     # Return a response to the client
     return redirect(url_for('salary_sheet_view', username=username, salid=salid))
+
 
 @app.route('/<username>/set_status/<salid>/<status>')
 def set_status(username, salid, status):
@@ -974,14 +966,22 @@ def download_pdf():
 
 
 @app.route('/<username>/pdf/<salid>')
-def pdf(username, salid):
+def pdf_all(username, salid):
     ''' SALARY SLIP PDF GENERATION '''
-    global companyname
-
-    path = get_download_folder()
-    salary = SalarySlip(db)
-    salary.salary_slip(companyname, salid, path)
+    salary_list = Salarymanage(db).get_all_emp_salary_data(salid=salid, companyname=companyname)
+    print(salary_list)
+    responses = []
+    for i in salary_list:
+        empid = salary_list[i]["userID"]
+        path = get_download_folder()
+        salary = SalarySlip(db)
+        responcedata = salary.salary_slip_personal(companyname, empid, salid, path)
+        return responcedata
+    # for response in responses:
+    #     # CHECK THE USER
+    #     return response
     return redirect(url_for('salary', username=username, salid=salid))
+
 
 
 # @app.route('/<username>/excel/<salid>')

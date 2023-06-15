@@ -332,6 +332,29 @@
                                                                                                                                 <p id="dojerror" style="color: red;"></p>
                                                                                                                             </div>
                                                                                                                             <br>
+                                                                                                                            <div class="form-group row pmd-textfield  pmd-textfield-floating-label ms-1">                                                                                                                       <div class="form-group row pmd-textfield pmd-textfield-floating-label">
+                                                                                                                        <label class="col-form-label control-label col-sm-4 col-md-5"
+                                                                                                                               for="workEmail" style="color: #455056;"><b>Work Email</b></span></label>
+                                                                                                                        <div class="col-sm-8 col-md-7">
+
+                                                                                                                            <input type="email"
+                                                                                                                                   class="form-control"
+                                                                                                                                   name="workEmail"
+                                                                                                                                   id="workEmail"
+                                                                                                                                   value='{{ data["personal_data"]["workEmail"] }}'
+                                                                                                                                   placeholder="Enter Email ID" required onblur="checkEmail()" onfocus="clearError()">
+                                                                                                                            <p id="error" style="color: red"></p>
+                                                                                                                            {% if responce %}
+                                                                                                                            <span style="color:red">{{responce}}</span>
+                                                                                                                            {% endif %}
+                                                                                                                        </div>
+                                                                                                                        <span class="pmd-textfield-focused"></span>
+                                                                                                                            </div>
+                                                                                                                    </div>
+
+
+
+
                                                                                                                         </div>
                                                                                                                     </div>
 
@@ -1586,6 +1609,13 @@
                                                                     </th>
                                                                     <td class="col-3">{{
                                                                         data["personal_data"]["currentExperience"] }}
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th class="col-3">Work Email
+                                                                    </th>
+                                                                    <td class="col-3">{{
+                                                                        data["personal_data"]["workEmail"] }}
                                                                     </td>
                                                                 </tr>
                                                                 </thead>

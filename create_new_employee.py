@@ -55,7 +55,7 @@ class Create():
                 'password':request.form.get('password'),
                 'salary': float(request.form.get('salary')), 'jobPosition': request.form.get('jobPosition'),
                 'doj': request.form.get('doj'),'designation':request.form.get('designation'),
-                'currentExperience': f"{request.form.get('currentExperience')} year", 'dob': request.form.get('dob'),
+                'currentExperience': f"{request.form.get('currentExperience')}",'workEmail':request.form.get('workEmail'), 'dob': request.form.get('dob'),
                 'gender': request.form.get('gender'), 'phoneNo': request.form.get('mobileno'),
                 'bankName': request.form.get('bankname'), 'accountHolderName': request.form.get('accountholdername'),
                 'accountNumber': request.form.get('accountno'), 'ifscCode': request.form.get('ifsccode'),
