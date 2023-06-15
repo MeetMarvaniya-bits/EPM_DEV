@@ -534,6 +534,7 @@ def personal_data_update(username, id):
     """ UPDATE EMPLOYEE PERSONAL DETAILS """
     if request.method == 'POST':
         form = request.get_json()
+        print(form)
         update_obj.update_personal_info(companyname, form, id)
     return redirect(url_for('employee_profile', id=id, username=username))
 
@@ -548,6 +549,7 @@ def save_data(empid, username):
     # # INCREMENT DATA
     increment_data = []
     contract_data = []
+    previous_salary=0
     personal_data = personal_data_future.result()
     for key, value in personal_data.items():
         if key.startswith('increment'):
@@ -636,15 +638,12 @@ def save_data(empid, username):
         db.collection(companyname).document(u'employee').collection('employee').document(empid).update(contract_increment_data)
         if "increment_01" in contract_increment_data and len(contract_increment_data) >len(increment_data):
             inc_key = list(contract_increment_data.keys())
-            print(inc_key[-1])
-
             contract_increment_data[inc_key[-1]]['empid'] = empid
             contract_increment_data[inc_key[-1]]['incrementDate']= (datetime.datetime.today().date()).strftime("%Y-%m-%d")
 
             doc_ref = db.collection(companyname).document('increments')
             data = contract_increment_data[inc_key[-1]]
-            print(data)
-            print(type(data))
+
             doc_ref.update({'increments': firestore.ArrayUnion([data])})
         elif "increment_01" in contract_increment_data :
             last_key = list(contract_increment_data.keys())[-1]
@@ -750,10 +749,8 @@ def set_storage_path(username, salid):
 def salary(username):
     ''' DISPLAY SALARY DETAILS OF ALL MONTH IN YEAR '''
     holidays = db.collection(companyname).document('holidays').get().to_dict()
-    moath_data = moth_count.count(holidays)
-    working_days = moath_data['workingDays']
-    if datetime.datetime.now().day == 1 and 'session_salary' not in session:
-        SalaryCalculation(db, companyname).generate_salary(workingday=working_days)
+    if datetime.datetime.now().day == 15 and 'session_salary' not in session:
+        SalaryCalculation(db, companyname).generate_salary(holidays=holidays)
         leaveobj.leave_add(companyname)
         session['session_salary'] = datetime.datetime.now()
         print("create session Variable")

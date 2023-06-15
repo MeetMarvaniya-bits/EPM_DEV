@@ -1,5 +1,5 @@
 from flask import request
-from firebase_admin import credentials, storage
+from firebase_admin import credentials, storage, firestore
 import firebase_admin
 from PIL import Image
 import base64
@@ -18,20 +18,16 @@ class Create():
     def __init__(self,db,companyname):
         self.db=db
         self.companyname=companyname
-
     def result(self):
 
         ''' ADD FORM DETAILS INTO DATABASE '''
 
         employee_data = (self.db.collection(self.companyname).document('employee').collection('employee').get())
-
         if employee_data == None:
             last_id = 0
         else:
             last_id = int(employee_data[-1].to_dict()['userID'][3:])
-
         new_id = ''
-
         if last_id < 9:
             new_id = "EMP000" + str(last_id + 1)
         elif last_id < 99:
@@ -55,6 +51,7 @@ class Create():
             personal_data = {
                 'employeeName': request.form.get('name'), 'userID': new_id, 'department': request.form.get('department'),
                 'email': request.form.get('email'),
+                'cosecID':request.form.get('cosecID'),
                 'password':request.form.get('password'),
                 'salary': float(request.form.get('salary')), 'jobPosition': request.form.get('jobPosition'),
                 'doj': request.form.get('doj'),'designation':request.form.get('designation'),
@@ -76,6 +73,13 @@ class Create():
             }
 
             self.db.collection(self.companyname).document(u'employee').collection('employee').document(new_id).collection("leaveMST").document("total_leaves").set(leave_data["total_leaves"])
+            doc_ref = self.db.collection(self.companyname).document('increments')
+            if request.form.get('doj') !=None and request.form.get('doj')!='':
+                doc_ref.update({'increments': firestore.ArrayUnion([{'empid': new_id,
+                                                                     'effectiveDate': request.form.get('doj'),
+                                                                     'total': float(request.form.get('salary')),
+                                                                     'grossSalary':0
+                                                                     }])})
 
             # ADD SALARY DATA
             # salary_slip_data = {
@@ -130,5 +134,8 @@ class Create():
                     'tfperiod': request.form.get("tfperiod")
             }
             self.db.collection(self.companyname).document(u'employee').collection('employee').document(new_id).collection("tdsmst").document("tds").set(tds_detail)
+
+
+
 
             return new_id
