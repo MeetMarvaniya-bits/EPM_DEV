@@ -15,7 +15,7 @@ class SalaryCalculation():
         today = datetime.date.today()
         year = today.year
         day=today.day
-        month = 8
+        month = today.month
         if day >=26:
             month+=1
         if month == 1:
@@ -43,7 +43,7 @@ class SalaryCalculation():
         prev_month_dates = [f"{year:04}-{prev_month:02}-{day:02}" for day in range(26, prev_num_days + 1)]
         current_month_dates = [f"{year:04}-{current_month:02}-{day:02}" for day in range(1, 26)]
         dates = prev_month_dates + current_month_dates
-        print(dates)
+
         data_date = []
         if holidays != None:
             for day in range(1, len(prev_month_dates) + 1):
@@ -55,7 +55,7 @@ class SalaryCalculation():
                 else:
                     Week_off += 1
             for day in range(1, 26):
-                print(current_month_dates[day - 1])
+
                 if dates[day - 1] in holidays:
                     holiday += 1
                 elif calendar.weekday(year, current_month, day) not in (calendar.SATURDAY, calendar.SUNDAY):
@@ -70,10 +70,9 @@ class SalaryCalculation():
             'holydays': holiday
         }
 
-        print(data_date)
         employee_list_with_increments = (self.db.collection(self.companyname).document('increments').get()).to_dict()
         result = []
-        print(employee_list_with_increments)
+
         for increment in employee_list_with_increments['increments']:
             effective_date = increment.get('effectiveDate')
             if effective_date:
@@ -82,7 +81,6 @@ class SalaryCalculation():
 
                 if ((increment_month == current_month and (increment_date) <= 25)) or ((increment_month == prev_month and (increment_date) >= 26)):
                     result.append(increment)
-        print(result,'results++++++++++++++++++++++++')
         salary_percentage = (self.db.collection(self.companyname).document('salary_calc').get()).to_dict()
 
         employee_list = {}
@@ -105,10 +103,6 @@ class SalaryCalculation():
                     doc.id).collection(
                     'salaryslips').document(f'sal00{current_month - 1}').delete()
 
-
-        for employee in employee_list:
-            print(employee)
-
         for key, value in employee_list.items():
 
             empid = key
@@ -118,7 +112,6 @@ class SalaryCalculation():
             emp_name = emp_data['employeeName']
 
             increment = [d for d in result if d.get('empid') == empid]
-            print(increment)
             if increment != [] and emp_data['designation']=='Employee':
                 empid = increment[0]['empid']
                 effective_date = increment[0]['effectiveDate']
@@ -166,7 +159,6 @@ class SalaryCalculation():
                 gross_salary_bfr = round((
                         emp_basic_salary_bfr + emp_hra_bfr + emp_da_bfr + other_allowance_bfr + incentive_bfr + arrears_bfr + grs_outstanding_adjustment_bfr + statutory_bns_bfr),
                     2)
-                print("gross_salary_bfr", gross_salary_bfr)
 
                 if emp_salary_bfr <= 22000:
                     epfo_bfr = round(((emp_salary_bfr - emp_hra_bfr) * 0.24), 2)
@@ -237,7 +229,6 @@ class SalaryCalculation():
                 statutory_bns_aft = 0
 
                 gross_salary_aft = round((emp_basic_salary_aft + emp_hra_aft + emp_da_aft + other_allowance_aft + incentive_aft + arrears_aft + grs_outstanding_adjustment_aft + statutory_bns_aft),2)
-                print("gross_salary_aft" ,gross_salary_aft)
                 if emp_salary_aft <= 22000:
                     epfo_aft = round(((emp_salary_aft - emp_hra_aft) * 0.24), 2)
 
@@ -279,7 +270,7 @@ class SalaryCalculation():
                 }
 
                 salary_slip_data = {
-                    'employeeName': emp_name, 'userID': empid, 'slip_id': f'sal00{current_month - 1}',
+                    'employeeName': emp_name, 'userID': empid, 'slip_id': f'sal00_{year}_{current_month}',
                     'lwp': salary_slip_data_aft['lwp'] + salary_slip_data_bfr['lwp'],
                     'basic': salary_slip_data_aft['basic'] + salary_slip_data_bfr['basic'],
                     'da': salary_slip_data_aft['da'] + salary_slip_data_bfr['da'],
@@ -375,7 +366,7 @@ class SalaryCalculation():
                 net_salary = round((gross_salary - total_deduction), 2)
 
                 salary_slip_data = {
-                    'employeeName': emp_name, 'userID': empid,'slip_id': f'sal00{current_month}', 'lwp': lwp,
+                    'employeeName': emp_name, 'userID': empid,'slip_id': f'sal00_{year}_{current_month}', 'lwp': lwp,
                     'basic': emp_basic_salary, 'da': emp_da, 'hra': emp_hra, 'otherAllowance': other_allowance,
                     'incentive': incentive, 'grsOutstandingAdjustment': grs_outstanding_adjustment, 'arrears': arrears,
                     'statutoryBonus': statutory_bns, 'grossSalary': gross_salary, 'epfo': epfo,
