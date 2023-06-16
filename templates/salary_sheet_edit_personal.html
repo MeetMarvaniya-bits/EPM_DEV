@@ -302,7 +302,7 @@ td, th {
             ).toFixed(2);
             grossSalary.value = grossSalaryValue;
 
-            var workingDays = 30; // Assuming 30 days in a month
+            var workingDays = {{ working_days }}; // Assuming 30 days in a month
             var leaveDeductionValue = (lwpValue * (basicValue + hraValue + daValue + otherAllowanceValue) / workingDays).toFixed(2);
             leaveDeduction.value = leaveDeductionValue;
 
