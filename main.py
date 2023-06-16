@@ -321,7 +321,36 @@ def employee_list(username):
 
     ''' DISPLAY LIST OF EMPLOYEES IN COMPANY '''
 
-    # GET ALL EMPLOYEES DETAILS
+    # CALCULATE EXPERIENCE OF EMPLOYEE
+    def calculate_experience(data):
+        new_data = data
+        try:
+            doj = (data['doj'])
+            today_date = datetime.datetime.today().date()
+            start_date = datetime.datetime.strptime(doj, '%Y-%m-%d')
+            end_date = datetime.datetime.strptime(str(today_date), '%Y-%m-%d')
+            if start_date > end_date:
+                # Extract the years, months, and days from the delta
+                years = 0
+                months = 0
+                days = 0
+                current_experience = {'currentExperience': f'{years} Year(s) {months} Month(s) {days} Day(s)'}
+                db.collection(companyname).document(u'employee').collection('employee').document(data['userID']).update(current_experience)
+            else:
+                # Calculate the difference
+                delta = end_date - start_date
+                # Extract the years, months, and days from the delta
+                years = delta.days // 365
+                months = (delta.days % 365) // 30
+                days = (delta.days % 365) % 30
+                current_experience = {'currentExperience': f'{years} Year(s) {months} Month(s) {days} Day(s)'}
+                db.collection(companyname).document(u'employee').collection('employee').document(data['userID']).update(current_experience)
+            new_data.update(current_experience)
+        except:
+            pass
+        return new_data
+
+    # GET ALL EMPLOYEE DATA
     def get_employee_data():
 
         docs = db.collection(companyname).document(u'employee').collection('employee').stream()
@@ -922,7 +951,7 @@ def upload(username,salid):
         all_data = read_excel_leave_data.read_excel_rows(file)
         # GET ALL EMPLOYEE USER ID FROM EXCEL SHEET
         for data in all_data:
-            print(data)
+            # print(data)
             new_data = db.collection(companyname).document(u'employee').collection('employee').where('cosecID', '==', data[" User ID"]).get()
             if len(new_data) != 0:
                 for details in new_data:
@@ -930,9 +959,11 @@ def upload(username,salid):
                     emp_salary_data = {'cosecID': data[" User ID"], 'WO': data["WO"], 'UL': data["UL"],
                                        'OT': data["OT"], 'WrkHrs': data[" WrkHrs"],'paidLeave':data["PL"], 'CL': data["C_L"],
                                        'PL': data["P_L"], 'SL': data["S_L"]}
-
-                    # print(emp_salary_data)
-                    db.collection(companyname).document(u'employee').collection('employee').document(document_name).collection('salaryslips').document(salid).update(emp_salary_data)
+                    print(emp_salary_data)
+                    try:
+                        db.collection(companyname).document(u'employee').collection('employee').document(document_name).collection('salaryslips').document(salid).update(emp_salary_data)
+                    except:
+                        pass
                     # print(details.to_dict())
         return redirect(url_for('salary', username=username))
     return redirect(url_for('salary', username=username))
