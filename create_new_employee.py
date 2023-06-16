@@ -50,19 +50,22 @@ class Create():
 
             personal_data = {
                 'employeeName': request.form.get('name'), 'userID': new_id, 'department': request.form.get('department'),
-                'email': request.form.get('email'),
-                'cosecID':request.form.get('cosecID'),
-                'password':request.form.get('password'),
-                'salary': float(request.form.get('salary')), 'jobPosition': request.form.get('jobPosition'),
-                'doj': request.form.get('doj'),'designation':request.form.get('designation'),
-                'currentExperience': f"{request.form.get('currentExperience')}",'workEmail':request.form.get('workEmail'), 'dob': request.form.get('dob'),
+                'email': request.form.get('email'), 'cosecID': request.form.get('cosecID'),
+                'password':request.form.get('password'), 'salary': float(request.form.get('salary')),
+                'jobPosition': request.form.get('jobPosition'),
+                'doj': request.form.get('doj'), 'designation': request.form.get('designation'),
+                'workEmail': request.form.get('workEmail'), 'dob': request.form.get('dob'),
                 'gender': request.form.get('gender'), 'phoneNo': request.form.get('mobileno'),
+                'emergencyNumber': request.form.get('emergencyNumber'),
+                'relationWithPerson': request.form.get('relationWithPerson'),
                 'bankName': request.form.get('bankname'), 'accountHolderName': request.form.get('accountholdername'),
                 'accountNumber': request.form.get('accountno'), 'ifscCode': request.form.get('ifsccode'),
+                'branchName': request.form.get('branchName'),
                 'aadharCardNo': request.form.get('aadharno'), 'panCardNo': request.form.get('panno'),
                 'passportNo': request.form.get('passportno'),
                 'pfAccountNo': 'MABAN00000640000000125', 'uanNo': '100904319456', 'esicNo': '31–00–123456–000–0001'
             }
+            print(personal_data)
             self.db.collection(self.companyname).document(u'employee').collection('employee').document(new_id).set(personal_data)
 
             # ADD LEAVE DATA
@@ -102,7 +105,8 @@ class Create():
             tds_detail = {
                     'hlapplicationno': request.form.get('hlapplicationno'),
                     'hlamount': request.form.get('hlamount'),
-                    'hlperiod': request.form.get('hlperiod'),
+                    'hlStartDate': request.form.get('hlStartDate'),
+                    'hlEndDate': request.form.get('hlEndDate'),
                     'hlname': request.form.get('hlname'),
                     'hlannual': request.form.get('hlannual'),
                     'pino': request.form.get('pino'),
@@ -111,28 +115,36 @@ class Create():
                     'hipno': request.form.get('hipno'),
                     'hipname': request.form.get('hipname'),
                     'hipannual': request.form.get('hipannual'),
-                    'hipperiod': request.form.get('hipperiod'),
+                    'hipStartDate': request.form.get('hipStartDate'),
+                    'hipEndDate': request.form.get('hipEndDate'),
                     'hisno': request.form.get('hisno'),
                     'hisname': request.form.get('hisname'),
                     'hisannual': request.form.get('hisannual'),
-                    'hisperiod': request.form.get('hisperiod'),
+                    'hisStartDate': request.form.get('hisStartDate'),
+                    'hisEndDate': request.form.get('hisEndDate'),
                     'hifno': request.form.get('hifno'),
                     'hifname': request.form.get('hifname'),
                     'hifannual': request.form.get('hifannual'),
-                    'hifperiod': request.form.get('hifperiod'),
+                    'hifStartDate': request.form.get('hifStartDate'),
+                    'hifEndDate': request.form.get('hifEndDate'),
                     'ihlannual': request.form.get('ihlannual'),
                     'ihlpanlender': request.form.get('ihlpanlender'),
                     'ihlname': request.form.get("ihlname"),
                     'ahrmonth': request.form.get("ahrmonth"),
                     'ahrlandpann': request.form.get("ahrlandpann"),
-                    'ahrperiod': request.form.get("ahrperiod"),
+                    'ahrStartDate': request.form.get("ahrStartDate"),
+                    'ahrEndDate': request.form.get("ahrEndDate"),
                     'ahrlandname': request.form.get("ahrlandname"),
                     'ahrlandaddress': request.form.get("ahrlandaddress"),
                     'elssannual': request.form.get("elssannual"),
-                    'elssperiod': request.form.get("elssperiod"),
+                    'elssStartDate': request.form.get("elssStartDate"),
+                    'elssEndDate': request.form.get("elssEndDate"),
                     'tfannual': request.form.get("tfannual"),
-                    'tfperiod': request.form.get("tfperiod")
+                    'tfStartDate': request.form.get("tfStartDate"),
+                    'tfEndDate': request.form.get("tfEndDate")
+
             }
+            print(tds_detail)
             self.db.collection(self.companyname).document(u'employee').collection('employee').document(new_id).collection("tdsmst").document("tds").set(tds_detail)
 
 

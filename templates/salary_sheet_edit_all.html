@@ -138,8 +138,11 @@ td, th {
                         <th scope="col rwo-2" rowspan="2" class="other-child align-middle"
                             style="background-color: #DFE1E6;">Overtime Hours
                         </th>
-                        <th scope="col" colspan="10" class="earning-child align-middle"
+                        <th scope="col" colspan="9" class="earning-child align-middle"
                             style="background-color: #DCFDD9;">Earning
+                        </th>
+                        <th scope="row col" rowspan="2" class="other-child align-middle"
+                            style="background-color: #DFE1E6;">Total Salary
                         </th>
                         <th scope="row col" rowspan="2" class="other-child align-middle"
                             style="background-color: #DFE1E6;">Gross Salary
@@ -164,7 +167,6 @@ td, th {
                         </th>
                         <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Statutory Bonus</th>
                         <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Overtime Amount</th>
-                        <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Total Salary</th>
                         <th scope="col" class="align-middle" style="background-color: #FDD9DB;">EPFO</th>
                         <th scope="col" class="align-middle" style="background-color: #FDD9DB;">PT</th>
                         <th scope="col" class="align-middle" style="background-color: #FDD9DB;">TDS</th>
@@ -188,14 +190,14 @@ td, th {
                                    id="{{ key }}_lwp" onkeypress="onlyNumber(event)">
                         </td>
                         <td scope="col">
-                            <input type="text" class="form-control text-center" value='{{ data.totalLeave }}'
-                                   name="{{ key }}_totalLeaves"
-                                   id="{{ key }}_totalLeaves" onkeypress="onlyNumber(event)">
+                            <input type="text" class="form-control text-center" value='{{ data.paidLeave }}'
+                                   name="{{ key }}_paidLeave"
+                                   id="{{ key }}_paidLeave" onkeypress="onlyNumber(event)">
                         </td>
                         <td scope="col">
                             <input type="text" class="form-control text-center" value='{{ data.OT }}'
-                                   name="{{ key }}_Auth_OT"
-                                   id="{{ key }}_Auth_OT" onkeypress="onlyNumber(event)">
+                                   name="{{ key }}_OT"
+                                   id="{{ key }}_OT" onkeypress="onlyNumber(event)">
                         </td>
                         <td scope="col">
                             <input type="text" class="form-control text-center" value='{{ data.basic }}'
@@ -243,7 +245,7 @@ td, th {
                         <td scope="col">
                             <input type="text" class="form-control text-center" value='{{ data.statutoryBonus }}'
                                    id="{{ key }}_totalSalary" name="{{ key }}_totalSalary"
-                                   onkeypress="onlyNumber(event)">
+                                   onkeypress="onlyNumber(event)" readonly>
                         </td>
                         <td scope="col">
                             <input type="text" class="form-control text-center" value='{{ data.grossSalary }}'
@@ -283,7 +285,7 @@ td, th {
                         <td scope="col">
                             <input type="text" class="form-control text-center" value='{{ data.totalDeduction }}'
                                    id="{{ key }}_totaldeduction" name="{{ key }}_totalDeduction"
-                                   onkeypress="onlyNumber(event)">
+                                   onkeypress="onlyNumber(event)" readonly>
                         </td>
                         <td scope="col" class="fix last-child" style="background-color: #FFFFFF;">
                             <input type="text" class="form-control text-center" value='{{ data.netSalary }}'
@@ -378,6 +380,7 @@ function updateActionUrl() {
             var leaveDeduction = document.getElementById(key + "_leaveDeduction").value;
             var otherDeduction = document.getElementById(key + "_otherDeduction").value;
             var dedOutstandingAdjustment = document.getElementById(key + "_dedOutstandingAdjustment").value;
+            var totalDeduction = document.getElementById(key + "_totalDeduction").value;
             var netSalary = document.getElementById(key + "_netSalary").value;
             var hraPercentage = {{ salary_data['hrapercentage'] }};
             var daPercentage = {{ salary_data['dapercentage'] }};
@@ -421,6 +424,14 @@ function updateActionUrl() {
             leaveDeduction = (
                 lwpValue * ((basicValue + hraValue + daValue + otherAllowanceValue) / {{working_days}}) * {{salary_data['deductionpercentage']}}
             ).toFixed(2);
+            totalDeduction = (
+                epfoValue +
+                ptValue +
+                tdsValue +
+                leaveDeductionValue +
+                otherDeductionValue +
+                dedOutstandingAdjustmentValue
+            ).toFixed(2);
             netSalary = (
                 grossSalary -
                 epfoValue -
@@ -435,6 +446,7 @@ function updateActionUrl() {
             document.getElementById(key + "_da").value = da;
             document.getElementById(key + "_grossSalary").value = grossSalary;
             document.getElementById(key + "_leaveDeduction").value = leaveDeduction;
+            document.getElementById(key + "_totalDeduction").value = totalDeduction;
             document.getElementById(key + "_netSalary").value = netSalary;
         });
     });

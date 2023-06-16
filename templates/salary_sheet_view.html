@@ -339,7 +339,9 @@ td, th {
                     </th>
                     <th scope="col rwo-2" rowspan="2" class="other-child align-middle" style="background-color: #DFE1E6;">Overtime Hours
                     </th>
-                    <th scope="col" colspan="10" class="earning-child align-middle" style="background-color: #DCFDD9;">Earning</th>
+                    <th scope="col" colspan="9" class="earning-child align-middle" style="background-color: #DCFDD9;">Earning</th>
+                    <th scope="row col" rowspan="2" class="other-child align-middle" style="background-color: #DFE1E6;">Total Salary
+                    </th>
                     <th scope="row col" rowspan="2" class="other-child align-middle" style="background-color: #DFE1E6;">Gross Salary
                     </th>
                     <th scope="col-6" colspan="7" class="deduction-child align-middle" style="background-color: #FDD9DB;">Deduction</th>
@@ -358,7 +360,6 @@ td, th {
                     <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Outstanding Adjustments</th>
                     <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Statutory Bonus</th>
                     <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Overtime Amount</th>
-                    <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Total Salary</th>
                     <th scope="col" class="align-middle" style="background-color: #FDD9DB;">EPFO</th>
                     <th scope="col" class="align-middle" style="background-color: #FDD9DB;">PT</th>
                     <th scope="col" class="align-middle" style="background-color: #FDD9DB;">TDS</th>
@@ -377,8 +378,8 @@ td, th {
                         <td scope="col" class="fix second-child">{{data[i]['employeeName']}}</td>
                         <td scope="col" class="fix third-child" style="background-color: #FFFFFF;">{{data[i]['WrkHrs']}}</td>
                         <td scope="col">{{ data[i]['lwp'] }}</td>
-                        <td scope="col">{{ data[i]['PL'] }} </td>
-                        <td scope="col">{{ data[i]['Auth_OT'] }}</td>
+                        <td scope="col">{{ data[i]['paidLeave'] }} </td>
+                        <td scope="col">{{ data[i]['OT'] }}</td>
                         <td scope="col">{{data[i]['basic']}}</td>
                         <td scope="col">{{data[i]['hra']}}</td>
                         <td scope="col">{{data[i]['da']}}</td>
@@ -387,8 +388,8 @@ td, th {
                         <td scope="col">{{data[i]['arrears']}}</td>
                         <td scope="col">{{data[i]['grsOutstandingAdjustment']}}</td>
                         <td scope="col">{{data[i]['statutoryBonus']}}</td>
-                        <td scope="col">{{data[i]['Auth_OT']}}</td>
-                        <td scope="col">{{data[i]['statutoryBonus']}}</td>
+                        <td scope="col">{{data[i]['OT']}}</td>
+                        <td scope="col">{{data[i]['OT']}}</td>
                         <td scope="col">{{data[i]['grossSalary']}}</td>
                         <td scope="col">{{data[i]['epfo']}}</td>
                         <td scope="col">{{data[i]['pt']}}</td>
