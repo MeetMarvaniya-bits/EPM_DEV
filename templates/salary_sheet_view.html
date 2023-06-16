@@ -75,7 +75,7 @@ td, th {
             <main class="content">
                 <div class="container-fluid p-1">
                     <div class="row">
-                        <div class="col-lg-6 col-sm-12 mt-2">
+                        <div class="col-3 mt-2">
                             <ul class="nav justify-content-start">
                                 <li class="nav-item">
                                     <a class="nav-link active" aria-current="page" href="#">
@@ -90,9 +90,109 @@ td, th {
                                 </li>
                             </ul>
                         </div>
-                          <div class="col end-0">
+                          <div class="col-9 end-0">
                 <ul class="nav justify-content-end  mt-2">
+                    <li class="nav-item me-2">
+                        <div class="dropdown">
+                           <label   style="    width: 100px;
+                           height: 40px;
+                           border-radius: 10px;
+                           text-align: center;
+                           padding-top: 9px;
+                           color: white;
+                           font-weight: bold;
+                          " id="salary_status">
+                           </label>
+                        </div>
+                    </li>
+                    {% if salary_status=="None" or salary_status=="Pending" %}
+                    <li class="nav-item me-2">
+                        <div class="dropdown">
+                            <a href="{{url_for('set_status', username=username, salid=salid, status='Inreview')}}">
+                            <button class="btn border-1 btn-secondary " id="btn_1"type="button"  aria-haspopup="true"
+                                    aria-expanded="false">
+                                Submit for Approval
+                            </button>
+                            </a>
+                        </div>
+                    </li>
+                    {% endif %}
+                    {% if salary_status=="Inreview" and username=='Admin' %}
+                    <li class="nav-item me-2">
+                        <div class="dropdown">
+                            <a href="{{url_for('set_status', username=username, salid=salid, status='Approved')}}">
+                            <button class="btn border-1 btn-secondary " id="btn_2 "type="button" aria-haspopup="true"
+                                    aria-expanded="false">
+                                Accept
+                            </button>
+                        </a>
+                        </div>
+                    </li>
+                    {% endif %}
+                    {% if salary_status=="Inreview" and username=='Admin' %}
+                    <li class="nav-item me-2">
+                        <div class="dropdown">
+                            <a href="{{url_for('set_status', username=username, salid=salid, status='Pending')}}">
+                            <button class="btn border-1 btn-secondary " id="btn_3 "type="button" aria-haspopup="true"
+                                    aria-expanded="false">
+                                Decline
+                            </button>
+                            </a>
+                        </div>
+                    </li>
+                    {% endif %}
+                    {% if salary_status=="Approved" and username=='Admin'  %}
+                    <li class="nav-item me-2">
+                        <div class="dropdown">
+                            <a href="{{url_for('set_status', username=username, salid=salid, status='Paid')}}">
+                            <button class="btn border-1 btn-secondary " id=" "type="button" aria-haspopup="true"
+                                    aria-expanded="false">
+                                Paid
+                            </button>
+                            </a>
+                        </div>
+                    </li>
+                    {% endif %}
 
+
+
+                    {% if salary_status=='Paid' %}
+                    <li class="nav-item me-2">
+                        <div class="dropdown">
+                            <a href="{{url_for('pdf_all', username=username, salid=salid)}}">
+                            <button class="btn border-1 btn-secondary " type="button" aria-haspopup="true" id="btn_4"
+                                    aria-expanded="false">
+                                Download All
+                            </button>
+                            </a>
+                        </div>
+                    </li>
+                    {% endif %}
+                    {% if salary_status=='Paid' or salary_status=='Approved' %}
+                    <li class="nav-item me-2">
+                        <div class="dropdown">
+
+                             <button class="btn border-1 btn-secondary " type="button" aria-haspopup="true"
+                                    data-bs-toggle="modal" data-bs-target="#exampleModal1"id="btn_5"
+                                    aria-expanded="false">
+                                Generate Excelsheet
+                            </button>
+
+                        </div>
+                    </li>
+                    {% endif %}
+                    {% if salary_status=='Paid' %}
+                    <li class="nav-item me-2">
+                        <div class="dropdown">
+                            <a href="{{url_for('send_employee_salaryslip', username=username, salid=salid)}}">
+                            <button class="btn border-1 btn-secondary " type="button" aria-haspopup="true"
+                                    aria-expanded="false">
+                                Send Email
+                            </button>
+                            </a>
+                        </div>
+                    </li>
+                    {% endif %}
 
                     <li class="nav-item me-2">
                         <div class="dropdown">
@@ -186,113 +286,16 @@ td, th {
                         </div>
                     </li>
 
-
-
-
+                 
 
                     <li class="nav-item me-2">
-                        <div class="dropdown">
-                           <label   style="    width: 100px;
-                           height: 40px;
-                           border-radius: 10px;
-                           text-align: center;
-                           padding-top: 9px;
-                           color: white;
-                           font-weight: bold;
-                          " id="salary_status">
-
-                           </label>
-                        </div>
-                    </li>
-                    {% if salary_status=="None" or salary_status=="Pending" %}
+                        <div>
+                             <input type="text" id="searchInput" class="form-control" placeholder="Search for files..." onkeyup="checkInput()">
+                     </div>
+                            </li>
                     <li class="nav-item me-2">
-                        <div class="dropdown">
-                            <a href="{{url_for('set_status', username=username, salid=salid, status='Inreview')}}">
-                            <button class="btn border-1 btn-secondary " id="btn_1"type="button"  aria-haspopup="true"
-                                    aria-expanded="false">
-                                Submit for Approval
-                            </button>
-                            </a>
-                        </div>
+                     <button onclick="searchTable()" class="btn border-1 btn-secondary ">Search</button>
                     </li>
-                    {% endif %}
-                    {% if salary_status=="Inreview" and username=='Admin' %}
-                    <li class="nav-item me-2">
-                        <div class="dropdown">
-                            <a href="{{url_for('set_status', username=username, salid=salid, status='Approved')}}">
-                            <button class="btn border-1 btn-secondary " id="btn_2 "type="button" aria-haspopup="true"
-                                    aria-expanded="false">
-                                Accept
-                            </button>
-                        </a>
-                        </div>
-                    </li>
-                    {% endif %}
-                    {% if salary_status=="Inreview" and username=='Admin' %}
-                    <li class="nav-item me-2">
-                        <div class="dropdown">
-                            <a href="{{url_for('set_status', username=username, salid=salid, status='Pending')}}">
-                            <button class="btn border-1 btn-secondary " id="btn_3 "type="button" aria-haspopup="true"
-                                    aria-expanded="false">
-                                Decline
-                            </button>
-                            </a>
-                        </div>
-                    </li>
-                    {% endif %}
-                    {% if salary_status=="Approved" and username=='Admin'  %}
-                    <li class="nav-item me-2">
-                        <div class="dropdown">
-                            <a href="{{url_for('set_status', username=username, salid=salid, status='Paid')}}">
-                            <button class="btn border-1 btn-secondary " id=" "type="button" aria-haspopup="true"
-                                    aria-expanded="false">
-                                Paid
-                            </button>
-                            </a>
-                        </div>
-                    </li>
-                    {% endif %}
-
-
-
-                    {% if salary_status=='Paid' %}
-                    <li class="nav-item me-2">
-                        <div class="dropdown">
-                            <a href="{{url_for('pdf_all', username=username, salid=salid)}}">
-                            <button class="btn border-1 btn-secondary " type="button" aria-haspopup="true" id="btn_4"
-                                    aria-expanded="false">
-                                Download All
-                            </button>
-                            </a>
-                        </div>
-                    </li>
-                    {% endif %}
-                    {% if salary_status=='Paid' or salary_status=='Approved' %}
-                    <li class="nav-item me-2">
-                        <div class="dropdown">
-
-                             <button class="btn border-1 btn-secondary " type="button" aria-haspopup="true"
-                                    data-bs-toggle="modal" data-bs-target="#exampleModal1"id="btn_5"
-                                    aria-expanded="false">
-                                Generate Excelsheet
-                            </button>
-
-                        </div>
-                    </li>
-                    {% endif %}
-                    {% if salary_status=='Paid' %}
-                    <li class="nav-item me-2">
-                        <div class="dropdown">
-                            <a href="{{url_for('send_employee_salaryslip', username=username, salid=salid)}}">
-                            <button class="btn border-1 btn-secondary " type="button" aria-haspopup="true"
-                                    aria-expanded="false">
-                                Send Email
-                            </button>
-                            </a>
-                        </div>
-                    </li>
-                    {% endif %}
-
 
 
                 </ul>
@@ -320,10 +323,8 @@ td, th {
         <!-- Employees Salary Data -->
         <div style="overflow-x: auto;">
             <div class="wrapper">
-            <table class="table table-bordered table-hover" style="border: 2px solid black !important;">
+            <table class="table table-bordered table-hover" style="border: 2px solid black !important;" id="fileTable" >
                 <!-- Table Header  -->
-
-
                 <thead class="text-center center align-baseline">
                 <tr class="border-bottom" scope="col" style="border: 2px solid !important;">
                     <th scope="col" rowspan="2" class="fix align-middle" style="background-color: #DFE1E6;">Employee
@@ -649,7 +650,41 @@ td, th {
 
 
 
+<!--Search Bar JS-->
+ <script>
+        function searchTable() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("searchInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("fileTable");
+            tr = table.getElementsByTagName("tr");
 
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (filter === '' || txtValue.toUpperCase().startsWith(filter)) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+
+        function checkInput() {
+            var input = document.getElementById("searchInput");
+            if (input.value === '') {
+                var table = document.getElementById("fileTable");
+                var tr = table.getElementsByTagName("tr");
+                for (var i = 0; i < tr.length; i++) {
+                    tr[i].style.display = "";
+                }
+            }
+        }
+    </script>
+<!-- xx-- Search Bar JS END --xx-->
 
 <script>
 // Get the salary status value from an input element or any other source
