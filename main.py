@@ -26,6 +26,8 @@ from concurrent.futures import ThreadPoolExecutor
 from generate_excel import create_excel_file
 from read_data import ExcelData
 from apscheduler.schedulers.background import BackgroundScheduler
+import os
+import platform
 import read_excel_leave_data
 import json
 import requests
@@ -658,6 +660,7 @@ def save_data(empid, username):
     # # INCREMENT DATA
     increment_data = []
     contract_data = []
+    previous_salary=0
     personal_data = personal_data_future.result()
     for key, value in personal_data.items():
         if key.startswith('increment'):
@@ -665,6 +668,7 @@ def save_data(empid, username):
         elif key.startswith('contract'):
             contract_data.append({key: value})
 
+    increment_data= sorted(increment_data, key=lambda x: x[1][list(x[1].keys())[0]]['effectiveDate'])
     increment_list = [(index, content) for index, content in enumerate(increment_data)]
     increment_keys = [next(iter(item[1])) for item in increment_list]
     increment_keys.sort()
@@ -691,6 +695,7 @@ def save_data(empid, username):
                             }
                         contract_increment_data.update(new_data)
                 elif key.startswith(f'new_inc_'):
+
                     if data[f'new_inc_grossSalary'] != "" and data[f'new_inc_jobPosition'] != "":
                         key=0
                         if len(increment_keys)>0:
@@ -753,13 +758,11 @@ def save_data(empid, username):
 
             doc_ref = db.collection(companyname).document('increments')
             data = contract_increment_data[inc_key[-1]]
-            print(data)
-            print(type(data))
+
             doc_ref.update({'increments': firestore.ArrayUnion([data])})
         elif "increment_01" in contract_increment_data :
             last_key = list(contract_increment_data.keys())[-1]
             last_record = contract_increment_data[last_key]
-            print(last_record['effectiveDate'])
             effective_date = datetime.datetime.strptime(last_record['effectiveDate'], '%Y-%m-%d').date()
             today = datetime.datetime.today().date()
             print(today,effective_date)
@@ -866,10 +869,8 @@ def set_storage_path(username, salid):
 def salary(username):
     ''' DISPLAY SALARY DETAILS OF ALL MONTH IN YEAR '''
     holidays = db.collection(companyname).document('holidays').get().to_dict()
-    moath_data = moth_count.count(holidays)
-    working_days = moath_data['workingDays']
-    if datetime.datetime.now().day == 1 and 'session_salary' not in session:
-        SalaryCalculation(db, companyname).generate_salary(workingday=working_days)
+    if datetime.datetime.now().day == 15 and 'session_salary' not in session:
+        SalaryCalculation(db, companyname).generate_salary(holidays=holidays)
         leaveobj.leave_add(companyname)
         session['session_salary'] = datetime.datetime.now()
         print("create session Variable")

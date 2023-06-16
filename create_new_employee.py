@@ -18,7 +18,6 @@ class Create():
     def __init__(self,db,companyname):
         self.db=db
         self.companyname=companyname
-
     def result(self):
 
         ''' ADD FORM DETAILS INTO DATABASE '''
@@ -82,6 +81,13 @@ class Create():
             }
 
             self.db.collection(self.companyname).document(u'employee').collection('employee').document(user.uid).collection("leaveMST").document("total_leaves").set(leave_data["total_leaves"])
+            doc_ref = self.db.collection(self.companyname).document('increments')
+            if request.form.get('doj') !=None and request.form.get('doj')!='':
+                doc_ref.update({'increments': firestore.ArrayUnion([{'empid': new_id,
+                                                                     'effectiveDate': request.form.get('doj'),
+                                                                     'total': float(request.form.get('salary')),
+                                                                     'grossSalary':0
+                                                                     }])})
 
             # ADD SALARY DATA
             # salary_slip_data = {

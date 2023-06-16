@@ -1,3 +1,5 @@
+import time
+import progressbar
 from openpyxl import load_workbook
 from datetime import datetime, timedelta
 
@@ -24,7 +26,7 @@ def read_excel_rows(file):
                 row_data.append(cell_value)
 
         data.append(row_data)
-
+    progress_bar.finish()
 
     header_row_index = None
     attendance_start_index = None
