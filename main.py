@@ -896,7 +896,7 @@ def set_storage_path(username, salid):
 def salary(username):
     ''' DISPLAY SALARY DETAILS OF ALL MONTH IN YEAR '''
     holidays = db.collection(companyname).document('holidays').get().to_dict()
-    if datetime.datetime.now().day == 16 and 'session_salary' not in session:
+    if datetime.datetime.now().day == 1 and 'session_salary' not in session:
         SalaryCalculation(db, companyname).generate_salary(holidays=holidays)
         leaveobj.leave_add(companyname)
         session['session_salary'] = datetime.datetime.now()
