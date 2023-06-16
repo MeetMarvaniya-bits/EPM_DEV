@@ -348,139 +348,137 @@ enctype="multipart/form-data">
 
                                                 <!-- Basic details -->
 
-                                                <div class=" col-sm-12 col-lg-6 col-md-6" style="padding-left: 2rem;">
-                                                    <div class="col-12 col-sm-12 col-md-12">
-                                                        <div
-                                                                class="form-group row pmd-textfield pmd-textfield-floating-label">
-                                                            <label
-                                                                    class="col-form-label control-label col-md-4 col-sm-4"
-                                                                    for="name"><b>Name<span class="required" id="nameLabel"></span></b></label>
-                                                            <div class="col-sm-5 col-md-5">
-                                                                <input type="text" class="form-control" name="name"
-                                                                       id="name" value="" placeholder="Enter Text" required>
-                                                            </div>
-                                                            <span class="pmd-textfield-focused"></span>
-                                                        </div>
-                                                        <br>
-                                                        <div
-                                                                class="form-group row pmd-textfield pmd-textfield-floating-label ">
-                                                            <label class="col-form-label control-label col-md-4 col-sm-4"
-                                                                   for="department"><b>Department</b><span class="required" id="departmentLabel"></span></label>
-                                                            <div class="col-md-5 col-sm-5">
-                                                                <select name="department" id="department"
-                                                                        class="form-control">
-                                                                    <option value="">
-                                                                        Select
-                                                                    </option>
-                                                                    {% if department != None %}
-                                                                    {% for i in department%}
-                                                                    <option value="{{i}}">{{ i }}</option>
-                                                                    {% endfor %}
-                                                                    {% endif %}
-                                                                </select>
-                                                            </div>
-                                                            <span class="pmd-textfield-focused"></span>
-                                                        </div>
-                                                        <br>
-                                                        <div
-                                                                class="form-group row pmd-textfield pmd-textfield-floating-label">
-                                                            <label class="col-form-label control-label col-md-4 col-sm-4"
-                                                                   for="jobPosition"><b>Job
-                                                                Position</b><span class="required" id="jobPositionLabel"></span></label>
-                                                            <div class="col-md-5 col-sm-5">
-                                                                <select name="jobPosition"
-                                                                        id="jobPosition"
-                                                                        class="form-control" required>
-                                                                   <option value="">
-                                                                        Select
-                                                                    </option >
+<!--                                                <div class=" col-sm-12 col-lg-6 col-md-6" style="padding-left: 2rem;">-->
+<!--                                                    <div class="col-12 col-sm-12 col-md-12">-->
+<!--                                                        <div-->
+<!--                                                                class="form-group row pmd-textfield pmd-textfield-floating-label">-->
+<!--                                                            <label-->
+<!--                                                                    class="col-form-label control-label col-md-4 col-sm-4"-->
+<!--                                                                    for="name"><b>Name<span class="required" id="nameLabel"></span></b></label>-->
+<!--                                                            <div class="col-sm-5 col-md-5">-->
+<!--                                                                <input type="text" class="form-control" name="name"-->
+<!--                                                                       id="name" value="" placeholder="Enter Text" required>-->
+<!--                                                            </div>-->
+<!--                                                            <span class="pmd-textfield-focused"></span>-->
+<!--                                                        </div>-->
+<!--                                                        <br>-->
+<!--                                                        <div-->
+<!--                                                                class="form-group row pmd-textfield pmd-textfield-floating-label ">-->
+<!--                                                            <label class="col-form-label control-label col-md-4 col-sm-4"-->
+<!--                                                                   for="department"><b>Department</b><span class="required" id="departmentLabel"></span></label>-->
+<!--                                                            <div class="col-md-5 col-sm-5">-->
+<!--                                                                <select name="department" id="department"-->
+<!--                                                                        class="form-control">-->
+<!--                                                                    <option value="">-->
+<!--                                                                        Select-->
+<!--                                                                    </option>-->
+<!--                                                                    {% if department != None %}-->
+<!--                                                                    {% for i in department%}-->
+<!--                                                                    <option value="{{i}}">{{ i }}</option>-->
+<!--                                                                    {% endfor %}-->
+<!--                                                                    {% endif %}-->
+<!--                                                                </select>-->
+<!--                                                            </div>-->
+<!--                                                            <span class="pmd-textfield-focused"></span>-->
+<!--                                                        </div>-->
+<!--                                                        <br>-->
+<!--                                                        <div-->
+<!--                                                                class="form-group row pmd-textfield pmd-textfield-floating-label">-->
+<!--                                                            <label class="col-form-label control-label col-md-4 col-sm-4"-->
+<!--                                                                   for="jobPosition"><b>Job-->
+<!--                                                                Position</b><span class="required" id="jobPositionLabel"></span></label>-->
+<!--                                                            <div class="col-md-5 col-sm-5">-->
+<!--                                                                <select name="jobPosition"-->
+<!--                                                                        id="jobPosition"-->
+<!--                                                                        class="form-control" required>-->
+<!--                                                                   <option value="">-->
+<!--                                                                        Select-->
+<!--                                                                    </option >-->
 
-                                                                </select>
-                                                            </div>
-                                                            <span class="pmd-textfield-focused"></span>
-                                                        </div>
-                                                        <br>
-                                                        <div
-                                                                class="form-group row pmd-textfield pmd-textfield-floating-label">
-                                                            <label class="col-form-label control-label col-md-4 col-sm-4"
-                                                                   for="doj"><b>DOJ</b><span class="required" id="dojLabel"></span></label>
-                                                            <div class="col-md-5 col-sm-5">
-                                                                <input type="date" class="form-control" name="doj"
-                                                                       id="doj" value="" placeholder="Select" >
-                                                            </div>
-                                                            <span class="pmd-textfield-focused"></span>
-                                                        </div>
-                                                        <br>
-                                                    </div>
-                                                </div>
+<!--                                                                </select>-->
+<!--                                                            </div>-->
+<!--                                                            <span class="pmd-textfield-focused"></span>-->
+<!--                                                        </div>-->
+<!--                                                        <br>-->
+<!--                                                        <div-->
+<!--                                                                class="form-group row pmd-textfield pmd-textfield-floating-label">-->
+<!--                                                            <label class="col-form-label control-label col-md-4 col-sm-4"-->
+<!--                                                                   for="doj"><b>DOJ</b><span class="required" id="dojLabel"></span></label>-->
+<!--                                                            <div class="col-md-5 col-sm-5">-->
+<!--                                                                <input type="date" class="form-control" name="doj"-->
+<!--                                                                       id="doj" value="" placeholder="Select" >-->
+<!--                                                            </div>-->
+<!--                                                            <span class="pmd-textfield-focused"></span>-->
+<!--                                                        </div>-->
+<!--                                                        <br>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
 
-                                                <div class=" col-sm-12 col-lg-6 col-md-6" >
+<!--                                                <div class=" col-sm-12 col-lg-6 col-md-6" >-->
 
-                                                    <div class="col-12 col-sm-12 col-md-12">
+<!--                                                    <div class="col-12 col-sm-12 col-md-12">-->
 
-                                                        <div
-                                                                class="form-group row pmd-textfield pmd-textfield-floating-label">
-                                                            <label class="col-form-label control-label col-md-4 col-sm-4"
-                                                                for="password"><b>Password</b><span class="required" id="passwordLabel"></span></label>
-                                                            <div class="col-md-5 col-sm-5">
-                                                                <input type="password" class="form-control" name="password"
-                                                                    id="password" value="" placeholder="Enter password" required>
-                                                            </div>
-                                                            <span class="pmd-textfield-focused"></span>
-                                                        </div>
-                                                        <br>
-                                                        <div
-                                                                class="form-group row pmd-textfield pmd-textfield-floating-label">
-                                                            <label class="col-form-label control-label col-md-4 col-sm-4"
-                                                                   for="designation"><b>Designation</b><span class="required" id="designationLabel"></span></label>
-                                                            <div class="col-md-5 col-sm-5">
-                                                                <select name="designation" id="designation"
-                                                                        class="form-control" required>
+<!--                                                        <div-->
+<!--                                                                class="form-group row pmd-textfield pmd-textfield-floating-label">-->
+<!--                                                            <label class="col-form-label control-label col-md-4 col-sm-4"-->
+<!--                                                                for="password"><b>Password</b><span class="required" id="passwordLabel"></span></label>-->
+<!--                                                            <div class="col-md-5 col-sm-5">-->
+<!--                                                                <input type="password" class="form-control" name="password"-->
+<!--                                                                    id="password" value="" placeholder="Enter password" required>-->
+<!--                                                            </div>-->
+<!--                                                            <span class="pmd-textfield-focused"></span>-->
+<!--                                                        </div>-->
+<!--                                                        <br>-->
+<!--                                                        <div-->
+<!--                                                                class="form-group row pmd-textfield pmd-textfield-floating-label">-->
+<!--                                                            <label class="col-form-label control-label col-md-4 col-sm-4"-->
+<!--                                                                   for="designation"><b>Designation</b><span class="required" id="designationLabel"></span></label>-->
+<!--                                                            <div class="col-md-5 col-sm-5">-->
+<!--                                                                <select name="designation" id="designation"-->
+<!--                                                                        class="form-control" required>-->
 
-                                                                    <option>
-                                                                        Select
-                                                                    </option>
-                                                                    <option>
-                                                                        Employee
-                                                                    <option>
-                                                                        Trainee
-                                                                    </option>
-                                                                    <option>
-                                                                        Interns
-                                                                    </option>
-                                                                </select>
-                                                            </div>
-                                                            <span class="pmd-textfield-focused"></span>
-                                                        </div>
-                                                        <br>
-                                                         <div
-                                                                class="form-group row pmd-textfield pmd-textfield-floating-label">
-                                                            <label class="col-form-label control-label col-md-4 col-sm-4"
-                                                                ><b>Salary</b><span class="required" id="salaryLabel"></span></label>
-                                                            <div class="col-md-5 col-sm-5">
-                                                                <input type="text" class="form-control"
-                                                                       name="salary" id="salary"
-                                                                       value="" placeholder="Salary" required readonly>
-                                                            </div>
-                                                            <span class="pmd-textfield-focused"></span>
-                                                        </div>
-                                                        <br>
-                                                        <div
-                                                                class="form-group row pmd-textfield pmd-textfield-floating-label">
-                                                            <label class="col-form-label control-label col-md-4 col-sm-4"
-                                                                ><b>Experience</b></label>
-                                                            <div class="col-md-5 col-sm-5">
-                                                                <input type="text" class="form-control"
-                                                                       name="currentExperience" id="currentExperience"
-                                                                       value="" placeholder="Enter Text" >
-                                                            </div>
-                                                            <span class="pmd-textfield-focused"></span>
-                                                        </div>
-                                                    </div>
-                                                </div>
+<!--                                                                    <option>-->
+<!--                                                                        Select-->
+<!--                                                                    </option>-->
+<!--                                                                    <option>-->
+<!--                                                                        Employee-->
+<!--                                                                    <option>-->
+<!--                                                                        Trainee-->
+<!--                                                                    </option>-->
+<!--                                                                    <option>-->
+<!--                                                                        Interns-->
+<!--                                                                    </option>-->
+<!--                                                                </select>-->
+<!--                                                            </div>-->
+<!--                                                            <span class="pmd-textfield-focused"></span>-->
+<!--                                                        </div>-->
+<!--                                                        <br>-->
+<!--                                                         <div-->
+<!--                                                                class="form-group row pmd-textfield pmd-textfield-floating-label">-->
+<!--                                                            <label class="col-form-label control-label col-md-4 col-sm-4"-->
+<!--                                                                ><b>Salary</b><span class="required" id="salaryLabel"></span></label>-->
+<!--                                                            <div class="col-md-5 col-sm-5">-->
+<!--                                                                <input type="text" class="form-control"-->
+<!--                                                                       name="salary" id="salary"-->
+<!--                                                                       value="" placeholder="Salary" required readonly>-->
+<!--                                                            </div>-->
+<!--                                                            <span class="pmd-textfield-focused"></span>-->
+<!--                                                        </div>-->
+<!--                                                        <br>-->
+<!--                                                        <div-->
+<!--                                                                class="form-group row pmd-textfield pmd-textfield-floating-label">-->
+<!--                                                            <label class="col-form-label control-label col-md-4 col-sm-4"-->
+<!--                                                                ><b>Experience</b></label>-->
+<!--                                                            <div class="col-md-5 col-sm-5">-->
+<!--                                                                <input type="text" class="form-control"-->
+<!--                                                                       name="currentExperience" id="currentExperience"-->
+<!--                                                                       value="" placeholder="Enter Text" >-->
+<!--                                                            </div>-->
+<!--                                                            <span class="pmd-textfield-focused"></span>-->
+<!--                                                        </div>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
                                             </div>
-                                            <br>
-                                            <hr>
                                         </div>
 
                                         <div class="accordion" id="personalInforamation">
@@ -557,7 +555,8 @@ enctype="multipart/form-data">
                                                         <!-- Contact Details -->
 
                                                         <div class="details-tab pt-3">
-                                                            <h3 class="card-title" style="color:black">
+                                                            <h3 class="card-title"
+                                                                style="color:black">
                                                                 <b>Contact
                                                                     Details</b>
                                                             </h3>
@@ -582,20 +581,55 @@ enctype="multipart/form-data">
                                                                         </div>
                                                                         <span class="pmd-textfield-focused"></span>
                                                                     </div>
+                                                                    <br>
+                                                                    <div class="form-group row pmd-textfield pmd-textfield-floating-label">
+                                                                        <label class="col-form-label control-label col-sm-4"
+                                                                               for="emergencyNumber"><b>Emergency Contact No</b><span class="required" id="emergencyNumberLabel"></span></label>
+                                                                        <div class="col-md-5 col-sm-5"
+                                                                             style="padding-right: 1rem;">
+                                                                            <div class="input-group"
+                                                                                 style="width:auto !important;">
+                                                                    <span class="input-group-text"
+                                                                          style="/* Primary Color #2F3990 */
+                                                                    background: #FFFFFF; color:black">+91</span>
+                                                                                <input type="tel" id="emergencyNumber" class="form-control" name="emergencyNumber" pattern="[0-9]{10}" placeholder="10 Digit Number" required>
+                                                                            </div>
+                                                                        </div>
+                                                                        <span class="pmd-textfield-focused"></span>
+                                                                    </div>
                                                                 </div>
                                                                 <div class="col-6 col-sm-6 col-md-6">
-                                                                    <div
-                                                                            class="form-group row pmd-textfield pmd-textfield-floating-label">
-                                                                        <label
-                                                                                class="col-form-label control-label col-sm-4"
-                                                                                for="mobileno"><b>Mobile
+                                                                    <div class="form-group row pmd-textfield pmd-textfield-floating-label">
+                                                                        <label class="col-form-label control-label col-sm-4"
+                                                                               for="mobileno"><b>Mobile
                                                                             No</b><span class="required" id="mobilenoLabel"></span></label>
-                                                                        <div class="col-sm-5">
-                                                                            <input type="tel" id="mobileno" class="form-control" name="mobileno" pattern="[0-9]{10}" placeholder="Enter your 10-digit mobile number" required>
+                                                                        <div class="col-md-5 col-sm-5"
+                                                                             style="padding-right: 1rem;">
+                                                                            <div class="input-group"
+                                                                                 style="width:auto !important;">
+                                                                    <span class="input-group-text"
+                                                                          style="/* Primary Color #2F3990 */
+                                                                    background: #FFFFFF; color:black">+91</span>
+                                                                                <input type="tel"
+                                                                                       id="mobileno"
+                                                                                       class="form-control"
+                                                                                       name="mobileno"
+                                                                                       pattern="[0-9]{10}"
+                                                                                       placeholder="10 Digit Number"
+                                                                                       required>
+                                                                            </div>
                                                                         </div>
                                                                         <span class="pmd-textfield-focused"></span>
                                                                     </div>
                                                                     <br>
+                                                                    <div class="form-group row pmd-textfield pmd-textfield-floating-label">
+                                                                        <label class="col-form-label control-label col-sm-4"
+                                                                               for="relationWithPerson"><b>Relation With Person</b><span class="required" id="relationWithPersonLabel"></span></label>
+                                                                        <div class="col-sm-5">
+                                                                            <input type="text" id="relationWithPerson" class="form-control" name="relationWithPerson" placeholder="Relation With Person" required>
+                                                                        </div>
+                                                                        <span class="pmd-textfield-focused"></span>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                             <hr>
@@ -604,76 +638,96 @@ enctype="multipart/form-data">
                                                         <!-- Bank Details -->
 
                                                         <div class="details-tab pt-3">
-                                                            <h3 class="card-title" style="color:black">
+                                                            <h3 class="card-title"
+                                                                style="color:black">
                                                                 <b>Bank
                                                                     Details</b>
                                                             </h3>
                                                             <br>
                                                             <div class="row">
                                                                 <div class="col-6 col-sm-6 col-md-6">
-                                                                    <div
-                                                                            class="form-group row pmd-textfield pmd-textfield-floating-label">
-                                                                        <label
-                                                                                class="col-form-label control-label col-sm-4"
-                                                                                for="bankname"><b>Bank
+                                                                    <div class="form-group row pmd-textfield pmd-textfield-floating-label">
+                                                                        <label class="col-form-label control-label col-sm-4"
+                                                                               for="bankname"><b>Bank
                                                                             Name</b></label>
                                                                         <div class="col-sm-5">
-                                                                            <input type="text" class="form-control"
-                                                                                   id="bankname" name="bankname"
+                                                                            <input type="text"
+                                                                                   class="form-control"
+                                                                                   id="bankname"
+                                                                                   name="bankname"
                                                                                    value=""
-                                                                                   placeholder="Enter Text">
+                                                                                   placeholder="Enter Bank Name">
                                                                         </div>
                                                                         <span class="pmd-textfield-focused"></span>
                                                                     </div>
                                                                     <br>
-                                                                    <div
-                                                                            class="form-group row pmd-textfield pmd-textfield-floating-label">
-                                                                        <label
-                                                                                class="col-form-label control-label col-sm-4"
-                                                                                for="accountholdernamename"><b>Account
+                                                                    <div class="form-group row pmd-textfield pmd-textfield-floating-label">
+                                                                        <label class="col-form-label control-label col-sm-4"
+                                                                               for="accountholdernamename"><b>Account
                                                                             Holder
                                                                             Name</b></label>
                                                                         <div class="col-sm-5">
-                                                                            <input type="text" class="form-control"
+                                                                            <input type="text"
+                                                                                   class="form-control"
                                                                                    id="accountholdernamename"
-                                                                                   name="accountholdernamename" value=""
-                                                                                   placeholder="Enter Text">
+                                                                                   name="accountholdernamename"
+                                                                                   value=""
+                                                                                   placeholder="Enter Name">
                                                                         </div>
                                                                         <span class="pmd-textfield-focused"></span>
                                                                     </div>
                                                                     <br>
+                                                                      <div class="form-group row pmd-textfield pmd-textfield-floating-label">
+                                                                        <label class="col-form-label control-label col-sm-4"
+                                                                               for="ifsccode"><b>IFSC
+                                                                            Code</b></label>
+                                                                        <div class="col-sm-5">
+                                                                            <input type="text"
+                                                                                   class="form-control"
+                                                                                   id="ifsccode"
+                                                                                   name="ifsccode"
+                                                                                   value=""
+                                                                                   placeholder="Enter IFSC Code">
+                                                                        </div>
+                                                                        <span class="pmd-textfield-focused"></span>
+                                                                    </div>
                                                                 </div>
                                                                 <div class="col-6 col-sm-6 col-md-6">
-                                                                    <div
-                                                                            class="form-group row pmd-textfield pmd-textfield-floating-label">
-                                                                        <label
-                                                                                class="col-form-label control-label col-sm-4"
-                                                                                for="accountno"><b>Account
-                                                                            Number</b></label>
-                                                                        <div class="col-sm-5">
-                                                                            <input type="text" class="form-control"
-                                                                                   id="accountno" name="accountno"
-                                                                                   value=""
-                                                                                   placeholder="Enter Text">
+                                                                    <div class="form-group row pmd-textfield pmd-textfield-floating-label">
+                                                                        <label class="col-form-label control-label col-sm-4" for="accountno"><b>Account Number</b></label>
+                                                                        <div class="col-sm-5" style="padding-right: 2rem;">
+                                                                          <input type="password" class="form-control" name="accountno" id="accountno" value="" placeholder="Enter Account Number">
                                                                         </div>
                                                                         <span class="pmd-textfield-focused"></span>
-                                                                    </div>
+
+                                                                      </div>
+
+                                                                      <br>
+
+                                                                      <div class="form-group row pmd-textfield pmd-textfield-floating-label">
+                                                                        <label class="col-form-label control-label col-sm-4" for="confirmaccountno"><b>Confirm Account Number</b></label>
+                                                                        <div class="col-sm-5" style="padding-right: 2rem;">
+                                                                          <input type="password" class="form-control" name="confirmaccountno" id="confirmaccountno" value="" placeholder="Re-enter Account Number">
+                                                                        </div>
+                                                                        <span class="pmd-textfield-focused"></span>
+                                                                        <span id="confirmaccountnoError" style="color: red;"></span> <!-- Error message container -->
+                                                                      </div>
                                                                     <br>
-                                                                    <div
-                                                                            class="form-group row pmd-textfield pmd-textfield-floating-label">
-                                                                        <label
-                                                                                class="col-form-label control-label col-sm-4"
-                                                                                for="ifsccode"><b>IFSC Code</b></label>
-                                                                        <div class="col-sm-5">
-                                                                            <input type="text" class="form-control"
-                                                                                   id="ifsccode" name="ifsccode"
-                                                                                   value=""
-                                                                                   placeholder="Enter Text">
+                                                                    <div class="form-group row pmd-textfield pmd-textfield-floating-label">
+                                                                        <label class="col-form-label control-label col-sm-4" for="branchName"><b>Branch Name</b></label>
+                                                                        <div class="col-sm-5" style="padding-right: 2rem;">
+                                                                          <input type="text" class="form-control" name="branchName" id="branchName" value="" placeholder="Enter Branch Name">
                                                                         </div>
                                                                         <span class="pmd-textfield-focused"></span>
-                                                                    </div>
+
+                                                                      </div>
+
+                                                                      <br>
+
+
                                                                 </div>
                                                             </div>
+                                                            <br>
                                                             <hr>
                                                         </div>
 

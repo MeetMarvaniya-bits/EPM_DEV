@@ -2,7 +2,69 @@
 {% block title %}Salary{% endblock %}
 {% block head %}
 {{ super() }}
-<style></style>
+<style>
+    .wrapper {
+  overflow-x:scroll;
+  width:100%;
+}
+table {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+tr {
+  border-top: 1px solid #000000;
+}
+td, th {
+  vertical-align: top;
+  text-align: center;
+  width:500px;
+  padding: 5px;
+}
+.fix {
+  position:sticky;
+  background: white;
+}
+.fix:first-child {
+  left:-5px;
+  width:150px;
+  background: white;
+}
+.fix:second-child {
+  left:-5px;
+  width:180px;
+  background: white;
+}
+.third-child {
+  position:sticky;
+  left:140px;
+  width:180px;
+  background: white;
+}
+.second-last-child {
+  position:sticky;
+  right:92px;
+  width:150px;
+  background: white;
+}
+.fix:last-child {
+  right:-5px;
+  width:100px;
+  background: white;
+}
+
+.other-child {
+  width:120px;
+}
+
+.earning-child {
+  width:1000px;
+}
+.deduction-child {
+  width:1000px;
+}
+</style>
 {% endblock %}
 {% block content %}
 
@@ -31,6 +93,98 @@
                           <div class="col end-0">
                 <ul class="nav justify-content-end  mt-2">
 
+
+                    <li class="nav-item me-2">
+                        <div class="dropdown">
+                            <button id="edit-row-button" class="btn border-1 btn-secondary" type="button">
+                                Edit Rows
+                            </button>
+                        </div>
+                    </li>
+                    
+                    <li class="nav-item me-2">
+                        <div class="dropdown">
+                            <!-- Button trigger modal -->
+                            <button id="uploadButton" class="btn border-1 btn-secondary" type="button">
+                                Import Excel Sheet
+                            </button>
+                        </div>
+                    </li>
+
+
+
+                    <!-- HOLIDAYS MODAL -->
+                    <div class="modal" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                        <div class="modal-dialog vh-100  modal-dialog-scrollable justify-content-end p-0 me-0 mt-0 mb-0">
+                            <div class="modal-content vh-100">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="managmonthdays">Manage Month Days</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="container">
+                                    <form action="{{url_for('salary_sheet_view', username=username, salid=salid)}}" method="POST"
+                                          id="monthdata" class="pb-4">
+
+                                        <h6 class="modal-title pt-4" id="addholidays">ADD Holidays</h6>
+
+                                        <div class="modal-body inline">
+
+                                            <input type="date" name="date" id="date" value="" required
+                                                   class="form-control-sm pe-3">
+
+                                            <input type="text" name="description" id="description" value=""
+                                                   placeholder="Description"
+                                                   class="form-control-sm" required>
+                                        </div>
+                                        <div class="modal-footer justify-content-center">
+                                            <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Close
+                                            </button>
+                                            <button type="submit" value="submit"
+                                                    class="btn btn-primary">ADD
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <hr>
+                                <div class="container">
+                                    <h6 class="modal-title pb-4" id="exampleModalLabel">Holidays</h6>
+                                    <table>
+                                        {% for month_str, month_data in holidays.items(): %}
+                                        <tr class="p-2">
+                                            <th colspan="2">
+                                                <b class="ps-2 pt-4"> {{month_str}} </b>
+                                            </th>
+                                        </tr>
+                                        {% for date_str, value in month_data.items():%}
+                                        <tr>
+                                            <td col=1>
+                                                <b class="ps-5"> {{date_str }} </b>
+                                            </td>
+                                            <td col=1>
+                                                <i class="ps-5"> {{value }} </i>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                        {% endfor %}
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <li class="nav-item me-2">
+                        <div class="dropdown">
+                            <!-- Button trigger modal -->
+                            <button class="btn border-1 btn-secondary " type="button"
+                                data-bs-toggle="modal" data-bs-target="#exampleModal3" aria-haspopup="true"
+                                aria-expanded="false">
+                                Holidays
+                            </button>
+                        </div>
+                    </li>
 
 
 
@@ -139,17 +293,6 @@
                     </li>
                     {% endif %}
 
-                    <li class="nav-item me-2">
-                        <div class=>
-                             <input type="text" id="searchInput" class="form-control" placeholder="Search for files..." onkeyup="checkInput()">
-                     </div>
-                            </li>
-                    <li>
-        <button onclick="searchTable()" class="btn border-1 btn-secondary ">Search</button>
-                            </a>
-
-                    </li>
-
 
 
                 </ul>
@@ -176,62 +319,53 @@
         </div>
         <!-- Employees Salary Data -->
         <div style="overflow-x: auto;">
-            <table class="table table-bordered table-hover" style="border: 2px solid black !important;"  id="fileTable" >
+            <div class="wrapper">
+            <table class="table table-bordered table-hover" style="border: 2px solid black !important;">
                 <!-- Table Header  -->
+
+
                 <thead class="text-center center align-baseline">
-                    <tr class="border-bottom" scope="row" style="border: 2px solid !important;">
-                        <th scope="col" rowspan="2" class="align-middle" style="background-color: #DFE1E6;">Employee
-                            Name</th>
-                        <th scope="col" rowspan="2" class="align-middle" style="background-color: #DFE1E6;">Working
-                            Hours</th>
-                        <th scope="col rwo-2" rowspan="2" class="align-middle" style="background-color: #DFE1E6;">LWP</th>
-                        <th scope="col rwo-2" rowspan="2" class="align-middle" style="background-color: #DFE1E6;">Overtime
-                            Hours</th>
-                        <th scope="row" colspan="10" class="align-middle"
-                            style="background-color: #DCFDD9;">Earning</th>
-                        <th scope="row-2 col" rowspan="2" class="align-middle"
-                            style="background-color: #DFE1E6;">Gross Salary</th>
-                        <th scope="row" colspan="7" class="align-middle" style="background-color: #FDD9DB;">Deduction</th>
-                        <th scope="row-2 col" rowspan="2" class="align-middle"
-                            style="background-color: #DFE1E6;">Net Payable</th>
-                        <th rowspan="2" class="align-middle" style="background-color: #DFE1E6;"></th>
-                    </tr>
-                    <tr class="border-bottom" style="border:2px solid black !important;">
-                        <th scope="col" class="align-middle"
-                            style="background-color: #DCFDD9;">Basic</th>
-                        <th scope="col" class="align-middle"
-                            style="background-color: #DCFDD9;">HRA</th>
-                        <th scope="col" class="align-middle"
-                            style="background-color: #DCFDD9;">DA</th>
-                        <th scope="col" class="align-middle"
-                            style="background-color: #DCFDD9;">Other Allowance</th>
-                        <th scope="col" class="align-middle"
-                            style="background-color: #DCFDD9;">Incentive</th>
-                        <th scope="col" class="align-middle"
-                            style="background-color: #DCFDD9;">Arrears</th>
-                        <th scope="col" class="align-middle"
-                            style="background-color: #DCFDD9;">Outstanding Adjustments</th>
-                        <th scope="col" class="align-middle"
-                            style="background-color: #DCFDD9;">Statutory Bonus</th>
-                        <th scope="col" class="align-middle"
-                            style="background-color: #DCFDD9;">Overtime Amount</th>
-                        <th scope="col" class="align-middle"
-                            style="background-color: #DCFDD9;">Total Salary</th>
-                        <th scope="col" class="align-middle"
-                            style="background-color: #FDD9DB;">EPFO</th>
-                        <th scope="col" class="align-middle"
-                            style="background-color: #FDD9DB;">PT</th>
-                        <th scope="col" class="align-middle"
-                            style="background-color: #FDD9DB;">TDS</th>
-                        <th scope="col" class="align-middle"
-                            style="background-color: #FDD9DB;">Leave Deduction</th>
-                        <th scope="col" class="align-middle"
-                            style="background-color: #FDD9DB;">Other Deduction</th>
-                        <th scope="col" class="align-middle"
-                            style="background-color: #FDD9DB;">Outstanding Adjustment</th>
-                        <th scope="col" class="align-middle"
-                            style="background-color: #FDD9DB;">Total Deduction</th>
-                    </tr>
+                <tr class="border-bottom" scope="col" style="border: 2px solid !important;">
+                    <th scope="col" rowspan="2" class="fix align-middle" style="background-color: #DFE1E6;">Employee
+                        Name
+                    </th>
+                    <th scope="col" rowspan="2" class="third-child align-middle" style="background-color: #DFE1E6;">Working Hours
+                    </th>
+                    <th scope="col rwo-2" rowspan="2" class="other-child align-middle" style="background-color: #DFE1E6;">LWP
+                    </th>
+                    <th scope="col rwo-2" rowspan="2" class="other-child align-middle" style="background-color: #DFE1E6;">Total Leaves
+                    </th>
+                    <th scope="col rwo-2" rowspan="2" class="other-child align-middle" style="background-color: #DFE1E6;">Overtime Hours
+                    </th>
+                    <th scope="col" colspan="9" class="earning-child align-middle" style="background-color: #DCFDD9;">Earning</th>
+                    <th scope="row col" rowspan="2" class="other-child align-middle" style="background-color: #DFE1E6;">Total Salary
+                    </th>
+                    <th scope="row col" rowspan="2" class="other-child align-middle" style="background-color: #DFE1E6;">Gross Salary
+                    </th>
+                    <th scope="col-6" colspan="7" class="deduction-child align-middle" style="background-color: #FDD9DB;">Deduction</th>
+                    <th scope="row-2 col" rowspan="2" class="second-last-child align-middle" style="background-color: #DFE1E6;">Net
+                        Payable
+                    </th>
+                    <th scope="row-2 col" rowspan="2" class="fix last-child align-middle" style="background-color: #DFE1E6;"></th>
+                </tr>
+                <tr class="border-bottom" style="border:2px solid black !important;">
+                    <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Basic</th>
+                    <th scope="col" class="align-middle" style="background-color: #DCFDD9;">HRA</th>
+                    <th scope="col" class="align-middle" style="background-color: #DCFDD9;">DA</th>
+                    <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Other Allowance</th>
+                    <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Incentive</th>
+                    <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Arrears</th>
+                    <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Outstanding Adjustments</th>
+                    <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Statutory Bonus</th>
+                    <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Overtime Amount</th>
+                    <th scope="col" class="align-middle" style="background-color: #FDD9DB;">EPFO</th>
+                    <th scope="col" class="align-middle" style="background-color: #FDD9DB;">PT</th>
+                    <th scope="col" class="align-middle" style="background-color: #FDD9DB;">TDS</th>
+                    <th scope="col" class="align-middle" style="background-color: #FDD9DB;">Leave Deduction</th>
+                    <th scope="col" class="align-middle" style="background-color: #FDD9DB;">Other Deduction</th>
+                    <th scope="col" class="align-middle" style="background-color: #FDD9DB;">Outstanding Adjustment</th>
+                    <th scope="col" class="align-middle" style="background-color: #FDD9DB;">Total Deduction</th>
+                </tr>
                 </thead>
 
                 <!-- Salary data  -->
@@ -239,10 +373,11 @@
                     {% for i in data%}
 
                     <tr class="border-bottom" style="border:2px solid black !important;">
-                        <td scope="col">{{data[i]['employeeName']}}</td>
-                        <td scope="col">{{data[i]['WrkHrs']}}</td>
+                        <td scope="col" class="fix second-child">{{data[i]['employeeName']}}</td>
+                        <td scope="col" class="fix third-child" style="background-color: #FFFFFF;">{{data[i]['WrkHrs']}}</td>
                         <td scope="col">{{ data[i]['lwp'] }}</td>
-                        <td scope="col">{{ data[i]['Auth_OT'] }}</td>
+                        <td scope="col">{{ data[i]['paidLeave'] }} </td>
+                        <td scope="col">{{ data[i]['OT'] }}</td>
                         <td scope="col">{{data[i]['basic']}}</td>
                         <td scope="col">{{data[i]['hra']}}</td>
                         <td scope="col">{{data[i]['da']}}</td>
@@ -251,8 +386,8 @@
                         <td scope="col">{{data[i]['arrears']}}</td>
                         <td scope="col">{{data[i]['grsOutstandingAdjustment']}}</td>
                         <td scope="col">{{data[i]['statutoryBonus']}}</td>
-                        <td scope="col">{{data[i]['Auth_OT']}}</td>
-                        <td scope="col">{{data[i]['statutoryBonus']}}</td>
+                        <td scope="col">{{data[i]['OT']}}</td>
+                        <td scope="col">{{data[i]['OT']}}</td>
                         <td scope="col">{{data[i]['grossSalary']}}</td>
                         <td scope="col">{{data[i]['epfo']}}</td>
                         <td scope="col">{{data[i]['pt']}}</td>
@@ -261,13 +396,23 @@
                         <td scope="col">{{data[i]['otherDeduction']}}</td>
                         <td scope="col">{{data[i]['dedOutstandingAdjustment']}}</td>
                         <td scope="col">{{data[i]['totalDeduction']}}</td>
-                        <td scope="col">{{data[i]['netSalary']}}</td>
+                        <td scope="col" class="second-last-child" style="background-color: #FFFFFF;">{{data[i]['netSalary']}}</td>
 
-                    <!-- Edit Button  -->
-
-                    <td scope="col">
-                        <a href="{{url_for('salary_sheet_edit_', username=username,empid=data[i]['userID'],salid=salid)}}">
-                            <button class="btn border-1 btn-secondary" type="button" aria-haspopup="true"
+                        <!-- Edit Button  -->
+                        {% if salary_status=='Paid' or salary_status=='Approved'%}
+                        <td scope="col" class="fix last-child" style="background-color: #FFFFFF;">
+                            <a href="#" disabled>
+                                <button class="btn border-1 btn-secondary" type="button" aria-haspopup="true"
+                                    aria-expanded="false"
+                                    style="color:#2F3990; border-color:#2F3990; background-color: #FFFFFF" disabled>
+                                    Edit
+                                </button>
+                            </a>
+                        </td>
+                        {% else %}
+                        <td scope="col"  class="fix last-child" style="background-color: #FFFFFF;">
+                            <a href="{{url_for('salary_sheet_edit_', username=username,empid=data[i]['userID'],salid=salid)}}">
+                                <button class="btn border-1 btn-secondary" type="button" aria-haspopup="true"
                                     aria-expanded="false"
                                     style="color:#2F3990; border-color:#2F3990; background-color: #FFFFFF">
                                     Edit
@@ -276,13 +421,14 @@
 
                         </td>
 
-
-                </tr>
+                        {% endif %}
+                    </tr>
 
 
                     {% endfor%}
                 </tbody>
             </table>
+                </div>
         </div>
     </div>
 </div>
@@ -501,40 +647,9 @@
 
 
 
-<!--Search Bar JS-->
- <script>
-        function searchTable() {
-            var input, filter, table, tr, td, i, txtValue;
-            input = document.getElementById("searchInput");
-            filter = input.value.toUpperCase();
-            table = document.getElementById("fileTable");
-            tr = table.getElementsByTagName("tr");
 
-            for (i = 0; i < tr.length; i++) {
-                td = tr[i].getElementsByTagName("td")[0];
-                if (td) {
-                    txtValue = td.textContent || td.innerText;
-                    if (filter === '' || txtValue.toUpperCase().startsWith(filter)) {
-                        tr[i].style.display = "";
-                    } else {
-                        tr[i].style.display = "none";
-                    }
-                }
-            }
-        }
 
-        function checkInput() {
-            var input = document.getElementById("searchInput");
-            if (input.value === '') {
-                var table = document.getElementById("fileTable");
-                var tr = table.getElementsByTagName("tr");
-                for (var i = 0; i < tr.length; i++) {
-                    tr[i].style.display = "";
-                }
-            }
-        }
-    </script>
-<!-- xx-- Search Bar JS END --xx-->
+
 
 <script>
 // Get the salary status value from an input element or any other source

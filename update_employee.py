@@ -15,7 +15,7 @@ class Update_information():
                     value=float(value)
                 data_dict.update({key: value})
 
-        a = self.db.collection(companyname).document('employee').collection('employee').document(id).update(data_dict)
+        self.db.collection(companyname).document('employee').collection('employee').document(id).update(data_dict)
         doc_ref = self.db.collection(companyname).document('increments')
         doc_ref.update({'increments': firestore.ArrayUnion([{'empid': id,
                                                              'effectiveDate': data_dict['doj'],
