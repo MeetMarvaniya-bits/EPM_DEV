@@ -97,7 +97,7 @@
     <div class="container-fluid p-3">
 
 
-        <table class="table mt-4" data-sort-direction="asc">
+        <table class="table table-hover mt-4" data-sort-direction="asc">
             <!-- Table Heading -->
             <thead class="table-secondary" style="background-color:#DFE1E6;">
 
@@ -144,7 +144,7 @@
                         </li>
                              <!-- Download icon  -->
                         {% if salary_status[ month_dict[i[3:]] ]=='Paid' %}
-                        <li class="nav-item d-inline"><a class="nav-link" href="{{url_for('pdf', username=username, salid=i)}}">
+                        <li class="nav-item d-inline"><a class="nav-link" href="{{url_for('pdf_all', username=username, salid=i)}}">
                             <i class="fa fa-download"></i>
                         </a>
                         </li>

@@ -2,187 +2,299 @@
 {% block title %}Salary Sheet Edit{% endblock %}
 {% block head %}
 {{ super() }}
+<style>
+    .wrapper {
+  overflow-x:scroll;
+  width:100%;
+}
+table {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+tr {
+  border-top: 1px solid #000000;
+}
+td, th {
+  vertical-align: top;
+  text-align: center;
+  width:500px;
+  padding: 5px;
+}
+.fix {
+  position:sticky;
+  background: white;
+}
+.fix:first-child {
+  left:-5px;
+  width:150px;
+  background: white;
+}
+.fix:second-child {
+  left:-5px;
+  width:180px;
+  background: white;
+}
+.third-child {
+  position:sticky;
+  left:140px;
+  width:180px;
+  background: white;
+}
+.second-last-child {
+  position:sticky;
+  right:92px;
+  width:150px;
+  background: white;
+}
+.fix:last-child {
+  right:-5px;
+  width:100px;
+  background: white;
+}
 
+.other-child {
+  width:120px;
+}
+
+.earning-child {
+  width:1000px;
+}
+.deduction-child {
+  width:1000px;
+}
+</style>
 {% endblock %}
 {% block content %}
 <!-- Header  -->
 <form id="salaryForm" method="post" action="" onsubmit="updateActionUrl()">
     <div class="container-fluid" style="background-color: #ffffff;">
-        <div class="wrapper">
-            <div class="main">
-                <main class="content">
-                    <div class="container-fluid p-1 pb-2">
-                        <div class="row justify-content-between">
-                            <div class="col d-flex mt-1 align-items-center">
-                                <span class="me-4 mt-2"><b>Salary Sheet</b></span>
-                                <div class="form-outline text-start">
-                                    {% set month_dict = {'sal001': 'January', 'sal002': 'February', 'sal003': 'March',
-                                    'sal004': 'April',
-                                    'sal005': 'May', 'sal006': 'June', 'sal007': 'July', 'sal008': 'August', 'sal009':
-                                    'September', 'sal0010': 'October',
-                                    'sal0011': 'November', 'sal0012': 'December'} %}
-                                    <input name="" id="forminput" class="form-control" readonly
-                                           placeholder="{{month_dict[salid]}}">
-                                </div>
-                            </div>
-
-                            <div class="col mt-3">
-                                <ul class="nav justify-content-end mb-2">
-                                    <li class="nav-item me-4">
-                                        <div class="dropdown">
-                                            <button id="saveButton" class="btn border-1 btn-secondary" type="submit"
-                                                    aria-haspopup="true" aria-expanded="false">
-                                                Save
-                                            </button>
-                                        </div>
-                                    </li>
-                                    <li class="nav-item me-4">
-                                        <div class="dropdown">
-                                            <button id="backButton" class="btn border-1 btn-secondary" type="button"
-                                                    aria-haspopup="true" aria-expanded="false">
-                                                Back
-                                            </button>
-                                        </div>
-                                    </li>
-                                </ul>
+        <div class="main">
+            <main class="content">
+                <div class="container-fluid p-1 pb-2">
+                    <div class="row justify-content-between">
+                        <div class="col d-flex mt-1 align-items-center">
+                            <span class="me-4 mt-2"><b>Salary Sheet</b></span>
+                            <div class="form-outline text-start">
+                                {% set month_dict = {'sal001': 'January', 'sal002': 'February', 'sal003': 'March',
+                                'sal004': 'April',
+                                'sal005': 'May', 'sal006': 'June', 'sal007': 'July', 'sal008': 'August', 'sal009':
+                                'September', 'sal0010': 'October',
+                                'sal0011': 'November', 'sal0012': 'December'} %}
+                                <input name="" id="forminput" class="form-control" readonly
+                                       placeholder="{{month_dict[salid]}}">
                             </div>
                         </div>
 
+                        <div class="col mt-3">
+                            <ul class="nav justify-content-end mb-2">
+                                <li class="nav-item me-4">
+                                    <div class="dropdown">
+                                        <button id="saveButton" class="btn border-1 btn-secondary" type="submit"
+                                                aria-haspopup="true" aria-expanded="false">
+                                            Save
+                                        </button>
+                                    </div>
+                                </li>
+                                <li class="nav-item me-4">
+                                    <div class="dropdown">
+                                        <button id="backButton" class="btn border-1 btn-secondary" type="button"
+                                                aria-haspopup="true" aria-expanded="false">
+                                            Back
+                                        </button>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                </main>
-            </div>
+
+                </div>
+            </main>
         </div>
     </div>
 
     <!-- Salary Data of Employees -->
     <div class="container-fluid" style="background-color: #F4F5F7;">
         <div class="container-fluid p-3">
+            <div class="wrapper">
+                <!-- Table Headings  -->
+                <table class="table table-bordered table-hover" style="border: 2px solid black !important;">
 
+                    <thead class="text-center center align-baseline">
+                    <tr class="border-bottom" scope="col" style="border: 2px solid !important;">
+                        <th scope="col" rowspan="2" class="fix align-middle" style="background-color: #DFE1E6;">Employee
+                            Name
+                        </th>
+                        <th scope="col" rowspan="2" class="third-child align-middle" style="background-color: #DFE1E6;">
+                            Working Hours
+                        </th>
+                        <th scope="col rwo-2" rowspan="2" class="other-child align-middle"
+                            style="background-color: #DFE1E6;">LWP
+                        </th>
+                        <th scope="col rwo-2" rowspan="2" class="other-child align-middle"
+                            style="background-color: #DFE1E6;">Total Leaves
+                        </th>
+                        <th scope="col rwo-2" rowspan="2" class="other-child align-middle"
+                            style="background-color: #DFE1E6;">Overtime Hours
+                        </th>
+                        <th scope="col" colspan="10" class="earning-child align-middle"
+                            style="background-color: #DCFDD9;">Earning
+                        </th>
+                        <th scope="row col" rowspan="2" class="other-child align-middle"
+                            style="background-color: #DFE1E6;">Gross Salary
+                        </th>
+                        <th scope="col-6" colspan="7" class="deduction-child align-middle"
+                            style="background-color: #FDD9DB;">Deduction
+                        </th>
+                        <th scope="row-2 col" rowspan="2" class="fix last-child  align-middle"
+                            style="background-color: #DFE1E6;">Net
+                            Payable
+                        </th>
+                    </tr>
+                    <tr class="border-bottom" style="border:2px solid black !important;">
+                        <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Basic</th>
+                        <th scope="col" class="align-middle" style="background-color: #DCFDD9;">HRA</th>
+                        <th scope="col" class="align-middle" style="background-color: #DCFDD9;">DA</th>
+                        <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Other Allowance</th>
+                        <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Incentive</th>
+                        <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Arrears</th>
+                        <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Outstanding
+                            Adjustments
+                        </th>
+                        <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Statutory Bonus</th>
+                        <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Overtime Amount</th>
+                        <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Total Salary</th>
+                        <th scope="col" class="align-middle" style="background-color: #FDD9DB;">EPFO</th>
+                        <th scope="col" class="align-middle" style="background-color: #FDD9DB;">PT</th>
+                        <th scope="col" class="align-middle" style="background-color: #FDD9DB;">TDS</th>
+                        <th scope="col" class="align-middle" style="background-color: #FDD9DB;">Leave Deduction</th>
+                        <th scope="col" class="align-middle" style="background-color: #FDD9DB;">Other Deduction</th>
+                        <th scope="col" class="align-middle" style="background-color: #FDD9DB;">Outstanding Adjustment
+                        </th>
+                        <th scope="col" class="align-middle" style="background-color: #FDD9DB;">Total Deduction</th>
+                    </tr>
+                    </thead>
+                    <tbody style="background-color: #ffffff;">
 
-            <!-- Table Headings  -->
-            <table class="table table-bordered" style="border: 2px solid black !important;">
-                <thead class="text-center center align-baseline">
-                <tr class="border-bottom" scope="row" style="border: 2px solid !important;">
-                    <th scope="col" rowspan="2" class="align-middle" style="background-color: #DFE1E6;">Employee Name
-                    </th>
-                    <th scope="col rwo-2" rowspan="2" class="align-middle" style="background-color: #DFE1E6;"> Working
-                        Hours
-                    </th>
-                    <th scope="col rwo-2" rowspan="2" class="align-middle" style="background-color: #DFE1E6;"> LWP
-                    </th>
-                    <th scope="row" colspan="8" class="align-middle" style="background-color: #DCFDD9;">Earning</th>
-                    <th scope="row col" rowspan="2" class="align-middle" style="background-color: #DFE1E6;">Gross Salary
-                    </th>
-                    <th scope="col-6" colspan="6" class="align-middle" style="background-color: #FDD9DB;">Deduction</th>
-                    <th scope="row-2 col" rowspan="2" class="align-middle" style="background-color: #DFE1E6;">Net
-                        Payable
-                    </th>
-                    <th rowspan="2" class="align-middle" style="background-color: #DFE1E6;"></th>
-                </tr>
-                <tr class="border-bottom" style="border:2px solid black !important;">
-                    <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Basic</th>
-                    <th scope="col" class="align-middle" style="background-color: #DCFDD9;">HRA</th>
-                    <th scope="col" class="align-middle" style="background-color: #DCFDD9;">DA</th>
-                    <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Other Allowance</th>
-                    <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Incentive</th>
-                    <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Arrears</th>
-                    <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Outstanding Adjustments</th>
-                    <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Statutory Bonus</th>
-                    <th scope="col" class="align-middle" style="background-color: #FDD9DB;">EPFO</th>
-                    <th scope="col" class="align-middle" style="background-color: #FDD9DB;">PT</th>
-                    <th scope="col" class="align-middle" style="background-color: #FDD9DB;">TDS</th>
-                    <th scope="col" class="align-middle" style="background-color: #FDD9DB;">Leave Deduction</th>
-                    <th scope="col" class="align-middle" style="background-color: #FDD9DB;">Other Deduction</th>
-                    <th scope="col" class="align-middle" style="background-color: #FDD9DB;">Outstanding Adjustment</th>
-                </tr>
-                </thead>
-                <tbody style="background-color: #ffffff;">
-
-                {% for key, data in datas.items() %}
-                <tr class="ttr text-center">
-                    <th scope="col">{{ data.employeeName }}</th>
-                    <th scope="col">00:00</th>
-                    <td scope="col">
-                        <input type="text" class="form-control text-center" value='{{ data.lwp }}' name="{{ key }}_lwp"
-                               id="{{ key }}_lwp">
-                    </td>
-                    <td scope="col">
-                        <input type="text" class="form-control text-center" value='{{ data.basic }}'
-                               name="{{ key }}_basic"
-                               id="{{ key }}_basic" readonly>
-                    </td>
-                    <td scope="col">
-                        <input type="text" class="form-control text-center" name="{{ key }}_hra" id="{{ key }}_hra"
-                               value='{{ data.hra }}' readonly>
-                    </td>
-                    <th scope="col">
-                        <input type="text" class="form-control text-center" value='{{ data.da }}' name="{{ key }}_da"
-                               id="{{ key }}_da" readonly>
-                    </th>
-                    <td scope="col">
-                        <input type="text" class="form-control text-center" value='{{ data.otherAllowance }}'
-                               id="{{ key }}_otherAllowance" name="{{ key }}_otherAllowance">
-                    </td>
-                    <td scope="col">
-                        <input type="text" class="form-control text-center" value='{{ data.incentive }}'
-                               id="{{ key }}_incentive" name="{{ key }}_incentive">
-                    </td>
-                    <td scope="col">
-                        <input type="text" class="form-control text-center" value='{{ data.arrears }}'
-                               id="{{ key }}_arrears" name="{{ key }}_arrears">
-                    </td>
-                    <td scope="col">
-                        <input type="text" class="form-control text-center" value='{{data.grsOutstandingAdjustment}}'
-                               id="{{ key }}_grsOutstandingAdjustment" name="{{ key }}_grsOutstandingAdjustment">
-                    </td>
-                    <td scope="col">
-                        <input type="text" class="form-control text-center" value='{{ data.statutoryBonus }}'
-                               id="{{ key }}_statutoryBonus" name="{{ key }}_statutoryBonus">
-                    </td>
-                    <td scope="col">
-                        <input type="text" class="form-control text-center" value='{{ data.grossSalary }}'
-                               id="{{ key }}_grossSalary" name="{{ key }}_grossSalary" readonly>
-                    </td>
-                    <td scope="col">
-                        <input type="text" class="form-control text-center" value='{{ data.epfo }}' id="{{ key }}_epfo"
-                               name="{{ key }}_epfo" readonly>
-                    </td>
-                    <td scope="col">
-                        <input type="text" class="form-control text-center" value='{{ data.pt }}' id="{{ key }}_pt"
-                               name="{{ key }}_pt" readonly>
-                    </td>
-                    <td scope="col">
-                        <input type="text" class="form-control text-center" value='{{ data.tds }}' id="{{ key }}_tds"
-                               name="{{ key }}_tds">
-                    </td>
-                    <td scope="col">
-                        <input type="text" class="form-control text-center" value='{{ data.leaveDeduction }}'
-                               id="{{ key }}_leaveDeduction" name="{{ key }}_leaveDeduction">
-                    </td>
-                    <td scope="col">
-                        <input type="text" class="form-control text-center" value='{{ data.otherDeduction }}'
-                               id="{{ key }}_otherDeduction" name="{{ key }}_otherDeduction">
-                    </td>
-                    <td scope="col">
-                        <input type="text" class="form-control text-center" value='{{ data.dedOutstandingAdjustment }}'
-                               id="{{ key }}_dedOutstandingAdjustment" name="{{ key }}_dedOutstandingAdjustment">
-                    </td>
-                    <td scope="col">
-                        <input type="text" class="form-control text-center" value='{{ data.netSalary }}'
-                               id="{{ key }}_netSalary" name="{{ key }}_netSalary" readonly>
-                    </td>
-                    <td>
-                        <a href="/salary_sheet/{{ key }}">
-                            <button class="btn border-1 btn-secondary" type="button"
-                                    style="color:#2F3990; border-color:#2F3990; background-color: #FFFFFF">
-                                Update
-                            </button>
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                    {% for key, data in datas.items() %}
+                    <tr class="ttr text-center">
+                        <th scope="col" class="fix second-child">{{ data.employeeName }}</th>
+                        <th scope="col" class="fix third-child" style="background-color: #FFFFFF;">{{ data.WrkHrs }}
+                        </th>
+                        <td scope="col">
+                            <input type="text" class="form-control text-center" value='{{ data.lwp }}'
+                                   name="{{ key }}_lwp"
+                                   id="{{ key }}_lwp" onkeypress="onlyNumber(event)">
+                        </td>
+                        <td scope="col">
+                            <input type="text" class="form-control text-center" value='{{ data.totalLeave }}'
+                                   name="{{ key }}_totalLeaves"
+                                   id="{{ key }}_totalLeaves" onkeypress="onlyNumber(event)">
+                        </td>
+                        <td scope="col">
+                            <input type="text" class="form-control text-center" value='{{ data.OT }}'
+                                   name="{{ key }}_Auth_OT"
+                                   id="{{ key }}_Auth_OT" onkeypress="onlyNumber(event)">
+                        </td>
+                        <td scope="col">
+                            <input type="text" class="form-control text-center" value='{{ data.basic }}'
+                                   name="{{ key }}_basic"
+                                   id="{{ key }}_basic" onkeypress="onlyNumber(event)" readonly>
+                        </td>
+                        <td scope="col">
+                            <input type="text" class="form-control text-center" name="{{ key }}_hra" id="{{ key }}_hra"
+                                   value='{{ data.hra }}' onkeypress="onlyNumber(event)" readonly>
+                        </td>
+                        <th scope="col">
+                            <input type="text" class="form-control text-center" value='{{ data.da }}'
+                                   name="{{ key }}_da"
+                                   id="{{ key }}_da" onkeypress="onlyNumber(event)" readonly>
+                        </th>
+                        <td scope="col">
+                            <input type="text" class="form-control text-center" value='{{ data.otherAllowance }}'
+                                   id="{{ key }}_otherAllowance" name="{{ key }}_otherAllowance"
+                                   onkeypress="onlyNumber(event)">
+                        </td>
+                        <td scope="col">
+                            <input type="text" class="form-control text-center" value='{{ data.incentive }}'
+                                   id="{{ key }}_incentive" name="{{ key }}_incentive" onkeypress="onlyNumber(event)">
+                        </td>
+                        <td scope="col">
+                            <input type="text" class="form-control text-center" value='{{ data.arrears }}'
+                                   id="{{ key }}_arrears" name="{{ key }}_arrears" onkeypress="onlyNumber(event)">
+                        </td>
+                        <td scope="col">
+                            <input type="text" class="form-control text-center"
+                                   value='{{data.grsOutstandingAdjustment}}'
+                                   id="{{ key }}_grsOutstandingAdjustment" name="{{ key }}_grsOutstandingAdjustment"
+                                   onkeypress="onlyNumber(event)">
+                        </td>
+                        <td scope="col">
+                            <input type="text" class="form-control text-center" value='{{ data.statutoryBonus }}'
+                                   id="{{ key }}_statutoryBonus" name="{{ key }}_statutoryBonus"
+                                   onkeypress="onlyNumber(event)">
+                        </td>
+                        <td scope="col">
+                            <input type="text" class="form-control text-center" value='{{ data.statutoryBonus }}'
+                                   id="{{ key }}_overtimeAmount" name="{{ key }}_overtimeAmount"
+                                   onkeypress="onlyNumber(event)">
+                        </td>
+                        <td scope="col">
+                            <input type="text" class="form-control text-center" value='{{ data.statutoryBonus }}'
+                                   id="{{ key }}_totalSalary" name="{{ key }}_totalSalary"
+                                   onkeypress="onlyNumber(event)">
+                        </td>
+                        <td scope="col">
+                            <input type="text" class="form-control text-center" value='{{ data.grossSalary }}'
+                                   id="{{ key }}_grossSalary" name="{{ key }}_grossSalary"
+                                   onkeypress="onlyNumber(event)" readonly>
+                        </td>
+                        <td scope="col">
+                            <input type="text" class="form-control text-center" value='{{ data.epfo }}'
+                                   id="{{ key }}_epfo"
+                                   name="{{ key }}_epfo" onkeypress="onlyNumber(event)" readonly>
+                        </td>
+                        <td scope="col">
+                            <input type="text" class="form-control text-center" value='{{ data.pt }}' id="{{ key }}_pt"
+                                   name="{{ key }}_pt" onkeypress="onlyNumber(event)" readonly>
+                        </td>
+                        <td scope="col">
+                            <input type="text" class="form-control text-center" value='{{ data.tds }}'
+                                   id="{{ key }}_tds"
+                                   name="{{ key }}_tds" onkeypress="onlyNumber(event)">
+                        </td>
+                        <td scope="col">
+                            <input type="text" class="form-control text-center" value='{{ data.leaveDeduction }}'
+                                   id="{{ key }}_leaveDeduction" name="{{ key }}_leaveDeduction"
+                                   onkeypress="onlyNumber(event)">
+                        </td>
+                        <td scope="col">
+                            <input type="text" class="form-control text-center" value='{{ data.otherDeduction }}'
+                                   id="{{ key }}_otherDeduction" name="{{ key }}_otherDeduction"
+                                   onkeypress="onlyNumber(event)">
+                        </td>
+                        <td scope="col">
+                            <input type="text" class="form-control text-center"
+                                   value='{{ data.dedOutstandingAdjustment }}'
+                                   id="{{ key }}_dedOutstandingAdjustment" name="{{ key }}_dedOutstandingAdjustment"
+                                   onkeypress="onlyNumber(event)">
+                        </td>
+                        <td scope="col">
+                            <input type="text" class="form-control text-center" value='{{ data.totalDeduction }}'
+                                   id="{{ key }}_totaldeduction" name="{{ key }}_totalDeduction"
+                                   onkeypress="onlyNumber(event)">
+                        </td>
+                        <td scope="col" class="fix last-child" style="background-color: #FFFFFF;">
+                            <input type="text" class="form-control text-center" value='{{ data.netSalary }}'
+                                   id="{{ key }}_netSalary" name="{{ key }}_netSalary" onkeypress="onlyNumber(event)"
+                                   readonly>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </form>
@@ -244,58 +356,99 @@ function updateActionUrl() {
 
 <!--Script For Automated Calculation of Edit data -->
 <script>
-        // Do all your JavaScript in a separate JavaScript section
-var inputs = Array.prototype.slice.call(document.querySelectorAll("td > input"));
+    // Do all your JavaScript in a separate JavaScript section
+    var inputs = Array.prototype.slice.call(document.querySelectorAll("td > input"));
 
-inputs.forEach(function(input){
-  input.addEventListener("keyup", function(){
-    var key = input.getAttribute("id").split("_")[0];
-    var basic = document.getElementById(key + "_basic").value;
-    var lwp = document.getElementById(key + "_lwp").value;
-    var otherAllowance = document.getElementById(key + "_otherAllowance").value;
-    var incentive = document.getElementById(key + "_incentive").value;
-    var arrears = document.getElementById(key + "_arrears").value;
-    var grsOutstandingAdjustment = document.getElementById(key + "_grsOutstandingAdjustment").value;
-    var statutoryBonus = document.getElementById(key + "_statutoryBonus").value;
-    var hraPercentage = {{ salary_data['hrapercentage'] }};
-    var daPercentage = {{ salary_data['dapercentage'] }};
-    var workingDays = {{ working_days }};
-    var deductionPercentage = {{ salary_data['deductionpercentage'] }};
+    inputs.forEach(function(input) {
+        input.addEventListener("keyup", function() {
+            var key = input.getAttribute("id").split("_")[0];
+            var basic = document.getElementById(key + "_basic").value;
+            var hra = document.getElementById(key + "_hra").value;
+            var da = document.getElementById(key + "_da").value;
+            var lwp = document.getElementById(key + "_lwp").value;
+            var otherAllowance = document.getElementById(key + "_otherAllowance").value;
+            var incentive = document.getElementById(key + "_incentive").value;
+            var arrears = document.getElementById(key + "_arrears").value;
+            var grsOutstandingAdjustment = document.getElementById(key + "_grsOutstandingAdjustment").value;
+            var statutoryBonus = document.getElementById(key + "_statutoryBonus").value;
+            var grossSalary = document.getElementById(key + "_grossSalary").value;
+            var epfo = document.getElementById(key + "_epfo").value;
+            var pt = document.getElementById(key + "_pt").value;
+            var tds = document.getElementById(key + "_tds").value;
+            var leaveDeduction = document.getElementById(key + "_leaveDeduction").value;
+            var otherDeduction = document.getElementById(key + "_otherDeduction").value;
+            var dedOutstandingAdjustment = document.getElementById(key + "_dedOutstandingAdjustment").value;
+            var netSalary = document.getElementById(key + "_netSalary").value;
+            var hraPercentage = {{ salary_data['hrapercentage'] }};
+            var daPercentage = {{ salary_data['dapercentage'] }};
+            var workingDays = {{ working_days }};
+            var deductionPercentage = {{ salary_data['deductionpercentage'] }};
 
-    var hra = (parseInt(basic, 10) * hraPercentage * 0.01).toFixed(2);
-    var da = (parseInt(basic, 10) * daPercentage * 0.01).toFixed(2);
-    var grossSalary = (
-      parseInt(basic, 10) +
-      parseInt(hra, 10) +
-      parseInt(da, 10) +
-      parseInt(otherAllowance, 10) +
-      parseInt(incentive, 10) +
-      parseInt(arrears, 10) +
-      parseInt(grsOutstandingAdjustment, 10) +
-      parseInt(statutoryBonus, 10)
-    ).toFixed(2);
-    var leaveDeduction = (
-      parseInt(lwp, 10) * (( parseInt(basic, 10) + parseInt(hra, 10) + parseInt(da, 10) + parseInt(otherAllowance, 10)) / workingDays) * deductionPercentage
-    ).toFixed(2);
-    var netSalary = (
-      parseInt(grossSalary, 10) -
-      parseInt(document.getElementById(key + "_epfo").value, 10) -
-      parseInt(document.getElementById(key + "_pt").value, 10) -
-      parseInt(document.getElementById(key + "_tds").value, 10) -
-      parseInt(leaveDeduction, 10) -
-      parseInt(document.getElementById(key + "_otherDeduction").value, 10) -
-      parseInt(document.getElementById(key + "_dedOutstandingAdjustment").value, 10)
-    ).toFixed(2);
-
-    document.getElementById(key + "_hra").value = hra;
-    document.getElementById(key + "_da").value = da;
-    document.getElementById(key + "_grossSalary").value = grossSalary;
-    document.getElementById(key + "_leaveDeduction").value = leaveDeduction;
-    document.getElementById(key + "_netSalary").value = netSalary;
-  });
-});
+            // Function to handle NaN values and set them to 0
+            function handleEmptyValue(value) {
+                return value === "" || value === null || value === undefined ? 0 : parseFloat(value);
+            }
 
 
+            var lwpValue = handleEmptyValue(lwp);
+            var basicValue = handleEmptyValue(basic);
+            var hraValue = handleEmptyValue(hra);
+            var daValue = handleEmptyValue(da);
+            var otherAllowanceValue = handleEmptyValue(otherAllowance);
+            var incentiveValue = handleEmptyValue(incentive);
+            var arrearsValue = handleEmptyValue(arrears);
+            var grsOutstandingAdjustmentValue = handleEmptyValue(grsOutstandingAdjustment);
+            var statutoryBonusValue = handleEmptyValue(statutoryBonus);
+            var epfoValue = handleEmptyValue(epfo);
+            var ptValue = handleEmptyValue(pt);
+            var tdsValue = handleEmptyValue(tds);
+            var leaveDeductionValue = handleEmptyValue(leaveDeduction);
+            var otherDeductionValue = handleEmptyValue(otherDeduction);
+            var dedOutstandingAdjustmentValue = handleEmptyValue(dedOutstandingAdjustment);
+
+            hra = (hraValue);
+            da = (daValue);
+            grossSalary = (
+                basicValue +
+                hraValue +
+                daValue +
+                otherAllowanceValue +
+                incentiveValue +
+                arrearsValue +
+                grsOutstandingAdjustmentValue +
+                statutoryBonusValue
+            ).toFixed(2);
+            leaveDeduction = (
+                lwpValue * ((basicValue + hraValue + daValue + otherAllowanceValue) / {{working_days}}) * {{salary_data['deductionpercentage']}}
+            ).toFixed(2);
+            netSalary = (
+                grossSalary -
+                epfoValue -
+                ptValue -
+                tdsValue -
+                leaveDeductionValue -
+                otherDeductionValue -
+                dedOutstandingAdjustmentValue
+            ).toFixed(2);
+
+            document.getElementById(key + "_hra").value = hra;
+            document.getElementById(key + "_da").value = da;
+            document.getElementById(key + "_grossSalary").value = grossSalary;
+            document.getElementById(key + "_leaveDeduction").value = leaveDeduction;
+            document.getElementById(key + "_netSalary").value = netSalary;
+        });
+    });
+</script>
+
+
+<!--Script for only number input -->
+<script>
+    const onlyNumber = (event) => {
+        let keyCode = event.keyCode ? event.keyCode : event.which;
+        if ((keyCode < 48 || keyCode > 57) && keyCode !== 46) {
+            event.preventDefault();
+        }
+    };
 </script>
 
 
