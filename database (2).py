@@ -54,28 +54,28 @@ db = firestore.client()
 
 
 
-empid = 'EMP0002'
-companyname = 'alian_software'
-
-# # # For Increment
-increment_01 = {'increment_02': {
-    'grossSalary': 53000.00,
-    'jobPosition': 'SR.UI/UX Designer',
-    'effectiveDate': 'May 28, 2023',
-    'increment': 16000.00,
-    'total': 63600.00,
-    'note': 'This is an first increment'
-}
-}
-db.collection(companyname).document(u'employee').collection('employee').document(empid).update(increment_01)
-
-# # # For Contract
-contract_01 = {'contract_01': {
-    'contractDate': 'May 28, 2023',
-    'contractPeriod': '1 Year',
-    'nextContractDate': 'May 28, 2024'
-}
-}
+# empid = 'EMP0002'
+# companyname = 'alian_software'
+#
+# # # # For Increment
+# increment_01 = {'increment_02': {
+#     'grossSalary': 53000.00,
+#     'jobPosition': 'SR.UI/UX Designer',
+#     'effectiveDate': 'May 28, 2023',
+#     'increment': 16000.00,
+#     'total': 63600.00,
+#     'note': 'This is an first increment'
+# }
+# }
+# db.collection(companyname).document(u'employee').collection('employee').document(empid).update(increment_01)
+#
+# # # # For Contract
+# contract_01 = {'contract_01': {
+#     'contractDate': 'May 28, 2023',
+#     'contractPeriod': '1 Year',
+#     'nextContractDate': 'May 28, 2024'
+# }
+# }
 # db.collection(companyname).document(u'employee').collection('employee').document(empid).update(contract_01)
 #
 # company_name  = 'meetSoftware'
@@ -227,3 +227,26 @@ contract_01 = {'contract_01': {
 #             }
 #             self.db.collection(self.companyname).document(u'tdsmst').collection("tdsmst").document(f"{new_id}_tds").update(tds_detail)
 #
+
+
+employee_list_with_increments = (db.collection('alian_software').document('increments').get()).to_dict()
+
+current_month = datetime.datetime.now().month
+result = []
+
+for increment in employee_list_with_increments['increments']:
+    effective_date = increment.get('effectiveDate')
+    if effective_date:
+        increment_month = int(effective_date.split('-')[1])
+        if increment_month == current_month:
+            result.append(increment)
+print(result)
+
+
+
+data = []
+empid = 'EMP0032'
+data = [d for d in result if d.get('empid') == 'EMP0031']
+
+print(data)
+print(data[0]['total'])

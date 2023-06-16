@@ -1,5 +1,7 @@
 import concurrent.futures
 
+from firebase_admin import firestore
+
 
 class Update_information():
     def __init__(self, db):
@@ -12,7 +14,14 @@ class Update_information():
                 if key=='salary':
                     value=float(value)
                 data_dict.update({key: value})
+
         a = self.db.collection(companyname).document('employee').collection('employee').document(id).update(data_dict)
+        doc_ref = self.db.collection(companyname).document('increments')
+        doc_ref.update({'increments': firestore.ArrayUnion([{'empid': id,
+                                                             'effectiveDate': data_dict['doj'],
+                                                             'total': float(data_dict['salary']),
+                                                             'grossSalary': 0
+                                                             }])})
 
 
     def update_tds_info(self, companyname, data, id):

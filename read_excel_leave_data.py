@@ -1,3 +1,5 @@
+import time
+import progressbar
 from openpyxl import load_workbook
 from datetime import datetime, timedelta
 
@@ -24,12 +26,10 @@ def read_excel_rows(file):
                 row_data.append(cell_value)
 
         data.append(row_data)
+    progress_bar.finish()
 
     header_row_index = None
     attendance_start_index = None
-    #
-    # for data in data:
-    #     print(data)
 
     for i, row in enumerate(data):
         if row == ['Sr No', ' User ID', 'Name', 'Department', 'Designation', 'Branch', 'PR', 'WO', 'PH', 'PL', 'TR', 'AB', 'UL', 'LI', 'EO', 'OT', ' WrkHrs']:

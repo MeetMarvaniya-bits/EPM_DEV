@@ -40,11 +40,28 @@
   font-weight: bold;
 }
 
+.btn-custom {
+  background-color: transparent !important;
+  color: inherit !important;
+  border: none !important;
+}
+.center{
+    text-align: center;
+}
+.cursor{
+    cursor: pointer;
+}
+
+.custom-cancle-btn{
+    background-color: transparent;
+    border: solid black 2px;
+}
+
+
 
   </style>
 {% endblock %}
 {% block content %}
-
 <!-- Header Section  -->
 <div class="container-fluid" style="background-color: #FFFFFF;">
     <div class="row mt-2">
@@ -223,8 +240,8 @@
                                                                                                                                            class="form-control"
                                                                                                                                            name="employeeName"
                                                                                                                                            id="name"
-                                                                                                                                           value=""
-                                                                                                                                           placeholder='{{ data["personal_data"]["employeeName"] }}'>
+                                                                                                                                           placeholder="Enter Name"
+                                                                                                                                           value='{{ data["personal_data"]["employeeName"] }}'>
                                                                                                                                 </div>
                                                                                                                                 <span class="pmd-textfield-focused"></span>
                                                                                                                             </div>
@@ -237,31 +254,16 @@
                                                                                                                                     <select name="department"
                                                                                                                                             id="department"
                                                                                                                                             class="form-control">
-                                                                                                                                        <option value="">
-                                                                                                                                            Select
+                                                                                                                                        <option value='{{ data["personal_data"]["department"] }}'>
+                                                                                                                                            {{ data["personal_data"]["department"] }}
                                                                                                                                         </option>
-                                                                                                                                        {%
-                                                                                                                                        if
-                                                                                                                                        department
-                                                                                                                                        !=
-                                                                                                                                        None
-                                                                                                                                        %}
-                                                                                                                                        {%
-                                                                                                                                        for
-                                                                                                                                        i
-                                                                                                                                        in
-                                                                                                                                        department%}
+                                                                                                                                        {% if department != None %}
+                                                                                                                                        {% for i in department%}
                                                                                                                                         <option value="{{i}}">
-                                                                                                                                            {{
-                                                                                                                                            i
-                                                                                                                                            }}
+                                                                                                                                            {{ i }}
                                                                                                                                         </option>
-                                                                                                                                        {%
-                                                                                                                                        endfor
-                                                                                                                                        %}
-                                                                                                                                        {%
-                                                                                                                                        endif
-                                                                                                                                        %}
+                                                                                                                                        {% endfor %}
+                                                                                                                                        {% endif %}
                                                                                                                                     </select>
                                                                                                                                 </div>
                                                                                                                                 <span class="pmd-textfield-focused"></span>
@@ -276,48 +278,11 @@
                                                                                                                                     <select name="jobPosition"
                                                                                                                                             id="jobPosition"
                                                                                                                                             class="form-control">
-                                                                                                                                        <option value="">
-                                                                                                                                            Select
+                                                                                                                                        <option value='{{ data["personal_data"]["jobPosition"] }}'>
+                                                                                                                                            {{ data["personal_data"]["jobPosition"] }}
                                                                                                                                         </option>
 
                                                                                                                                     </select>
-                                                                                                                                </div>
-                                                                                                                                <span class="pmd-textfield-focused"></span>
-                                                                                                                            </div>
-                                                                                                                            <br>
-                                                                                                                            <div class="form-group row pmd-textfield  pmd-textfield-floating-label ms-1">
-                                                                                                                                <label class="col-form-label control-label col-sm-4 col-md-5"
-                                                                                                                                       for="doj"
-                                                                                                                                       style="color: #455056;"><b>DOJ</b></label>
-                                                                                                                                <div class="col-sm-8 col-md-7">
-                                                                                                                                    <input type="date"
-                                                                                                                                           class="form-control"
-                                                                                                                                           name="doj"
-                                                                                                                                           id="doj"
-                                                                                                                                           value=""
-                                                                                                                                           placeholder="Select">
-                                                                                                                                </div>
-                                                                                                                                <span class="pmd-textfield-focused"></span>
-                                                                                                                            </div>
-                                                                                                                            <br>
-                                                                                                                        </div>
-                                                                                                                    </div>
-
-                                                                                                                    <div class=" col-sm-12 col-lg-6 col-md-6">
-
-                                                                                                                        <div class="col-12 col-sm-12 col-md-12">
-
-                                                                                                                            <div class="form-group row pmd-textfield  pmd-textfield-floating-label ms-1">
-                                                                                                                                <label class="col-form-label control-label col-sm-4 col-md-5"
-                                                                                                                                       for="password"
-                                                                                                                                       style="color: #455056;"><b>Password</b></label>
-                                                                                                                                <div class="col-sm-8 col-md-7">
-                                                                                                                                    <input type="text"
-                                                                                                                                           class="form-control"
-                                                                                                                                           name="password"
-                                                                                                                                           id="password"
-                                                                                                                                           value=""
-pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="Password must be at least 8 characters long, contain at least one letter, one number, and one special character"                                                                                                                                           placeholder='{{ data["personal_data"]["password"] }}'>
                                                                                                                                 </div>
                                                                                                                                 <span class="pmd-textfield-focused"></span>
                                                                                                                             </div>
@@ -330,8 +295,8 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                     <select name="designation"
                                                                                                                                             id="designation"
                                                                                                                                             class="form-control">
-                                                                                                                                        <option value="">
-                                                                                                                                            Select
+                                                                                                                                        <option value='{{ data["personal_data"]["designation"] }}'>
+                                                                                                                                            {{ data["personal_data"]["designation"] }}
                                                                                                                                         </option>
                                                                                                                                         <option value="Employee">
                                                                                                                                             Employee
@@ -352,15 +317,90 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                             <br>
                                                                                                                             <div class="form-group row pmd-textfield  pmd-textfield-floating-label ms-1">
                                                                                                                                 <label class="col-form-label control-label col-sm-4 col-md-5"
+                                                                                                                                       for="doj"
+                                                                                                                                       style="color: #455056;"><b>DOJ</b></label>
+                                                                                                                                <div class="col-sm-8 col-md-7">
+                                                                                                                                    <input type="date"
+                                                                                                                                           class="form-control"
+                                                                                                                                           name="doj"
+                                                                                                                                           id="doj"
+                                                                                                                                           value='{{ data["personal_data"]["doj"] }}'
+                                                                                                                                           onchange="compareDates()"
+                                                                                                                                           placeholder="Select">
+                                                                                                                                </div>
+                                                                                                                                <span class="pmd-textfield-focused"></span>
+                                                                                                                                <p id="dojerror" style="color: red;"></p>
+                                                                                                                            </div>
+                                                                                                                            <br>
+                                                                                                                            <div class="form-group row pmd-textfield  pmd-textfield-floating-label ms-1">                                                                                                                       <div class="form-group row pmd-textfield pmd-textfield-floating-label">
+                                                                                                                        <label class="col-form-label control-label col-sm-4 col-md-5"
+                                                                                                                               for="workEmail" style="color: #455056;"><b>Work Email</b></span></label>
+                                                                                                                        <div class="col-sm-8 col-md-7">
+
+                                                                                                                            <input type="email"
+                                                                                                                                   class="form-control"
+                                                                                                                                   name="workEmail"
+                                                                                                                                   id="workEmail"
+                                                                                                                                   value='{{ data["personal_data"]["workEmail"] }}'
+                                                                                                                                   placeholder="Enter Email ID" required onblur="checkEmail()" onfocus="clearError()">
+                                                                                                                            <p id="error" style="color: red"></p>
+                                                                                                                            {% if responce %}
+                                                                                                                            <span style="color:red">{{responce}}</span>
+                                                                                                                            {% endif %}
+                                                                                                                        </div>
+                                                                                                                        <span class="pmd-textfield-focused"></span>
+                                                                                                                            </div>
+                                                                                                                    </div>
+                                                                                                                        </div>
+                                                                                                                    </div>
+
+                                                                                                                    <div class=" col-sm-12 col-lg-6 col-md-6">
+
+                                                                                                                        <div class="col-12 col-sm-12 col-md-12">
+                                                                                                                            <div class="form-group row pmd-textfield  pmd-textfield-floating-label ms-1">
+                                                                                                                                <label class="col-form-label control-label col-sm-4 col-md-5"
+                                                                                                                                       style="color: #455056;"><b>Cosec ID</b></label>
+                                                                                                                                <div class="col-sm-8 col-md-7">
+                                                                                                                                    <input type="text"
+                                                                                                                                           class="form-control"
+                                                                                                                                           name="cosecID"
+                                                                                                                                           id="cosecID"
+                                                                                                                                           value='{{ data["personal_data"]["cosecID"] }}'
+                                                                                                                                            pattern="[0-9][0-9]*" title="Please enter a valid Number"
+                                                                                                                                           placeholder='Enter ID'>
+                                                                                                                                </div>
+                                                                                                                                <span class="pmd-textfield-focused"></span>
+                                                                                                                            </div>
+                                                                                                                            <br>
+                                                                                                                            <div class="form-group row pmd-textfield pmd-textfield-floating-label ms-1">
+                                                                                                                                <label class="col-form-label control-label col-md-5 col-sm-4" for="password" style="color: #455056;"><b>Password</b></label>
+                                                                                                                                <div class="col-md-7 col-sm-8">
+                                                                                                                                  <input type="password" class="form-control" name="password" id="password" value='{{ data["personal_data"]["password"] }}' placeholder="Enter password" required>
+                                                                                                                                </div>
+                                                                                                                                <span class="pmd-textfield-focused"></span>
+                                                                                                                              </div>
+                                                                                                                              <br>
+                                                                                                                              <div class="form-group row pmd-textfield pmd-textfield-floating-label ms-1">
+                                                                                                                                <label class="col-form-label control-label col-md-5 col-sm-4" for="confirmpassword" style="color: #455056;"><b>Confirm password</b></span></label>
+                                                                                                                                <div class="col-md-7 col-sm-8" style="padding-right: 2rem;">
+                                                                                                                                  <input type="password" class="form-control" name="confirmpassword" id="confirmpassword" value='{{ data["personal_data"]["password"] }}' placeholder="Re-enter password" required>
+                                                                                                                                </div>
+                                                                                                                                <span class="pmd-textfield-focused"></span>
+                                                                                                                                <span id="passwordError" style="color: red;"></span> <!-- Error message container -->
+                                                                                                                              </div>
+                                                                                                                            <br>
+
+                                                                                                                            <div class="form-group row pmd-textfield  pmd-textfield-floating-label ms-1">
+                                                                                                                                <label class="col-form-label control-label col-sm-4 col-md-5"
                                                                                                                                        style="color: #455056;"><b>CTC</b></label>
                                                                                                                                 <div class="col-sm-8 col-md-7">
                                                                                                                                     <input type="text"
                                                                                                                                            class="form-control"
                                                                                                                                            name="salary"
                                                                                                                                            id="salary"
-                                                                                                                                           value=""
+                                                                                                                                           placeholder="Enter an Amount"
                                                                                                                                             pattern="[0-9][0-9]*" title="Please enter a valid salary greater than 0"
-                                                                                                                                           placeholder='{{ data["personal_data"]["salary"] }}'>
+                                                                                                                                           value='{{ data["personal_data"]["salary"] }}'>
                                                                                                                                 </div>
                                                                                                                                 <span class="pmd-textfield-focused"></span>
                                                                                                                             </div>
@@ -374,9 +414,9 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                            class="form-control"
                                                                                                                                            name="currentExperience"
                                                                                                                                            id="currentExperience"
-                                                                                                                                           value=""
+                                                                                                                                           placeholder="In Year"
                                                                                                                                            pattern="[0-9]{1,2}(\.[0-9]{1,2})?" title="Please enter a valid experience value in years (up to 2 decimal places)"
-                                                                                                                                           placeholder='{{ data["personal_data"]["currentExperience"] }}'>
+                                                                                                                                           value='{{ data["personal_data"]["currentExperience"] }}'>
                                                                                                                                 </div>
                                                                                                                                 <span class="pmd-textfield-focused"></span>
                                                                                                                             </div>
@@ -410,7 +450,8 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             name="email"
                                                                                                                                             class="form-control"
                                                                                                                                             style="background-color: #FFFFFF"
-                                                                                                                                            placeholder=" {{ data['personal_data']['email'] }} ">
+                                                                                                                                            placeholder="Enter an Email"
+                                                                                                                                            value="{{ data['personal_data']['email'] }}">
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -433,7 +474,8 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             name="phoneNo"
                                                                                                                                             pattern="\d+"
                                                                                                                                             style="background-color: #FFFFFF"
-                                                                                                                                            placeholder="{{ data['personal_data']['phoneNo'] }}">
+                                                                                                                                            placeholder="Enter 10 Digit Number"
+                                                                                                                                            value="{{ data['personal_data']['phoneNo'] }}">
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -469,7 +511,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="bankName"
                                                                                                                                              pattern="[A-Za-z0-9\s]{1,50}" title="Please enter a valid bank name (up to 50 alphanumeric characters)"
-                                                                                                                                            placeholder='{{ data["personal_data"]["bankName"] }}'>
+                                                                                                                                            value='{{ data["personal_data"]["bankName"] }}' placeholder="Enter Bank Name">
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             <tr>
@@ -485,7 +527,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="accountHolderName"
                                                                                                                                             pattern="[A-Za-z\s]{1,50}" title="Please enter a valid account holder name (up to 50 alphabetic characters)"
-                                                                                                                                            placeholder='{{ data["personal_data"]["accountHolderName"] }}'>
+                                                                                                                                            value='{{ data["personal_data"]["accountHolderName"] }}' placeholder="Enter Account Holder Name">
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -509,7 +551,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="accountNumber"
                                                                                                                                             pattern="[0-9]{9,18}" title="Please enter a valid bank account number with 9 to 18 digits"
-                                                                                                                                            placeholder='{{ data["personal_data"]["accountNumber"] }}'>
+                                                                                                                                            value='{{ data["personal_data"]["accountNumber"] }}' placeholder="Enter Account Number">
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -545,8 +587,8 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             pattern="\d+"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="aadharCardNo"
-                                                                                                                                             pattern="[2-9]{1}[0-9]{3}\s[0-9]{4}\s[0-9]{4}" title="Please enter a valid Aadhaar card number (e.g., 1234 5678 9012)"
-                                                                                                                                            placeholder='{{ data["personal_data"]["aadharCardNo"] }}'>
+                                                                                                                                             pattern="[2-9]{1}[0-9]{3}\s[0-9]{4}\s[0-9]{4}" title="Please enter a valid Aadhar card number (e.g., 1234 5678 9012)"
+                                                                                                                                            value='{{ data["personal_data"]["aadharCardNo"] }}' placeholder="Enter Aadhar Number">
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             <tr>
@@ -561,7 +603,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="passportNo"
                                                                                                                                             pattern="[A-PR-WYa-pr-wy][1-9]\d\s?\d{4}[1-9]" title="Please enter a valid passport number"
-                                                                                                                                            placeholder='{{ data["personal_data"]["passportNo"] }}'>
+                                                                                                                                            value='{{ data["personal_data"]["passportNo"] }}' placeholder="Enter Passport Number">
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -586,7 +628,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="panCardNo"
                                                                                                                                             pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" title="Please enter a valid PAN card number" maxlength="10"
-                                                                                                                                            placeholder='{{ data["personal_data"]["panCardNo"] }}'>
+                                                                                                                                            value='{{ data["personal_data"]["panCardNo"] }}' placeholder="Enter Pan Number">
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -622,7 +664,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             pattern="^[a-zA-Z0-9]*$"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="pfAccountNo"
-                                                                                                                                            placeholder='{{ data["personal_data"]["pfAccountNo"] }}'>
+                                                                                                                                            value='{{ data["personal_data"]["pfAccountNo"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             <tr>
@@ -636,7 +678,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             pattern="\d+"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="esicNo"
-                                                                                                                                            placeholder='{{ data["personal_data"]["esicNo"] }}'>
+                                                                                                                                            value='{{ data["personal_data"]["esicNo"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -659,7 +701,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             pattern="\d+"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="uanNo"
-                                                                                                                                            placeholder='{{ data["personal_data"]["uanNo"] }}'>
+                                                                                                                                            value='{{ data["personal_data"]["uanNo"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -728,7 +770,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             pattern="\d+"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="hlapplicationno"
-                                                                                                                                            placeholder='{{ data["tds_data"]["hlapplicationno"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["hlapplicationno"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             <tr>
@@ -742,7 +784,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             pattern="^\d*\.?\d*$"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="hlamount"
-                                                                                                                                            placeholder='{{ data["tds_data"]["hlamount"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["hlamount"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             <tr>
@@ -757,7 +799,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             class="form-control"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="hlperiod"
-                                                                                                                                            placeholder='{{ data["tds_data"]["hlperiod"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["hlperiod"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -780,7 +822,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             pattern="^[a-zA-Z0-9]*$"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="hlname"
-                                                                                                                                            placeholder='{{ data["tds_data"]["hlname"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["hlname"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             <tr>
@@ -793,7 +835,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             class="form-control"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="hlannual"
-                                                                                                                                            placeholder='{{ data["tds_data"]["hlannual"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["hlannual"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
 
@@ -830,7 +872,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             class="form-control"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="pino"
-                                                                                                                                            placeholder='{{ data["tds_data"]["pino"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["pino"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             <tr>
@@ -845,7 +887,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             class="form-control"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="piannual"
-                                                                                                                                            placeholder='{{ data["tds_data"]["piannual"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["piannual"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -867,7 +909,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             class="form-control"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="piname"
-                                                                                                                                            placeholder='{{ data["tds_data"]["piname"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["piname"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -902,7 +944,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             class="form-control"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="hipno"
-                                                                                                                                            placeholder='{{ data["tds_data"]["hipno"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["hipno"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             <tr>
@@ -918,7 +960,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             pattern="^\d*\.?\d*$"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="hipannual"
-                                                                                                                                            placeholder='{{ data["tds_data"]["hipannual"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["hipannual"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -940,7 +982,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             class="form-control"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="hipname"
-                                                                                                                                            placeholder='{{ data["tds_data"]["hipname"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["hipname"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             <tr>
@@ -954,7 +996,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             class="form-control"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="hipperiod"
-                                                                                                                                            placeholder='{{ data["tds_data"]["hipperiod"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["hipperiod"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -989,7 +1031,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             class="form-control"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="hisno"
-                                                                                                                                            placeholder='{{ data["tds_data"]["hisno"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["hisno"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             <tr>
@@ -1005,7 +1047,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             pattern="^\d*\.?\d*$"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="hisannual"
-                                                                                                                                            placeholder='{{ data["tds_data"]["hisannual"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["hisannual"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -1027,7 +1069,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             class="form-control"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="hisname"
-                                                                                                                                            placeholder='{{ data["tds_data"]["hisname"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["hisname"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             <tr>
@@ -1041,7 +1083,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             class="form-control"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="hisperiod"
-                                                                                                                                            placeholder='{{ data["tds_data"]["hisperiod"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["hisperiod"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -1076,7 +1118,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             class="form-control"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="hifno"
-                                                                                                                                            placeholder='{{ data["tds_data"]["hifno"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["hifno"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             <tr>
@@ -1092,7 +1134,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             pattern="^\d*\.?\d*$"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="hifannual"
-                                                                                                                                            placeholder='{{ data["tds_data"]["hifannual"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["hifannual"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -1114,7 +1156,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             class="form-control"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="hifname"
-                                                                                                                                            placeholder='{{ data["tds_data"]["hifname"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["hifname"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             <tr>
@@ -1128,7 +1170,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             class="form-control"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="hifperiod"
-                                                                                                                                            placeholder='{{ data["tds_data"]["hifperiod"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["hifperiod"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -1166,7 +1208,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             pattern="^\d*\.?\d*$"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="ihlannual"
-                                                                                                                                            placeholder='{{ data["tds_data"]["ihlannual"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["ihlannual"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             <tr>
@@ -1180,7 +1222,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             class="form-control"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="ihlpanlender"
-                                                                                                                                            placeholder='{{ data["tds_data"]["ihlpanlender"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["ihlpanlender"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -1202,7 +1244,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             class="form-control"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="ihlname"
-                                                                                                                                            placeholder='{{ data["tds_data"]["ihlname"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["ihlname"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -1239,7 +1281,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             pattern="^\d*\.?\d*$"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="ahrmonth"
-                                                                                                                                            placeholder='{{ data["tds_data"]["ahrmonth"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["ahrmonth"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             <tr>
@@ -1252,7 +1294,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             class="form-control"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="ahrlandpann"
-                                                                                                                                            placeholder='{{ data["tds_data"]["ahrlandpann"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["ahrlandpann"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             <tr>
@@ -1266,7 +1308,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             class="form-control"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="ahrperiod"
-                                                                                                                                            placeholder='{{ data["tds_data"]["ahrperiod"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["ahrperiod"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -1288,7 +1330,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             class="form-control"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="ahrlandname"
-                                                                                                                                            placeholder='{{ data["tds_data"]["ahrlandname"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["ahrlandname"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             <tr>
@@ -1301,7 +1343,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             class="form-control"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="ahrlandaddress"
-                                                                                                                                            placeholder='{{ data["tds_data"]["ahrlandaddress"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["ahrlandaddress"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -1335,7 +1377,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             pattern="^\d*\.?\d*$"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="elssannual"
-                                                                                                                                            placeholder='{{ data["tds_data"]["elssannual"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["elssannual"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -1357,7 +1399,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             class="form-control"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="elssperiod"
-                                                                                                                                            placeholder='{{ data["tds_data"]["elssperiod"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["elssperiod"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -1391,7 +1433,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             pattern="^\d*\.?\d*$"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="tfannual"
-                                                                                                                                            placeholder='{{ data["tds_data"]["tfannual"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["tfannual"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -1413,7 +1455,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                                                                             class="form-control"
                                                                                                                                             style="background-color: #FFFFFF"
                                                                                                                                             name="tfperiod"
-                                                                                                                                            placeholder='{{ data["tds_data"]["tfperiod"] }}'>
+                                                                                                                                            value='{{ data["tds_data"]["tfperiod"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -1565,6 +1607,13 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                         data["personal_data"]["currentExperience"] }}
                                                                     </td>
                                                                 </tr>
+                                                                <tr>
+                                                                    <th class="col-3">Work Email
+                                                                    </th>
+                                                                    <td class="col-3">{{
+                                                                        data["personal_data"]["workEmail"] }}
+                                                                    </td>
+                                                                </tr>
                                                                 </thead>
                                                                 <tbody>
                                                             </table>
@@ -1573,6 +1622,12 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
 
                                                             <table class="table table-striped">
                                                                 <thead>
+                                                                <tr>
+                                                                    <th class="col-3">Cosec ID</th>
+                                                                    <td class="col-3">{{
+                                                                        data["personal_data"]["cosecID"] }}
+                                                                    </td>
+                                                                </tr>
                                                                 <tr>
                                                                     <th class="col-3">Job Position</th>
                                                                     <td class="col-3">{{
@@ -2037,7 +2092,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                           </tr>
                                                                                           <tr>
                                                                                               <td colspan="6">
-                                                                                                  <a href="#" id="addNewDataLinkCtr">
+                                                                                                  <a  id="addNewDataLinkCtr">
                                                                                                   <span class="hidden">+ ADD NEW DATA</span></a></td>
                                                                                           </tr>
                                                                                           </tbody>
@@ -2078,7 +2133,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                           <th scope="col">Gross Salary (₹)</th>
                                                                                           <th scope="col">Job Position</th>
                                                                                           <th scope="col">Effective Date</th>
-                                                                                          <th scope="col" onclick="toggleIncrementType()">Increment</th>
+                                                                                          <th scope="col">Increment</th>
                                                                                           <th scope="col">Total (₹)</th>
                                                                                           <th scope="col">Note</th>
                                                                                           <th></th>
@@ -2099,7 +2154,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
 <td scope="col">
   <p id="incinformation{{ index }}_3">{{ content[key]['effectiveDate'] }}</p>
   <span id="error" style="color: red;"></span>
-  <input type="date" id="inctextBox{{ index }}_3" name="{{key}}_effectiveDate"  min="{% if key == 'increment_01' %}{{data['personal_data']['doj']}}{% else %}{{effective_dates[index-1]}}{% endif %}" class="hidden form-control-sm storedDate" size="8" >
+  <input type="date" id="inctextBox{{ index }}_3" name="{{key}}_effectiveDate"  min="{% if key == 'increment_01' %}{{data['personal_data']['doj']}}{% else %}{{effective_dates[index-1]}}{% endif %}" class="hidden form-control-sm storedDate" size="8" required>
 </td>
 <td scope="col" class="d-flex">
   <div class="icon-box">
@@ -2129,6 +2184,24 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
     </a></td>
 </tr>
 
+<div class="modal fade" id="deletionPopUp" tabindex="-1" aria-labelledby="exampleModalLabel{{ index }}" aria-hidden="true">
+    <div class="modal-dialog d-flex align-items-center justify-content-center">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel{{ index }}">Confirm Deletion</h5>
+          <button type="button" class="btn-close bg-transparent" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete this increment?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light custom-cancle-btn" data-bs-dismiss="modal">Cancel</button>
+          <a type="button" class="btn btn-danger" href="/delete_increment/{{ data['personal_data']['userID'] }}/{{ username }}/{{ key }}/{{ content[key] }}">Delete</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
                                                                                         {% endfor %}
                                                                                         {% endfor %}
@@ -2145,7 +2218,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                           </td>
                                                                                           <td scope="col">
                                                                                             <p id="incinformation10_3">
-                                                                                              <input type="date" id="inctextBox10_3" name="new_inc_effectiveDate"   min="{% if key == 'increment_01' %}{{data['personal_data']['doj']}}{% else %}{{effective_dates[index]}}{% endif %}" class="form-control-sm storedDate" size="8" onclick="validateDate()">
+                                                                                              <input type="date" id="inctextBox10_3" name="new_inc_effectiveDate"   min="{% if key == 'increment_01' %}{{data['personal_data']['doj']}}{% else %}{{effective_dates[index]}}{% endif %}" class="form-control-sm storedDate" size="8"  onchange="compareDates()" onclick="validateDate()" required>
                                                                                               <script> console.log("{{effective_dates[index]}}")</script>
                                                                                             </p>
                                                                                           </td>
@@ -2166,7 +2239,7 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                           </td>
                                                                                         </tr>
                                                                                         <tr>
-                                                                                          <td colspan="6"><a class="hidden" href="#" id="addNewDataLink">+ ADD NEW DATA</a></td>
+                                                                                          <td colspan="6"><a class="hidden"  id="addNewDataLink">+ ADD NEW DATA</a></td>
                                                                                         </tr>
                                                                                       </tbody>
                                                                                     </table>
@@ -3137,16 +3210,12 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
                                                                                             </tr>
                                                                                             {% endif %}
                                                                                             {% endfor%}
-
-
                                                                                             <tbody>
                                                                                         </table>
 
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-
-
                                                                         </div>
 
                                                                     </div>
@@ -3179,11 +3248,23 @@ pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$" title="
 </div>
 
 
+<script>
+    function compareDates() {
+      var firstDate = new Date(document.getElementById("doj").value);
+      var secondDate = new Date(document.getElementById("inctextBox0_3").value);
+      var additionalDate = new Date(document.getElementById("incinformation0_3").textContent);
+      if (firstDate > secondDate || firstDate > additionalDate) {
+        document.getElementById("dojerror").textContent = "Error: The first date cannot be greater than the second date.";
+        console.log("The  date of joining cannot be greater than the first increment date.");
+        return false; // Prevent form submission
+      } else {
+        document.getElementById("dojerror").textContent = "";
+        console.log("Error: The first date  greater than the second date.");
 
-
-
-
-
+        return true; // Allow form submission
+      }
+    }
+  </script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
       // Get all the increment dropdown elements
@@ -3829,7 +3910,7 @@ return daysDiff;
             xhr.addEventListener('readystatechange', function () {
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
-                        window.location.href = `http://192.168.0.181:3005/${username}/tds_data_update/${id}`;
+                        window.location.href = `http://127.0.0.1:3005/${username}/tds_data_update/${id}`;
                     } else {
                         console.error(xhr.responseText); // Handle error response
                     }
@@ -3918,49 +3999,6 @@ return daysDiff;
 
 
     </script>
-
-
-
-
-
-
-<!--Script For Increment Type Rs/Percentage-->
-<script>
-    var incrementType = 'INR';
-
-function toggleIncrementType() {
-  var incrementCells = document.querySelectorAll("#tableBody td:nth-child(4) p");
-
-  if (incrementType === 'INR') {
-    for (var i = 0; i < incrementCells.length; i++) {
-      var incrementValue = parseFloat(incrementCells[i].textContent);
-      var grossSalary = parseFloat(incrementCells[i].parentNode.parentNode.querySelector("td:nth-child(1) p").textContent);
-      var incrementPercentage = (incrementValue / grossSalary) * 100;
-
-      incrementCells[i].textContent = incrementPercentage.toFixed(2) + '%';
-    }
-
-    incrementType = 'Percentage';
-  } else {
-    for (var i = 0; i < incrementCells.length; i++) {
-      var incrementPercentage = parseFloat(incrementCells[i].textContent);
-      var grossSalary = parseFloat(incrementCells[i].parentNode.parentNode.querySelector("td:nth-child(1) p").textContent);
-      var incrementValue = (incrementPercentage / 100) * grossSalary;
-
-      incrementCells[i].textContent = incrementValue.toFixed(2);
-    }
-
-    incrementType = 'INR';
-  }
-}
-  </script>
-
-
-
-
-
-
-
 <!-- script for editing priviously added increments -->
 
 
@@ -4048,6 +4086,7 @@ function handleDropdownChange(index) {
 
   </script>
   
+<!-- script for only number validation  -->
 
   <script>
     const onlyNumber = (event) => {

@@ -216,7 +216,7 @@ element.style {
 <div class="container-fluid" style="background-color: #ffffff;">
     <div class="wrapper">
         <div class="main">
-            <main class="content">
+            <main class="content" >
                 <div class="container-fluid p-1">
                     <div class="row">
 
@@ -449,6 +449,29 @@ element.style {
                                                                                                                             <span class="pmd-textfield-focused"></span>
                                                                                                                         </div>
                                                                                                                     </div>
+
+                                                                                                                    <br>    
+
+                                                                                                                    <div class="form-group row pmd-textfield pmd-textfield-floating-label">
+                                                                                                                        <label class="col-form-label control-label col-md-4 col-sm-4"
+                                                                                                                               for="workEmail"><b>Work Email</b></label>
+                                                                                                                        <div class="col-sm-5">
+
+                                                                                                                            <input type="email"
+                                                                                                                                   class="form-control"
+                                                                                                                                   name="workEmail"
+                                                                                                                                   id="workEmail"
+                                                                                                                                   value=""
+                                                                                                                                   placeholder="Enter Email ID" required onblur="checkEmail()" onfocus="clearError()">
+                                                                                                                            <p id="error" style="color: red"></p>
+                                                                                                                            {% if responce %}
+                                                                                                                            <span style="color:red">{{responce}}</span>
+                                                                                                                            {% endif %}
+                                                                                                                        </div>
+                                                                                                                        <span class="pmd-textfield-focused"></span>
+                                                                                                                    </div>
+
+
                                                                                                                 </div>
 
                                                                                                                 <div class=" col-sm-12 col-lg-6 col-md-6">
@@ -483,6 +506,21 @@ element.style {
                                                                                                                             <span class="pmd-textfield-focused"></span>
                                                                                                                         </div> -->
 
+
+                                                                                                                        <div class="form-group row pmd-textfield pmd-textfield-floating-label">
+                                                                                                                            <label class="col-form-label control-label col-md-4 col-sm-4"
+                                                                                                                                   for="doj"><b>Cosec ID</b><span class="required" id="cosecIDLabel"></span></label>
+                                                                                                                            <div class="col-md-5 col-sm-5" style="padding-right: 2rem;">
+                                                                                                                                <input type="text"
+                                                                                                                                       class="form-control"
+                                                                                                                                       name="cosecID"
+                                                                                                                                       id="cosecID"
+                                                                                                                                       value=""
+                                                                                                                                       placeholder="Enter Cosec ID" required>
+                                                                                                                            </div>
+                                                                                                                            <span class="pmd-textfield-focused"></span>
+                                                                                                                        </div>
+                                                                                                                        <br>
 
                                                                                                                         <div class="form-group row pmd-textfield pmd-textfield-floating-label">
                                                                                                                             <label class="col-form-label control-label col-md-4 col-sm-4" for="password"><b>Password</b><span class="required" id="passwordLabel"></span></label>
@@ -1824,9 +1862,9 @@ element.style {
 
 <!-- DETAILS OF ALL EMPLOYEES -->
 
-<div class="container-fluid" style="background-color: #E7E7E7;">
+<div class="container-fluid" style="background-color: #E7E7E7; ">
     <div class="container-fluid p-3">
-        <table class="table">
+        <table class="table table-hover">
             <thead style="background-color:#DFE1E6;">
             <tr>
                 <th scope="col" style="width:5%" onclick="sortTable(0)"></th>
