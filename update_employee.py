@@ -12,7 +12,7 @@ class Update_information():
                 if key=='salary':
                     value=float(value)
                 data_dict.update({key: value})
-        a = self.db.collection(companyname).document('employee').collection('employee').document(id).update(data_dict)
+        self.db.collection(companyname).document('employee').collection('employee').document(id).update(data_dict)
 
 
     def update_tds_info(self, companyname, data, id):

@@ -1,5 +1,5 @@
 from flask import request
-from firebase_admin import credentials, storage
+from firebase_admin import credentials,  auth, exceptions, firestore
 import firebase_admin
 from PIL import Image
 import base64
@@ -25,19 +25,19 @@ class Create():
 
         employee_data = (self.db.collection(self.companyname).document('employee').collection('employee').get())
 
-        if employee_data == None:
-            last_id = 0
-        else:
-            last_id = int(employee_data[-1].to_dict()['userID'][3:])
-
-        new_id = ''
-
-        if last_id < 9:
-            new_id = "EMP000" + str(last_id + 1)
-        elif last_id < 99:
-            new_id = "EMP00" + str(last_id + 1)
-        elif last_id < 999:
-            new_id = "EMP0" + str(last_id + 1)
+        # if employee_data == None:
+        #     last_id = 0
+        # else:
+        #     last_id = int(employee_data[-1].to_dict()['userID'][3:])
+        #
+        # new_id = ''
+        #
+        # if last_id < 9:
+        #     new_id = "EMP000" + str(last_id + 1)
+        # elif last_id < 99:
+        #     new_id = "EMP00" + str(last_id + 1)
+        # elif last_id < 999:
+        #     new_id = "EMP0" + str(last_id + 1)
 
         if request.method == 'POST':
             # file = request.files['photo']
@@ -52,10 +52,16 @@ class Create():
             # image = f"data:image/jpeg;base64,{ image_b64 }"
             # 'photo': image,
 
+
+
+            user = auth.create_user(email=request.form.get('workEmail'), password=request.form.get('password'))
+            print(user.uid)
             personal_data = {
-                'employeeName': request.form.get('name'), 'userID': new_id, 'department': request.form.get('department'),
+                'employeeName': request.form.get('name'), 'userID': user.uid, 'department': request.form.get('department'),
                 'email': request.form.get('email'),
+                'role':  request.form.get('role'),
                 'password':request.form.get('password'),
+                "cosecID":request.form.get('cosecID'),
                 'salary': float(request.form.get('salary')), 'jobPosition': request.form.get('jobPosition'),
                 'doj': request.form.get('doj'),'designation':request.form.get('designation'),
                 'currentExperience': f"{request.form.get('currentExperience')}",'workEmail':request.form.get('workEmail'), 'dob': request.form.get('dob'),
@@ -66,7 +72,7 @@ class Create():
                 'passportNo': request.form.get('passportno'),
                 'pfAccountNo': 'MABAN00000640000000125', 'uanNo': '100904319456', 'esicNo': '31–00–123456–000–0001'
             }
-            self.db.collection(self.companyname).document(u'employee').collection('employee').document(new_id).set(personal_data)
+            self.db.collection(self.companyname).document(u'employee').collection('employee').document(user.uid).set(personal_data)
 
             # ADD LEAVE DATA
 
@@ -75,7 +81,7 @@ class Create():
                 'total_leaves': {'CL': 0, 'PL': 0, 'SL': 0, 'LWP': 0}
             }
 
-            self.db.collection(self.companyname).document(u'employee').collection('employee').document(new_id).collection("leaveMST").document("total_leaves").set(leave_data["total_leaves"])
+            self.db.collection(self.companyname).document(u'employee').collection('employee').document(user.uid).collection("leaveMST").document("total_leaves").set(leave_data["total_leaves"])
 
             # ADD SALARY DATA
             # salary_slip_data = {
@@ -129,6 +135,6 @@ class Create():
                     'tfannual': request.form.get("tfannual"),
                     'tfperiod': request.form.get("tfperiod")
             }
-            self.db.collection(self.companyname).document(u'employee').collection('employee').document(new_id).collection("tdsmst").document("tds").set(tds_detail)
+            self.db.collection(self.companyname).document(u'employee').collection('employee').document(user.uid).collection("tdsmst").document("tds").set(tds_detail)
 
-            return new_id
+            return True

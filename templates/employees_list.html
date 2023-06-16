@@ -273,7 +273,7 @@ element.style {
                                                                                     <!-- SAVE BUTTON -->
                                                                                     <li class="nav-item me-2">
                                                                                         <div class="dropdown">
-                                                                                            <button type="submit" value="submit" id="submitButton" class="btn btn-primary" disabled >Save</button>
+                                                                                            <button type="submit" value="submit" id="submitButton" class="btn btn-primary" >Save</button>
                                                                                         </div>
                                                                                     </li>
 
@@ -562,7 +562,7 @@ element.style {
                                                                                                                       <div class="form-group input-group row pmd-textfield pmd-textfield-floating-label">
                                                                                                                             <label class="col-form-label control-label col-md-4 col-sm-4"
                                                                                                                                    ><b>CTC </b><span class="required" id="salaryLabel"></span></label>
-                                                                                                                            <div class="col-md-5 col-sm-5" style="padding-right: 1rem;">
+                                                                                                                            <div class="col-md-5 col-sm-5" >
                                                                                                                                 <div class="input-group" style="width:auto !important;">
                                                                                                                                     <span class="input-group-text"  style="/* Primary Color #2F3990 */
                                                                                                                                     background: #2F3990; color:white">₹</span>
@@ -578,6 +578,20 @@ element.style {
                                                                                                                             <span class="pmd-textfield-focused"></span>
                                                                                                                         </div>
                                                                                                                         <br>
+                                                                                                                        <div class="form-group input-group row pmd-textfield pmd-textfield-floating-label">
+                                                                                                                              <label class="col-form-label control-label col-md-4 col-sm-4"
+                                                                                                                                     ><b>Role </b><span class="required" id="salaryLabel"></span></label>
+                                                                                                                              <div class="col-md-5 col-sm-5">
+                                                                                                                                      <input type="text"
+                                                                                                                                      class="form-control"
+                                                                                                                                      name="role"
+                                                                                                                                      aria-describedby="basic-addon1"
+                                                                                                                                      id="role"
+                                                                                                                                      value=""
+                                                                                                                                      placeholder="Role" required>
+                                                                                                                              </div>
+                                                                                                                              <span class="pmd-textfield-focused"></span>
+                                                                                                                          </div>
                                                                                                                         
                                                                                                                     </div>
                                                                                                                 </div>
@@ -1884,7 +1898,7 @@ element.style {
             <tr>
                 <!-- <th scope="row">1</th> -->
                 <td></td>
-                <td scope="col">{{ id }}</td>
+                <td scope="col">{{ data[id]['cosecID'] }}</td>
                 <td scope="col">{{data[id]['employeeName']}}</td>
                 <td scope="col">{{data[id]['email']}}</td>
                 <td scope="col">{{data[id]['jobPosition']}}</td>

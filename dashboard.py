@@ -10,44 +10,48 @@ class Dashboard():
     import concurrent.futures
 
     def _get_employee_data(self, emp_doc):
-        employee_data = {'name': emp_doc.get('employeeName'),
-                         'dob': emp_doc.get('dob'),
-                         'doj': emp_doc.get('doj'),
-                         'leaves': {}}
+        if emp_doc.get('role') != "Admin":
 
-        if employee_data['dob'] != '' or employee_data['dob'] == None:
-            dob = datetime.strptime(employee_data['dob'].strip(), '%Y-%m-%d')
-            if dob.month == datetime.today().month:
-                employee_data['birthday'] = employee_data['dob']
-        if employee_data['doj'] != '':
+            print(emp_doc.get('role'))
+            employee_data = {'name': emp_doc.get('employeeName'),
+                             'dob': emp_doc.get('dob'),
+                             'doj': emp_doc.get('doj'),
+                             'leaves': {}}
 
-            doj = datetime.strptime(employee_data['doj'][:10], '%Y-%m-%d')
-            # doj = datetime.strptime(employee_data['doj'], '%Y-%m-%d')
-            if doj.month == datetime.today().month:
-                years = datetime.today().year - doj.year
-                if years>0:
-                    employee_data['anniversary'] = {
-                        'name': employee_data['name'],
-                        'date': employee_data['doj'],
-                        'years': years}
-        leaves = emp_doc.reference.collection('leaveMST')
-        total_leaves = 0
-        for leave in leaves.stream():
-            if leave.id != 'total_leaves':
-                dt2 = datetime.today().date()
-                apply_date = (leaves.document(leave.id).get()).to_dict()['applydate']
-                print(apply_date)
-                dt1 = datetime.strptime(apply_date, '%Y-%m-%d')
-                print(dt1)
-                print(dt2)
-                diff = (dt2.year - dt1.year) * 12 + (dt2.month - dt1.month)
-                if diff < 1:
-                    employee_data['leaves'] = leave.get('fromdate')
-            if leave.id != 'total_leaves':
-                total_leaves += int(leave.get('days'))
-        employee_data['total_leaves'] = total_leaves
-        print(total_leaves)
-        return employee_data
+            if employee_data['dob'] != '' or employee_data['dob'] == None:
+
+                dob = datetime.strptime(employee_data['dob'].strip(), '%Y-%m-%d')
+                if dob.month == datetime.today().month + 1:
+                    employee_data['birthday'] = employee_data['dob']
+            if employee_data['doj'] != '':
+
+                doj = datetime.strptime(employee_data['doj'][:10], '%Y-%m-%d')
+                # doj = datetime.strptime(employee_data['doj'], '%Y-%m-%d')
+                if doj.month == datetime.today().month + 1:
+                    years = datetime.today().year - doj.year
+                    if years>0:
+                        employee_data['anniversary'] = {
+                            'name': employee_data['name'],
+                            'date': employee_data['doj'],
+                            'years': years}
+            leaves = emp_doc.reference.collection('leaveMST')
+            total_leaves = 0
+            for leave in leaves.stream():
+                if leave.id != 'total_leaves':
+                    dt2 = datetime.today().date()
+                    apply_date = (leaves.document(leave.id).get()).to_dict()['applydate']
+                    print(apply_date)
+                    dt1 = datetime.strptime(apply_date, '%Y-%m-%d')
+                    print(dt1)
+                    print(dt2)
+                    diff = (dt2.year - dt1.year) * 12 + (dt2.month - dt1.month)
+                    if diff < 1:
+                        employee_data['leaves'] = leave.get('fromdate')
+                if leave.id != 'total_leaves':
+                    total_leaves += int(leave.get('days'))
+            employee_data['total_leaves'] = total_leaves
+            print(total_leaves)
+            return employee_data
 
     def Dashboard_data(self, companyname):
         users_ref = self.db.collection(companyname).document('employee').collection('employee')

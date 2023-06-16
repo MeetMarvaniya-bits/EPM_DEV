@@ -52,6 +52,8 @@ class SalaryCalculation():
             empid = key
 
             emp_data = value
+            if emp_data['role'] == "Admin":
+                continue
 
             emp_name = emp_data['employeeName']
 
