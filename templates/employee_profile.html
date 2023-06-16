@@ -2296,7 +2296,7 @@
                                                                                         {{i}}
                                                                                     </td>
                                                                                     <td scope="col">
-                                                                                        {{ month_dict[i[3:]] }}
+                                                                                        {{ month_dict[i.split('_')[0][3:]] }}
                                                                                     </td>
                                                                                     <td scope="col">
                                                                                         {{data["salary_data"][i]['year']}}

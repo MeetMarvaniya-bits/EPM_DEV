@@ -27,7 +27,8 @@ from generate_excel import create_excel_file
 from read_data import ExcelData
 from apscheduler.schedulers.background import BackgroundScheduler
 import read_excel_leave_data
-
+import os
+import platform
 
 
 # FLASK APP
@@ -448,7 +449,7 @@ def employee_profile(username, id):
         department_data = executor.submit(get_department_data)
     department = department_data.result()
 
-
+    print(data)
     return render_template('employee_profile.html', leave=leave_status, data=data, total_leave=total_leave,
                            leave_list=leave_list, leave_date=leave_status_date,username=username, department=department,
                            increment_data=increment_list, contract_data=contract_list, effective_dates=effective_dates)
@@ -744,7 +745,7 @@ def set_storage_path(username, salid):
 def salary(username):
     ''' DISPLAY SALARY DETAILS OF ALL MONTH IN YEAR '''
     holidays = db.collection(companyname).document('holidays').get().to_dict()
-    if datetime.datetime.now().day == 15 and 'session_salary' not in session:
+    if datetime.datetime.now().day == 16 and 'session_salary' not in session:
         SalaryCalculation(db, companyname).generate_salary(holidays=holidays)
         leaveobj.leave_add(companyname)
         session['session_salary'] = datetime.datetime.now()
@@ -771,7 +772,16 @@ def salary(username):
         return Salarymanage(db).get_all_month_salary_data(companyname)
 
     def get_salary_status():
-        return db.collection(companyname).document('salary_status').get().to_dict()
+        data_dict=db.collection(companyname).document('salary_status').get().to_dict()
+        today = datetime.date.today()
+        year = today.year
+        day = today.day
+        month = today.month
+        if day >= 26:
+            month += 1
+        if day < 26 and month == 1:
+            year -= 1
+        return data_dict['2023']
 
     with ThreadPoolExecutor(max_workers=3) as executor:
         salary_criteria_future = executor.submit(get_salary_criteria)
@@ -780,7 +790,9 @@ def salary(username):
 
     salary_criteria = salary_criteria_future.result()
     salary_list = salary_list_future.result()
+    print(salary_list)
     salary_status = salary_status_future.result()
+
     year = datetime.datetime.now().year
     return render_template('salary_sheet_month.html', data=salary_list, salary_criteria=salary_criteria
                            , username=username, salary_status=salary_status, year=year)
@@ -849,10 +861,19 @@ def salary_sheet_view(username, salid):
     salary_list = Salarymanage(db).get_all_emp_salary_data(companyname, salid)
 
     salary_status = db.collection(companyname).document('salary_status').get()
-    salary_status = salary_status.get(datetime.date(1900, int(salid[4:]), 1).strftime('%B'))
-
+    today = datetime.date.today()
+    year = today.year
+    day=today.day
+    month = today.month
+    if day >=26:
+        month+=1
+    if day<26 and month==1:
+        year-=1
+    salary_status=(salary_status.to_dict()[str(year)])
+    month_name=datetime.date(1900, int(salid.split('_')[0][4:]), 1).strftime('%B')
+    salary_status = salary_status[datetime.date(1900, int(salid.split('_')[0][4:]), 1).strftime('%B')]
     return render_template('salary_sheet_view.html', data=salary_list, salid=salid, username=username,
-                           salary_status=salary_status, moath_data=moath_data, holidays=holidays)
+                           salary_status=salary_status, moath_data=moath_data, holidays=holidays,month_name=month_name)
 
 @app.route('/<username>/salarysheetedit/<empid> <salid>', methods=['GET', 'POST'])
 def salary_sheet_edit_(username, empid, salid):
@@ -922,15 +943,24 @@ def save_edited_data():
 @app.route('/<username>/set_status/<salid>/<status>')
 def set_status(username, salid, status):
     ''' SALARY SLIP PDF GENERATION '''
-    month = datetime.date(1900, int(salid[3:]), 1).strftime('%B')
     status = status
-    data = {month: status}
-    salary_status = db.collection(companyname).document('salary_status').update(data)
+    today = datetime.date.today()
+    year = today.year
+    day=today.day
+    month = salid[3:]
+    print(month)
+    if day >=26:
+        month+=1
+    if day<26 and month==1:
+        year-=1
+    month = datetime.date(1900, int(salid.split("_")[0][3:]), 1).strftime('%B')
+    print(month)
+
+    status=db.collection(companyname).document('salary_status').update({f'{str(year)}.{month}': status})
+    print(status)
     return redirect(url_for('salary_sheet_view', username=username, salid=salid))
 
 
-import os
-import platform
 
 
 def get_download_folder():

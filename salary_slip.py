@@ -53,7 +53,8 @@ class SalarySlip():
         month_data = month_count.count_previous_month(holidays, salid)
 
         # GET MONTH NAME
-        mont_in_num = int(salid[5:])
+        mont_in_num = int(salid.split('_')[0][5:])
+        print(mont_in_num)
         month = calendar.month_name[mont_in_num]
 
         # PDF STORAGE LOCATION

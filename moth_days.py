@@ -188,8 +188,12 @@ class MonthCount():
         """ COUNT SALARYID MONTH WORKING DAYS FOR SALARY SLIP """
         # Get current year and month
         today = datetime.date.today()
-        year = 2023
-        month = int(salid[5:])
+        year=today.year
+        print(salid.split("_"))
+        salid=salid.split("_")[0]
+        print(salid)
+        month = int(salid[-3:])
+        print(month)
         if month == 1:
             prev_month = 12
             current_month = 1

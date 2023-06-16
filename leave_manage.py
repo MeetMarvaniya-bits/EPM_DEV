@@ -10,12 +10,22 @@ class Leavemanage():
         for doc in docs.get():
             leaves_ref = docs.document(doc.id).collection('leaveMST').document('total_leaves')
             leaves = leaves_ref.get().to_dict()
-            leaves_ref.set({
-                'SL': (float(leaves['SL']) + 0.5),
-                'PL': (float(leaves['PL']) + 1),
-                'CL': (float(leaves['CL']) + 0.5),
-                'LWP':0
-            })
+            print(leaves)
+            if leaves !=None:
+                leaves_ref.set({
+                    'SL': (float(leaves['SL']) + 0.5),
+                    'PL': (float(leaves['PL']) + 1),
+                    'CL': (float(leaves['CL']) + 0.5),
+                    'LWP':0
+                })
+            else:
+                leaves_ref.set({
+                    'SL': 0.5,
+                    'PL': 1,
+                    'CL': 0.5,
+                    'LWP': 0
+
+                })
 
     def leave_reset(self, companyname):
         docs = self.db.collection(companyname).document(u'employee').collection('employee')
