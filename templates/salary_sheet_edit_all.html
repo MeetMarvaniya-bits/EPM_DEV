@@ -356,7 +356,6 @@ function updateActionUrl() {
 </script>
 
 
-<!--Script For Automated Calculation of Edit data -->
 <script>
     // Do all your JavaScript in a separate JavaScript section
 
@@ -381,9 +380,9 @@ function updateActionUrl() {
 
         var inputs = Array.prototype.slice.call(document.querySelectorAll("td > input"));
 
-      
         inputs.forEach(function(input) {
             input.addEventListener("input", calculateSalary);
+        });
 
         function calculateSalary() {
             // Function to handle blank or none values
