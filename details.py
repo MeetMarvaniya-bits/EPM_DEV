@@ -1,4 +1,7 @@
 import calendar
+import datetime
+
+
 class Profile:
     # GETTING ID
     def __init__(self,db, id, companyname):
@@ -32,15 +35,15 @@ class Profile:
 
     # SALARY DATA
     def salary_data(self):
-        salary_status=docs = self.db.collection(self.companyname).document(u'salary_status').get().to_dict()
+        salary_status = self.db.collection(self.companyname).document(u'salary_status').get().to_dict()
+
+        print(salary_status)
         docs = self.db.collection(self.companyname).document(u'employee').collection('employee').document(
             str(self.id)).collection('salaryslips').stream()
-
-
         data_dict = {}
         for doc in docs:
-
-            month_name = calendar.month_name[int(doc.id.split("_")[0][5:])]
-            if salary_status[month_name]=='Paid':
+            print(doc.to_dict())
+            month_name = calendar.month_name[int(doc.id.split('_')[0][5:])]
+            if salary_status[str(datetime.datetime.today().year)][month_name]=='Paid':
                 data_dict.update({doc.id: doc.to_dict()})
         return data_dict

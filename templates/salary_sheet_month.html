@@ -103,8 +103,8 @@
 
             <tr class="bg-dark">
                 <th scope="col" onclick="sortTable(0)">Month</th>
+                <th scope="col" onclick="sortTable(2)">SalaryID</th>
                 <th scope="col" onclick="sortTable(1)">Gross Salary(₹)</th>
-                <th scope="col" onclick="sortTable(2)">Total PF (₹)</th>
                 <th scope="col" onclick="sortTable(3)">Total PT (₹)</th>
                 <th scope="col" onclick="sortTable(4)">Total TDS (₹)</th>
                 <th scope="col" onclick="sortTable(5)">Net Salary (₹)</th>
@@ -122,7 +122,7 @@
                 '006': 'June', '007': 'July', '008': 'August', '009': 'September', '0010': 'October', '0011':
                 'November',
                 '0012': 'December'} %}
-                <td scope="col" id="demo">{{ month_dict[i[3:]] }}</td>
+                <td scope="col" id="demo">{{ month_dict[i.split("_")[0][3:]] }}</td>
                 <td scope="col">{{ i }}</td>
                 <td scope="col">{{ data[i]['epfo'] }}</td>
                 <td scope="col">{{ data[i]['pt'] }}</td>
@@ -130,7 +130,7 @@
                 <td scope="col">{{ data[i]['netSalary'] }}</td>
                 <td scope="col" class="text-start">
                     <label class="status-label p-1" style="border-radius: 50px; align: center;     width: 100px;
-    text-align: center;">{{salary_status[ month_dict[i[3:]] ]}}</label>
+    text-align: center;">{{salary_status[ month_dict[i.split("_")[0][3:]]]}}</label>
                 </td>
 
                 <td scope="col d-flex">
@@ -143,7 +143,7 @@
                         </a>
                         </li>
                              <!-- Download icon  -->
-                        {% if salary_status[ month_dict[i[3:]] ]=='Paid' %}
+                        {% if salary_status[ month_dict[i.split("_")[0][3:]] ]=='Paid' %}
                         <li class="nav-item d-inline"><a class="nav-link" href="{{url_for('pdf_all', username=username, salid=i)}}">
                             <i class="fa fa-download"></i>
                         </a>

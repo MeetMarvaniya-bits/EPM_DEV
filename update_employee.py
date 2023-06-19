@@ -19,7 +19,7 @@ class Update_information():
         doc_ref = self.db.collection(companyname).document('increments')
         doc_ref.update({'increments': firestore.ArrayUnion([{'empid': id,
                                                              'effectiveDate': data_dict['doj'],
-                                                             'total': float(data_dict['salary']),
+                                                             'total': float(data_dict['salary'])/12,
                                                              'grossSalary': 0
                                                              }])})
 

@@ -90,7 +90,7 @@ class Create():
             if request.form.get('doj') !=None and request.form.get('doj')!='':
                 doc_ref.update({'increments': firestore.ArrayUnion([{'empid': user.uid,
                                                                      'effectiveDate': request.form.get('doj'),
-                                                                     'total': float(request.form.get('salary')),
+                                                                     'total': float(request.form.get('salary')/12),
                                                                      'grossSalary':0
                                                                      }])})
 

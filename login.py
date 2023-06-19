@@ -9,8 +9,10 @@ class Login():
         #     data_dict.update({key: value})
         docs = self.db.collection(comapyname).get()
         if len(docs)> 0:
-            docs = self.db.collection(comapyname).document('employee').collection("employee").document(user_auth['localId']).get().to_dict()
-            return docs['role']
+            docs = self.db.collection(comapyname).document('employee').collection("employee").where('workEmail', '==', user_auth['email']).get()
+            print(docs[0].to_dict())
+            data = docs[0].to_dict()
+            return data['role']
 
         # if len(docs) > 0:
         #
