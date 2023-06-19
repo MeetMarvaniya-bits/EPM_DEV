@@ -1952,28 +1952,37 @@ element.style {
                                     </div>
                                 </div>
                                 <!-- EXCEL SHEET DOWNLOAD BUTTON -->
-                                <li class="nav-item me-2">
-                                    <div class="">
-                                        <a href="/create_excel">
-                                            <button class="btn btn-secondary border-1 " type="button"
-                                                    aria-haspopup="true"
-                                                    aria-expanded="false">
-                                                Excel Sheet
-                                            </button>
-                                        </a>
-                                    </div>
-                                </li>
+<!--                                <li class="nav-item me-2">-->
+<!--                                    <div class="">-->
+<!--                                        <a href="/create_excel">-->
+<!--                                            <button class="btn btn-secondary border-1 " type="button"-->
+<!--                                                    aria-haspopup="true"-->
+<!--                                                    aria-expanded="false">-->
+<!--                                                Excel Sheet-->
+<!--                                            </button>-->
+<!--                                        </a>-->
+<!--                                    </div>-->
+<!--                                </li>-->
                                 <!-- IMPORT BUTTON -->
                                 <li class="nav-item me-2">
                                     <div class="dropdown">
-                                        <button class="btn btn-secondary border-1 " type="button" data-bs-toggle="modal"
-                                                data-bs-target="#exampleModal1"
-                                                aria-haspopup="true"
-                                                aria-expanded="false">
-                                            Excelsheet Path
+                                        <!-- Button trigger modal -->
+                                        <button id="uploadButton" class="btn border-1 btn-secondary" type="button">
+                                            Import Excel Sheet
                                         </button>
                                     </div>
                                 </li>
+                                <!-- IMPORT BUTTON -->
+<!--                                <li class="nav-item me-2">-->
+<!--                                    <div class="dropdown">-->
+<!--                                        <button class="btn btn-secondary border-1 " type="button" data-bs-toggle="modal"-->
+<!--                                                data-bs-target="#exampleModal1"-->
+<!--                                                aria-haspopup="true"-->
+<!--                                                aria-expanded="false">-->
+<!--                                            Excelsheet Path-->
+<!--                                        </button>-->
+<!--                                    </div>-->
+<!--                                </li>-->
                                 <!-- HTML code -->
                             </ul>
                         </div>
@@ -2427,6 +2436,45 @@ document.getElementById("doj").addEventListener("change", function() {
 
 </script>
 
+<!--Upload Excel File -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const uploadButton = document.getElementById('uploadButton');
+
+    uploadButton.addEventListener('click', () => {
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+
+        fileInput.addEventListener('change', () => {
+            const file = fileInput.files[0];
+
+            // Check if the file has the correct extension
+            if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                fetch('/{{username}}/upload_data', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the response from the server
+                    console.log(data);
+                })
+                .catch(error => {
+                    // Handle any errors
+                    console.error(error);
+                });
+            } else {
+                console.log('Invalid file format. Only Excel sheet files (.xlsx, .xls) are allowed.');
+            }
+        });
+
+        fileInput.click();
+    });
+});
+</script>
 
 {% endblock %}
 

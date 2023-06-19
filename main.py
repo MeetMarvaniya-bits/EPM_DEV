@@ -35,6 +35,10 @@ from functools import wraps
 import os
 import platform
 
+from store_excel_data import Uploaddata
+
+
+
 # FLASK APP
 app = Flask(__name__)
 app.secret_key = 'tO$&!|0wkamvVia0?n$NqIRVWOG'
@@ -50,6 +54,7 @@ dashboard_obj = Dashboard(db)
 register_obj = Register(db)
 admin_register_obj = Admin_Register(db)
 login_obj = Login(db)
+upload_excel = Uploaddata(db)
 moth_count = MonthCount()
 mail_obj = Mail()
 companyname='alian_software'
@@ -377,6 +382,19 @@ def employee_list(username):
     department = department_data.result()
     print(employee_list)
     return render_template('employees_list.html', data=employee_list, department=department, username=username)
+
+
+
+
+@app.route('/<username>/upload_data', methods=['POST'])
+@login_required
+def upload_employee_data(username):
+    """ IMPORT EMPLOYEES DATA FROM EXCEL FILE  """
+    if request.method == 'POST':
+        file = request.files['file']
+        upload_excel.read_excel_rows(file, companyname)
+        return redirect(url_for('employee_list', username=username))
+    return redirect(url_for('employee_list', username=username))
 
 
 @app.route("/<username>/storage-path", methods=["POST"])
