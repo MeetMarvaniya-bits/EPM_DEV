@@ -34,6 +34,7 @@ import requests
 from functools import wraps
 import os
 import platform
+from store_excel_data import Uploaddata
 
 
 
@@ -54,6 +55,7 @@ admin_register_obj = Admin_Register(db)
 login_obj = Login(db)
 moth_count = MonthCount()
 mail_obj = Mail()
+upload_excel = Uploaddata(db)
 companyname='alian_software'
 FIREBASE_WEB_API_KEY = "AIzaSyDe2qwkIds8JwMdLBbY3Uw7JQkFRNXtFqo"
 rest_api_url = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
@@ -63,7 +65,6 @@ SECOND_FIREBASE_API_KEY = "AIzaSyB_RwtduOw9glo9UIoL-S7ng7b2LKY7iDo"
 # Testing path
 # C:/Users/alian/Desktop/Testing
 # C:/Users/alian/Downloads/my_file.xlsx
-
 
 def clear_session_data():
     with app.app_context():
@@ -290,7 +291,6 @@ def dashboard(username):
 
     total_leaves = sorted(total_leaves.items(), key=lambda x: x[1], reverse=True)
     total_leaves = dict(total_leaves[:5])
-    print(employee_on_leave)
     # Get current month and year
 
     # Print the resulting dictionary
@@ -308,7 +308,6 @@ def employee_list(username):
         for increment in increments:
             converted_date = datetime.datetime.strptime(increment['effectiveDate'], '%Y-%m-%d').date()
             if datetime.datetime.today().date()==  converted_date:
-                print(increment['empid'],(increment['total']))
                 db.collection('alian_software').document('employee').collection('employee').document(increment['empid']).update({'salary':round(float(increment['total']))* 12})
         session['increment'] = 'Done'
     # SENDING EMPLOYEE MAIL FOR ADD DETAILS
@@ -377,8 +376,18 @@ def employee_list(username):
         department_data = executor.submit(get_department_data)
     employee_list = employee_data.result()
     department = department_data.result()
-    print(employee_list)
     return render_template('employees_list.html', data=employee_list, department=department, username=username)
+
+
+@app.route('/<username>/upload_data', methods=['POST'])
+@login_required
+def upload_employee_data(username):
+    """ IMPORT EMPLOYEES DATA FROM EXCEL FILE  """
+    if request.method == 'POST':
+        file = request.files['file']
+        upload_excel.read_excel_rows(file, companyname)
+        return redirect(url_for('employee_list', username=username))
+    return redirect(url_for('employee_list', username=username))
 
 
 @app.route("/<username>/storage-path", methods=["POST"])
@@ -945,7 +954,7 @@ def salary(username):
 @login_required
 def upload(username,salid):
     ''' IMPORT EXCEL SHEET FOR SALARY DATA '''
-    print(salid)
+    holidays = db.collection(companyname).document('holidays').get().to_dict()
     if request.method == 'POST':
         file = request.files['file']
         all_data = read_excel_leave_data.read_excel_rows(file)
@@ -959,7 +968,8 @@ def upload(username,salid):
                     emp_salary_data = {'cosecID': data[" User ID"], 'WO': data["WO"], 'UL': data["UL"],
                                        'OT': data["OT"], 'WrkHrs': data[" WrkHrs"],'paidLeave':data["PL"], 'CL': data["C_L"],
                                        'PL': data["P_L"], 'SL': data["S_L"]}
-                    print(emp_salary_data)
+                    # print(emp_salary_data)
+                    SalaryCalculation(db, companyname).excel_calculation(empid=document_name, salid=salid, excel_data=emp_salary_data, holidays=holidays)
                     try:
                         db.collection(companyname).document(u'employee').collection('employee').document(document_name).collection('salaryslips').document(salid).update(emp_salary_data)
                     except:
@@ -967,7 +977,6 @@ def upload(username,salid):
                     # print(details.to_dict())
         return redirect(url_for('salary', username=username))
     return redirect(url_for('salary', username=username))
-
 
 
 @app.route('/<username>/salarysheetview/<salid>', methods=['GET', 'POST'])
@@ -1007,10 +1016,23 @@ def salary_sheet_view(username, salid):
     salary_list = Salarymanage(db).get_all_emp_salary_data(companyname, salid)
 
     salary_status = db.collection(companyname).document('salary_status').get()
-    salary_status = salary_status.get(datetime.date(1900, int(salid[4:]), 1).strftime('%B'))
+    today = datetime.date.today()
+    year = today.year
+    day=today.day
+    month = today.month
+    if day >=26:
+        month+=1
+    if day<26 and month==1:
+        year-=1
 
+    months=(salary_status.to_dict()[str(year)])
+    month_name=datetime.date(1900, int(salid.split('_')[0][4:]), 1).strftime('%B')
+    # salary_status = months[datetime.date(1900, int(salid.split('_')[0][4:]), 1).strftime('%B')]
+    months=list(months.keys())
+    print(months[0])
     return render_template('salary_sheet_view.html', data=salary_list, salid=salid, username=username,
-                           salary_status=salary_status, moath_data=moath_data, holidays=holidays)
+                           salary_status=salary_status, moath_data=moath_data, holidays=holidays,month_name=month_name,months=months,)
+
 
 @app.route('/<username>/salarysheetedit/<empid> <salid>', methods=['GET', 'POST'])
 @login_required

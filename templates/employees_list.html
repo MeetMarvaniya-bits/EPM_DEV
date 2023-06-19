@@ -1065,9 +1065,9 @@ element.style {
                                                                                                                                     <div class="form-check form-check-inline">
                                                                                                                                         <input class="form-check-input"
                                                                                                                                                type="radio"
-                                                                                                                                               name="epfoyes"
+                                                                                                                                               name="epfo"
                                                                                                                                                id="inlineRadio1"
-                                                                                                                                               value="option1"
+                                                                                                                                               value="yes"
                                                                                                                                                onclick="toggleDataFields(true)">
                                                                                                                                         <label class="form-check-label"
                                                                                                                                                for="inlineRadio1">Yes</label>
@@ -1075,9 +1075,9 @@ element.style {
                                                                                                                                     <div class="form-check form-check-inline">
                                                                                                                                         <input class="form-check-input"
                                                                                                                                                type="radio"
-                                                                                                                                               name="epfono"
+                                                                                                                                               name="epfo"
                                                                                                                                                id="inlineRadio2"
-                                                                                                                                               value="option2"
+                                                                                                                                               value="no"
                                                                                                                                                checked
                                                                                                                                                onclick="toggleDataFields(false)">
                                                                                                                                         <label class="form-check-label"
@@ -1138,6 +1138,20 @@ element.style {
                                                                                                                                         <span class="pmd-textfield-focused"></span>
                                                                                                                                     </div>
                                                                                                                                     <br>
+                                                                                                                                    <div class="form-group row pmd-textfield pmd-textfield-floating-label">
+                                                                                                                                      <label class="col-form-label control-label col-sm-4" for="abry"><b>ABRY</b></label>
+                                                                                                                                      <div class="col-sm-5" id="abry">
+                                                                                                                                        <div class="form-check form-check-inline">
+                                                                                                                                          <input class="form-check-input" type="radio" name="abry" id="abryYes" value="yes">
+                                                                                                                                          <label class="form-check-label" for="abryYes">Yes</label>
+                                                                                                                                        </div>
+                                                                                                                                        <div class="form-check form-check-inline">
+                                                                                                                                          <input class="form-check-input" type="radio" name="abry" id="abryNo" value="no">
+                                                                                                                                          <label class="form-check-label" for="abryNo">No</label>
+                                                                                                                                        </div>
+                                                                                                                                      </div>
+                                                                                                                                      <span class="pmd-textfield-focused"></span>
+                                                                                                                                    </div>
                                                                                                                                 </div>
                                                                                                                             </div>
                                                                                                                         </div>
@@ -1966,6 +1980,15 @@ element.style {
                                 <!-- IMPORT BUTTON -->
                                 <li class="nav-item me-2">
                                     <div class="dropdown">
+                                        <!-- Button trigger modal -->
+                                        <button id="uploadButton" class="btn border-1 btn-secondary" type="button">
+                                            Import Excel Sheet
+                                        </button>
+                                    </div>
+                                </li>
+                                <!-- IMPORT BUTTON -->
+                                <li class="nav-item me-2">
+                                    <div class="dropdown">
                                         <button class="btn btn-secondary border-1 " type="button" data-bs-toggle="modal"
                                                 data-bs-target="#exampleModal1"
                                                 aria-haspopup="true"
@@ -2427,6 +2450,45 @@ document.getElementById("doj").addEventListener("change", function() {
 
 </script>
 
+<!--Upload Excel File -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const uploadButton = document.getElementById('uploadButton');
+
+    uploadButton.addEventListener('click', () => {
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+
+        fileInput.addEventListener('change', () => {
+            const file = fileInput.files[0];
+
+            // Check if the file has the correct extension
+            if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                fetch('/{{username}}/upload_data', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the response from the server
+                    console.log(data);
+                })
+                .catch(error => {
+                    // Handle any errors
+                    console.error(error);
+                });
+            } else {
+                console.log('Invalid file format. Only Excel sheet files (.xlsx, .xls) are allowed.');
+            }
+        });
+
+        fileInput.click();
+    });
+});
+</script>
 
 {% endblock %}
 
