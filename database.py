@@ -12,23 +12,27 @@ def result():
 
     ''' ADD FORM DETAILS INTO DATABASE '''
 
-    name_list = ["Jay", "Meet", "Parth", "Jenil", "Gautam"]
-    for num in range(0, 5):
+    name_list = ["Jay", "Mayank", "Parth", "Jenil", "Gautam", "Het", "Harsh", "Hemang", "Sanit", "Mayur", "Smith", "Yash", "Vishal", "Sagar", "Rohan", "Sanit", "Abhay"]
+    for num in range(0, len(name_list) + 1):
 
         name = name_list[num]
 
-        new_id = "EMP00" + str(num + 1)
+        id = num + 4
+
+        if id < 10:
+            new_id = "EMP000" + str(id)
+        else:
+            new_id = "EMP00" + str(id)
 
 
         # ADD PERSONAL DATA
 
         personal_data = {
-            'photo': 'photo',
             'employeeName': name, 'userID': new_id, 'department': 'Design',
-            'email': f'{name}123@gmail.com',
-            'ctc': 25000, 'jobPosition': 'junior',
-            'manager': 'Design Manager', 'doj': '2023-04-03',
-            'currentExperience':'3 year', 'dob': '1999-02-04', 'gender': 'male',
+            'email': f'{name}123@gmail.com', 'cosecID': 100 + num,
+            'salary': 300000, 'jobPosition': 'Junior', 'passwor': f'{name}@1234',
+            'designation': 'Employee', 'doj': '2023-04-03',
+            'currentExperience': '3 year', 'dob': '1999-02-04', 'gender': 'male',
             'phoneNo': 35464531456,
             'bankName': 'BOB', 'accountHolderName': name,
             'accountNumber': '3561654653416541341',
@@ -41,29 +45,11 @@ def result():
 
         # ADD LEAVE DATA
 
-        leave_data = {
-        '2023-01-11': {'applydate': '2023-01-11', 'days': 1, 'fromdate': '2023-01-11', 'todate': '2023-01-12', 'type': 'SL'},
-        'total_leaves': {'CL': 10, 'PL': 10, 'SL': 10, 'LWP': 0}
-        }
+        total_leaves = {'CL': 0, 'PL': 0, 'SL': 0, 'LWP': 0}
+
         db.collection(u'alian_software').document(u'employee').collection('employee').document(new_id).collection(
-            "leaveMST").document("2023-01-11").set(leave_data["2023-01-11"])
-        db.collection(u'alian_software').document(u'employee').collection('employee').document(new_id).collection(
-            "leaveMST").document("total_leaves").set(leave_data["total_leaves"])
-        leave_data = {
-        '2023-02-25': {'applydate': '2023-02-20', 'days': 2, 'fromdate': '2023-02-25', 'todate': '2023-02-28', 'type': 'CL'},
-        }
-        db.collection(u'alian_software').document(u'employee').collection('employee').document(new_id).collection(
-            "leaveMST").document("2023-02-25").set(leave_data["2023-02-25"])
-        # ADD SALARY DATA
-        for i in range(1,13):
-            salary_slip_data = {
-                'employeeName': name, 'userID': new_id,'slip_id': 'sal001', 'lwp': 0, 'basic': 26500, 'da': 17225, 'hra': 2650, 'otherAllowance': 0,
-                'incentive': 0, 'grsOutstandingAdjustment': 0, 'arrears': 0, 'statutoryBonus': 0,
-                'grossSalary': 46375, 'epfo': 3180, 'dedOutstandingAdjustment': 0, 'pt': 200,
-                'tds': 2650, 'otherDeduction': 0, 'leaveDeduction': 3533.33,'totalDeduction': 9563.33, 'netSalary': 36811.67 , 'month': 'January',
-                'year': 2023,
-            }
-            db.collection(u'alian_software').document('employee').collection('employee').document(new_id).collection('salaryslips').document("sal00"+str(i)).set(salary_slip_data)
+            "leaveMST").document("total_leaves").set(total_leaves)
+
         # ADD TDS DATA
 
         tds_detail = {
@@ -102,8 +88,6 @@ def result():
         }
 
 
-
-
         db.collection(u'alian_software').document(u'employee').collection('employee').document(new_id).collection("tdsmst").document("tds").set(tds_detail)
 
-result()
+# result()
