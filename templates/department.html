@@ -226,43 +226,46 @@ console.log(cleanStr);
     };
     deptnameInput.addEventListener('input', checkDeptname);
 
-   function open_modal(dept,pos,sal) {
+ function open_modal(dept,pos,sal) {
     console.log(dept,pos,sal)
-      var modal = document.querySelector('.modal');
-      var modalInput = document.getElementById('deptname');
-      var positionInput= document.getElementById('pos');
-      var salaryInput = document.getElementById('sal');
-      var submit_btn = document.getElementById('submit_btn');
-      var add_input = document.getElementById('add_input');
+    var modal = document.querySelector('.modal');
+    var modalInput = document.getElementById('deptname');
+    var positionInput= document.getElementById('pos');
+    var salaryInput = document.getElementById('sal');
+    var submit_btn = document.getElementById('submit_btn');
+    var add_input = document.getElementById('add_input');
 
-
-      // Set the value of the input element when the modal opens
-      modal.addEventListener('show.bs.modal', function () {
-          add_input.style.display= "none";
-          modalInput.value='';
+    // Set the value of the input element when the modal opens
+    modal.addEventListener('show.bs.modal', function () {
+        add_input.style.display= "none";
+        modalInput.value='';
         modalInput.value = dept;
-
         positionInput.value= pos;
-     
         salaryInput.value= sal;
-  
-      });
-        // Clear the input values when the modal is closed
-      modal.addEventListener('hidden.bs.modal', function () {
+        positionInput.readOnly= true;
+        positionInput.style.backgroundColor = "grey";
 
-    add_input.style.display= "block";
+        // Set the readOnly property of positionInput based on whether a new department is being added
 
-    modalInput.value = '';
-    positionInput.value = '';
-    salaryInput.value = '';
-  });
+    });
 
-      // Show the modal
-      var modalInstance = new bootstrap.Modal(modal);
-      modalInstance.show();
-      add_modal();
-    };
+    // Clear the input values when the modal is closed
+    modal.addEventListener('hidden.bs.modal', function () {
+        add_input.style.display= "block";
+        modalInput.value = '';
+        positionInput.value = '';
+        salaryInput.value = '';
+    });
+
+    // Show the modal
+    var modalInstance = new bootstrap.Modal(modal);
+    modalInstance.show();
+    add_modal();
+};
+
+
     function add_modal(){
+        console.log("in add_modal")
       var modal = document.querySelector('.modal');
 
       modal.addEventListener('show.bs.modal', function () {
@@ -270,6 +273,12 @@ console.log(cleanStr);
       var positionInput= document.getElementById('pos');
       var salaryInput = document.getElementById('sal');
       var add_input = document.getElementById('add_input');
+      if (modalInput === '') {
+            positionInput.readOnly = true;
+        } else {
+            positionInput.readOnly = false;
+        }
+
           add_input.style.display= "block";
         modalInput.value = '';
 
