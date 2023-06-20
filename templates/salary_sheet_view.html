@@ -55,18 +55,18 @@ td, th {
 }
 
 .other-child {
-  width:120px;
+  width:150px;
 }
 
 .earning-child {
-  width:1000px;
+  width:1500px;
 }
 .deduction-child {
   width:1000px;
 }
 .tableFixHead {
         /* make the table scrollable if height is more than 200 px  */
-        height: 350px; /* gives an initial height of 200px to the table */
+        height: 100%; /* gives an initial height of 200px to the table */
       }
       table {
         border-collapse: collapse; /* make the table borders collapse to each other */
@@ -464,7 +464,7 @@ td, th {
                                 {{data[i]['WrkHrs']}}
                             </td>
                             <td scope="col">{{ data[i]['lwp'] }}</td>
-                            <td scope="col">{{ data[i]['paidLeave'] }}</td>
+                            <td scope="col">{{ data[i]['totalLeave'] }}</td>
                             <td scope="col">{{ data[i]['OT'] }}</td>
                             <td scope="col">{{data[i]['basic']}}</td>
                             <td scope="col">{{data[i]['hra']}}</td>
@@ -474,8 +474,8 @@ td, th {
                             <td scope="col">{{data[i]['arrears']}}</td>
                             <td scope="col">{{data[i]['grsOutstandingAdjustment']}}</td>
                             <td scope="col">{{data[i]['statutoryBonus']}}</td>
-                            <td scope="col">{{data[i]['OT']}}</td>
-                            <td scope="col">{{data[i]['OT']}}</td>
+                            <td scope="col">{{data[i]['overtimeAmount']}}</td>
+                            <td scope="col">{{data[i]['totalSalary']}}</td>
                             <td scope="col">{{data[i]['grossSalary']}}</td>
                             <td scope="col">{{data[i]['epfo']}}</td>
                             <td scope="col">{{data[i]['pt']}}</td>
@@ -491,11 +491,10 @@ td, th {
                             <!-- Edit Button  -->
                             {% if salary_status=='Paid' or salary_status=='Approved'%}
                             <td scope="col" class="fix last-child" style="background-color: #FFFFFF;">
-                                <a href="#" >
+                                <a href="{{url_for('salary_sheet_edit_', username=username,empid=data[i]['userID'],salid=salid)}}" >
                                     <button class="btn border-1 btn-secondary" type="button" aria-haspopup="true"
                                             aria-expanded="false"
-                                            style="color:#2F3990; border-color:#2F3990; background-color: #FFFFFF"
-                                            disabled>
+                                            style="color:#2F3990; border-color:#2F3990; background-color: #FFFFFF">
                                         Edit
                                     </button>
                                 </a>

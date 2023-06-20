@@ -387,11 +387,13 @@ def employee_list(username):
             if 'user_status' not in doc.to_dict():
                 if doc.to_dict()['role'] == 'Admin':
                     continue
-                employee_list.update({doc.id: doc.to_dict()})
+                new_data = calculate_experience(doc.to_dict())
+                employee_list.update({doc.id: new_data})
             elif doc.to_dict()['user_status'] != 'disable':
                 if doc.to_dict()['role'] == 'Admin':
                     continue
-                employee_list.update({doc.id: doc.to_dict()})
+                new_data = calculate_experience(doc.to_dict())
+                employee_list.update({doc.id: new_data})
         return employee_list
 
 
@@ -1075,7 +1077,7 @@ def salary_sheet_edit_(username, empid, salid):
     if request.method == 'POST':
         result = request.form
         print(result)
-        # Salarymanage(db).salary_update(companyname, empid, salid, data=result)
+        Salarymanage(db).salary_update(companyname, empid, salid, data=result)
         return redirect(url_for('salary_sheet_view', salid=salid, username=username))
 
     holidays = db.collection(companyname).document('holidays').get().to_dict()
@@ -1101,16 +1103,16 @@ def salary_sheet_edit_all(username, salid):
                            working_days=working_days, salary_data=salary_percentage)
 
 
-@app.route('/save_edited_data', methods=['POST'])
+@app.route('/<username>/save_edited_data/<salid>', methods=['POST'])
 @login_required
-def save_edited_data():
+def save_edited_data(username, salid):
     # Get the form data from request.form
     form_data = request.form
     # form_dict = form_data.to_dict()
     form_dict = dict(form_data)
     # print(f'data  = {form_dict}')
-    salid = request.args.get('sal_id')
-    username = request.args.get('user_name')
+    # salid = request.args.get('sal_id')
+    # username = request.args.get('user_name')
     # print(f"{salid} is salid and {username} is username")
 
 

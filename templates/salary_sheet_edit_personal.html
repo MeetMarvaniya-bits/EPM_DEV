@@ -55,62 +55,71 @@ td, th {
 }
 
 .other-child {
-  width:120px;
+  width:150px;
 }
 
 .earning-child {
-  width:1000px;
+  width:1500px;
 }
 .deduction-child {
   width:1000px;
 }
+
+
+
+
 </style>
 {% endblock %}
 {% block content %}
 <!-- Header -->
 <div class="container-fluid" style="background-color: #ffffff;">
-        <div class="main">
-            <main class="content">
-                <div class="container-fluid p-1">
-                    <div class="row">
-                        <div class="col-lg-6 col-sm-12 mt-2">
-                            <ul class="nav justify-content-start">
-                                <li class="nav-item">
-                                    <a class="nav-link active" aria-current="page" href="#">
-                                        <h5 style="color: black"><b>Salary Sheet</b></h5>
+    <div class="main">
+        <main class="content">
+            <div class="container-fluid p-1">
+                <div class="row">
+                    <div class="col-lg-6 col-sm-12 mt-2">
+                        <ul class="nav justify-content-start">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="#">
+                                    <h5 style="color: black"><b>Salary Sheet</b></h5>
+                                </a>
+                            </li>
+
+
+                            <li>
+                                <div class="form-outline  text-start ">
+                                    {% set month_dict = {'001': 'January', '002': 'February', '003': 'March', '004':
+                                    'April',
+                                    '005': 'May', '006': 'June', '007': 'July', '008': 'August', '009': 'September',
+                                    '0010': 'October',
+                                    '0011': 'November', '0012': 'December'} %}
+                                    <input type="text" class="form-control" id="forminput"
+                                           placeholder="{{ month_dict[id.split('_')[0][3:]] }}" readonly>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col end-0 ">
+                        <ul class="nav justify-content-end mt-2">
+
+                            <li class="nav-item me-2">
+                                <div class="dropdown">
+                                    <a href="{{url_for('salary_sheet_view', username=username, salid=id)}}">
+                                        <button class="btn border-1 btn-secondary " type="button"
+                                                aria-haspopup="true"
+                                                aria-expanded="false">
+                                            Back
+                                        </button>
                                     </a>
-                                </li>
 
-
-                                <li>   <div class="form-outline  text-start ">
-                     {% set month_dict = {'001': 'January', '002': 'February', '003': 'March', '004': 'April',
-                    '005': 'May', '006': 'June', '007': 'July', '008': 'August', '009': 'September', '0010': 'October',
-                    '0011': 'November', '0012': 'December'} %}
-                    <input type="text" class="form-control" id="forminput" placeholder="{{ month_dict[id.split('_')[0][3:]] }}"readonly>
-                </div></li>
-                            </ul>
-                        </div>
-                        <div class="col end-0 ">
-                            <ul class="nav justify-content-end mt-2">
-
-                                <li class="nav-item me-2">
-                                    <div class="dropdown">
-                                        <a href=="{{url_for('salary_sheet_view', username=username, salid=id)}}">
-                                            <button class="btn border-1 btn-secondary " type="button"
-                                                    aria-haspopup="true"
-                                                    aria-expanded="false">
-                                                Back
-                                            </button>
-                                        </a>
-
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                 </div>
-            </main>
-        </div>
+            </div>
+        </main>
+    </div>
 </div>
 
 
@@ -124,24 +133,36 @@ td, th {
                     <th scope="col" rowspan="2" class="fix align-middle" style="background-color: #DFE1E6;">Employee
                         Name
                     </th>
-                    <th scope="col" rowspan="2" class="third-child align-middle" style="background-color: #DFE1E6;">Working Hours
+                    <th scope="col" rowspan="2" class="third-child align-middle" style="background-color: #DFE1E6;">
+                        Working Hours
                     </th>
-                    <th scope="col rwo-2" rowspan="2" class="other-child align-middle" style="background-color: #DFE1E6;">LWP
+                    <th scope="col rwo-2" rowspan="2" class="other-child align-middle"
+                        style="background-color: #DFE1E6;">LWP
                     </th>
-                    <th scope="col rwo-2" rowspan="2" class="other-child align-middle" style="background-color: #DFE1E6;">  Total Leaves
+                    <th scope="col rwo-2" rowspan="2" class="other-child align-middle"
+                        style="background-color: #DFE1E6;"> Total Leaves
                     </th>
-                    <th scope="col rwo-2" rowspan="2" class="other-child align-middle" style="background-color: #DFE1E6;">Overtime Hours
+                    <th scope="col rwo-2" rowspan="2" class="other-child align-middle"
+                        style="background-color: #DFE1E6;">Overtime Hours
                     </th>
-                    <th scope="col" colspan="9" class="earning-child align-middle" style="background-color: #DCFDD9;">Earning</th>
-                    <th scope="row col" rowspan="2" class="other-child align-middle" style="background-color: #DFE1E6;">Total Salary
+                    <th scope="col" colspan="9" class="earning-child align-middle" style="background-color: #DCFDD9;">
+                        Earning
                     </th>
-                    <th scope="row col" rowspan="2" class="other-child align-middle" style="background-color: #DFE1E6;">Gross Salary
+                    <th scope="row col" rowspan="2" class="other-child align-middle" style="background-color: #DFE1E6;">
+                        Total Salary
                     </th>
-                    <th scope="col-6" colspan="7" class="deduction-child align-middle" style="background-color: #FDD9DB;">Deduction</th>
-                    <th scope="row-2 col" rowspan="2" class="second-last-child align-middle" style="background-color: #DFE1E6;">Net
+                    <th scope="row col" rowspan="2" class="other-child align-middle" style="background-color: #DFE1E6;">
+                        Gross Salary
+                    </th>
+                    <th scope="col-6" colspan="7" class="deduction-child align-middle"
+                        style="background-color: #FDD9DB;">Deduction
+                    </th>
+                    <th scope="row-2 col" rowspan="2" class="second-last-child align-middle"
+                        style="background-color: #DFE1E6;">Net
                         Payable
                     </th>
-                    <th scope="row-2 col" rowspan="2" class="fix last-child align-middle" style="background-color: #DFE1E6;"></th>
+                    <th scope="row-2 col" rowspan="2" class="fix last-child align-middle"
+                        style="background-color: #DFE1E6;"></th>
                 </tr>
                 <tr class="border-bottom" style="border:2px solid black !important;">
                     <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Basic</th>
@@ -163,49 +184,63 @@ td, th {
                 </tr>
                 </thead>
                 <tbody>
-                <tr class="ttr text-center">
-                    <from action="{{url_for('salary_sheet_edit_', username=username, empid=data[id]['userID'],salid=id )}}" method="POST">
-                    <td scope="col" class="fix second-child" >{{data[id]["employeeName"]}}</td>
-                        <td scope="col" class="fix third-child" style="background-color: #FFFFFF;">{{data[id]['WrkHrs']}}</td>
-                        <td scope="col"><input type="text" class="form-control text-center" value=' {{data[id]["lwp"]}} '
+                    <tr class="ttr text-center">
+                        <form action="{{url_for('salary_sheet_edit_', username=username, empid=data[id]['userID'],salid=id )}}" method="POST">
+                        <td scope="col" class="fix second-child">{{data[id]["employeeName"]}}</td>
+                        <td scope="col" class="fix third-child" style="background-color: #FFFFFF;">
+                            {{data[id]['WrkHrs']}}
+                        </td>
+                        <td scope="col"><input type="text" class="form-control text-center"
+                                               value=' {{data[id]["lwp"]}} '
                                                name="lwp" id="lwp" onkeypress="onlyNumber(event)"></td>
-                        <td scope="col"><input type="text" class="form-control text-center" value=' {{data[id]["paidLave"]}} '
-                                               name="paidLeave" id="paidLeave" onkeypress="onlyNumber(event)" readonly></td>
+                        <td scope="col"><input type="text" class="form-control text-center"
+                                               value=' {{data[id]["totalLeave"]}} '
+                                               name="paidLeave" id="paidLeave" onkeypress="onlyNumber(event)" readonly>
+                        </td>
                         <td scope="col"><input type="text" class="form-control text-center" value=' {{data[id]["OT"]}} '
                                                name="OT" id="OT" onkeypress="onlyNumber(event)" readonly></td>
-                        <td scope="col"><input type="text" class="form-control text-center" value=' {{data[id]["basic"]}} '
+                        <td scope="col"><input type="text" class="form-control text-center"
+                                               value=' {{data[id]["basic"]}} '
                                                name="basic" id="basic" onkeypress="onlyNumber(event)" readonly></td>
                         <td scope="col"><input type="text" class="form-control text-center" name="hra" id="hra"
-                                               value='{{ data[id]["hra"] }}' onkeypress="onlyNumber(event)" readonly></td>
-                        <th scope="col"><input type="text" class="form-control text-center  " value='{{ data[id]["da"] }}'
+                                               value='{{ data[id]["hra"] }}' onkeypress="onlyNumber(event)" readonly>
+                        </td>
+                        <th scope="col"><input type="text" class="form-control text-center  "
+                                               value='{{ data[id]["da"] }}'
                                                name="da" id="da" onkeypress="onlyNumber(event)" readonly></th>
                         <td scope="col"><input type="text" class="form-control text-center"
                                                value='{{ data[id]["otherAllowance"] }}' id="otherAllowance"
                                                name="otherAllowance" onkeypress="onlyNumber(event)"></td>
                         <td scope="col"><input type="text" class="form-control text-center"
-                                               value='{{ data[id]["incentive"] }}' id="incentive" name="incentive" onkeypress="onlyNumber(event)"></td>
+                                               value='{{ data[id]["incentive"] }}' id="incentive" name="incentive"
+                                               onkeypress="onlyNumber(event)"></td>
                         <td scope="col"><input type="text" class="form-control text-center"
-                                               value='{{ data[id]["arrears"] }}' id="arrears" name="arrears" onkeypress="onlyNumber(event)"></td>
+                                               value='{{ data[id]["arrears"] }}' id="arrears" name="arrears"
+                                               onkeypress="onlyNumber(event)"></td>
                         <td scope="col"><input type="text" class="form-control text-center"
                                                value='{{ data[id]["grsOutstandingAdjustment"] }}'
-                                               id="grsOutstandingAdjustment" name="grsOutstandingAdjustment" onkeypress="onlyNumber(event)">
+                                               id="grsOutstandingAdjustment" name="grsOutstandingAdjustment"
+                                               onkeypress="onlyNumber(event)">
                         <td scope="col"><input type="text" class="form-control text-center"
                                                value='{{ data[id]["statutoryBonus"] }}' id="statutoryBonus"
                                                name="statutoryBonus" onkeypress="onlyNumber(event)"></td>
                         <td scope="col"><input type="text" class="form-control text-center"
-                                               value='{{ data[id]["OT"] }}' id="overtimeAmount"
+                                               value='{{ data[id]["overtimeAmount"] }}' id="overtimeAmount"
                                                name="overtimeAmount" onkeypress="onlyNumber(event)"></td>
                         <td scope="col"><input type="text" class="form-control text-center"
-                                               value='{{ data[id]["statutoryBonus"] }}' id="totalSalary"
+                                               value='{{ data[id]["totalSalary"] }}' id="totalSalary"
                                                name="totalSalary" onkeypress="onlyNumber(event)" readonly></td>
-                        <td scope="col"><input type="text" class="form-control text-center" onkeypress="onlyNumber(event)"
+                        <td scope="col"><input type="text" class="form-control text-center"
+                                               onkeypress="onlyNumber(event)"
                                                value='{{ data[id]["grossSalary"] }}' id="grossSalary" name="grossSalary"
                                                readonly></td>
-                        <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["epfo"] }}'
+                        <td scope="col"><input type="text" class="form-control text-center"
+                                               value='{{ data[id]["epfo"] }}'
                                                id="epfo" name="epfo" onkeypress="onlyNumber(event)" readonly></td>
                         <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["pt"] }}'
                                                id="pt" name="pt" onkeypress="onlyNumber(event)" readonly></td>
-                        <td scope="col"><input type="text" class="form-control text-center" value='{{ data[id]["tds"] }}'
+                        <td scope="col"><input type="text" class="form-control text-center"
+                                               value='{{ data[id]["tds"] }}'
                                                id="tds" name="tds" onkeypress="onlyNumber(event)"></td>
                         <td scope="col"><input type="text" class="form-control text-center"
                                                value='{{ data[id]["leaveDeduction"] }}' id="leaveDeduction"
@@ -213,13 +248,26 @@ td, th {
                         <td scope="col"><input type="text" class="form-control text-center"
                                                value='{{ data[id]["otherDeduction"] }}' id="otherDeduction"
                                                name="otherDeduction" onkeypress="onlyNumber(event)"></td>
-                        <td scope="col"><input type="text" class="form-control text-center" onkeypress="onlyNumber(event)"
+                        <td scope="col"><input type="text" class="form-control text-center"
+                                               onkeypress="onlyNumber(event)"
                                                value='{{ data[id]["dedOutstandingAdjustment"] }}'
                                                id="dedOutstandingAdjustment" name="dedOutstandingAdjustment"></td>
-                        <td scope="col" class="second-last-child" style="background-color: #FFFFFF;"><input type="text" class="form-control text-center"
-                                               value='{{ data[id]["totalDeduction"] }}' id="totalDeduction" name="totalDeduction" onkeypress="onlyNumber(event)" readonly>
-                        <td scope="col" class="second-last-child" style="background-color: #FFFFFF;"><input type="text" class="form-control text-center"
-                                               value='{{ data[id]["netSalary"] }}' id="netSalary" name="netSalary" onkeypress="onlyNumber(event)" readonly>
+                        <td scope="col" class="second-last-child" style="background-color: #FFFFFF;">
+                            <input type="text"
+                                   class="form-control text-center"
+                                   value='{{ data[id]["totalDeduction"] }}'
+                                   id="totalDeduction"
+                                   name="totalDeduction"
+                                   onkeypress="onlyNumber(event)"
+                                   readonly>
+                        <td scope="col" class="second-last-child" style="background-color: #FFFFFF;">
+                            <input type="text"
+                                   class="form-control text-center"
+                                   value='{{ data[id]["netSalary"] }}'
+                                   id="netSalary"
+                                   name="netSalary"
+                                   onkeypress="onlyNumber(event)"
+                                   readonly>
                         </td>
                         <td class="fix last-child">
                             <button class="btn border-1 btn-secondary" aria-haspopup="true" type="submit"
@@ -228,98 +276,148 @@ td, th {
                                 Update
                             </button>
                         </td>
-                    </from>
-                </tr>
-
-
-                </tbody>
+                        </form>
+                    </tr>
+                    </tbody>
             </table>
         </div>
 
     </div>
 </div>
 
+
+<!--Script For Automated Calculation of Edit data -->
 <script>
     // Do all your JavaScript in a separate JavaScript section
-    var basic = document.getElementById("basic");
-    var hra = document.getElementById("hra");
-    var lwp = document.getElementById("lwp");
-    var da = document.getElementById("da");
-    var otherAllowance = document.getElementById("otherAllowance");
-    var incentive = document.getElementById("incentive");
-    var arrears = document.getElementById("arrears");
-    var grsOutstandingAdjustment = document.getElementById("grsOutstandingAdjustment");
-    var statutoryBonus = document.getElementById("statutoryBonus");
-    var grossSalary = document.getElementById("grossSalary");
-    var epfo = document.getElementById("epfo");
-    var pt = document.getElementById("pt");
-    var tds = document.getElementById("tds");
-    var leaveDeduction = document.getElementById("leaveDeduction");
-    var otherDeduction = document.getElementById("otherDeduction");
-    var dedOutstandingAdjustment = document.getElementById("dedOutstandingAdjustment");
-    var totalDeduction = document.getElementById("totalDeduction");
-    var netSalary = document.getElementById("netSalary");
+    document.addEventListener("DOMContentLoaded", function () {
+      var inputs = Array.prototype.slice.call(
+        document.querySelectorAll("td > input")
+      );
 
-    var inputs = Array.prototype.slice.call(document.querySelectorAll("td > input"));
+      inputs.forEach(function (input) {
+        input.addEventListener("keyup", function () {
+          var basic = document.getElementById("basic").value;
+          var hra = document.getElementById("hra").value;
+          var da = document.getElementById("da").value;
+          var lwp = document.getElementById("lwp").value;
+          var otherAllowance = document.getElementById(
+            "otherAllowance"
+          ).value;
+          var incentive = document.getElementById("incentive").value;
+          var arrears = document.getElementById("arrears").value;
+          var grsOutstandingAdjustment = document.getElementById(
+            "grsOutstandingAdjustment"
+          ).value;
+          var statutoryBonus = document.getElementById(
+            "statutoryBonus"
+          ).value;
+          var overtimeAmount = document.getElementById("overtimeAmount").value;
+          var totalSalary = document.getElementById("totalSalary").value;
+          var grossSalary = document.getElementById("grossSalary");
+          var epfo = document.getElementById("epfo").value;
+          var pt = document.getElementById("pt").value;
+          var tds = document.getElementById("tds").value;
+          var leaveDeduction = document.getElementById("leaveDeduction");
+          var otherDeduction = document.getElementById("otherDeduction")
+            .value;
+          var dedOutstandingAdjustment = document.getElementById(
+            "dedOutstandingAdjustment"
+          ).value;
+          var totalDeduction = document.getElementById("totalDeduction");
+          var netSalary = document.getElementById("netSalary");
 
-    inputs.forEach(function(input) {
-        input.addEventListener("keypress", function() {
-            // Function to handle blank or none values
-            function handleEmptyValue(value) {
-                return value === "" || value === null || value === undefined ? 0 : parseFloat(value);
+
+          console.log(overtimeAmount)
+          console.log(totalSalary)
+
+          // Function to handle NaN values and set them to 0
+          function handleEmptyValue(value) {
+            if (value === "" || value === null || value === undefined) {
+              return 0;
+            } else if (isNaN(parseFloat(value))) {
+              return 0;
+            } else {
+              return parseFloat(value);
             }
-            var lwpValue = handleEmptyValue(lwp.value);
-            var basicValue = handleEmptyValue(basic.value);
-            var hraValue = handleEmptyValue(hra.value);
-            var daValue = handleEmptyValue(da.value);
-            var otherAllowanceValue = handleEmptyValue(otherAllowance.value);
-            var incentiveValue = handleEmptyValue(incentive.value);
-            var arrearsValue = handleEmptyValue(arrears.value);
-            var grsOutstandingAdjustmentValue = handleEmptyValue(grsOutstandingAdjustment.value);
-            var statutoryBonusValue = handleEmptyValue(statutoryBonus.value);
-            var epfoValue = handleEmptyValue(epfo.value);
-            var ptValue = handleEmptyValue(pt.value);
-            var tdsValue = handleEmptyValue(tds.value);
-            var leaveDeductionValue = handleEmptyValue(leaveDeduction.value);
-            var otherDeductionValue = handleEmptyValue(otherDeduction.value);
-            var dedOutstandingAdjustmentValue = handleEmptyValue(dedOutstandingAdjustment.value);
+          }
 
-            hra.value = hraValue;
-            da.value = daValue;
-            grossSalary.value = (
-                basicValue +
-                hraValue +
-                daValue +
-                otherAllowanceValue +
-                incentiveValue +
-                arrearsValue +
-                grsOutstandingAdjustmentValue +
-                statutoryBonusValue
-            ).toFixed(2);
-            leaveDeduction.value = (
-                lwpValue * ((basicValue + hraValue + daValue + otherAllowanceValue) / {{working_days}}) * 1
-            ).toFixed(2);
-            totalDeduction.value = (
-                epfoValue +
-                ptValue +
-                tdsValue +
-                leaveDeductionValue +
-                otherDeductionValue +
-                dedOutstandingAdjustmentValue
-            ).toFixed(2);
-            netSalary.value = (
-                parseFloat(grossSalary.value) -
-                epfoValue -
-                ptValue -
-                tdsValue -
-                leaveDeductionValue -
-                otherDeductionValue -
-                dedOutstandingAdjustmentValue
-            ).toFixed(2);
+          var lwpValue = handleEmptyValue(lwp);
+          var basicValue = handleEmptyValue(basic);
+          var hraValue = handleEmptyValue(hra);
+          var daValue = handleEmptyValue(da);
+          var otherAllowanceValue = handleEmptyValue(otherAllowance);
+          var incentiveValue = handleEmptyValue(incentive);
+          var arrearsValue = handleEmptyValue(arrears);
+          var grsOutstandingAdjustmentValue = handleEmptyValue(
+            grsOutstandingAdjustment
+          );
+          var statutoryBonusValue = handleEmptyValue(statutoryBonus);
+          var overtimeAmountValue = handleEmptyValue(overtimeAmount);
+          var totalSalaryValue = handleEmptyValue(totalSalary);
+          var epfoValue = handleEmptyValue(epfo);
+          var ptValue = handleEmptyValue(pt);
+          var tdsValue = handleEmptyValue(tds);
+          var leaveDeductionValue = handleEmptyValue(leaveDeduction.value);
+          var otherDeductionValue = handleEmptyValue(otherDeduction);
+          var dedOutstandingAdjustmentValue = handleEmptyValue(
+            dedOutstandingAdjustment
+          );
+
+
+          var grossSalaryValue =
+            basicValue +
+            hraValue +
+            daValue +
+            otherAllowanceValue +
+            incentiveValue +
+            arrearsValue +
+            grsOutstandingAdjustmentValue +
+            statutoryBonusValue +
+            overtimeAmountValue;
+
+          var leaveDeductionValue =
+            (lwpValue * totalSalaryValue) /
+            {{ working_days }}  *
+            {{ salary_data['deductionpercentage'] }};
+
+            console.log(overtimeAmountValue, lwpValue,totalSalaryValue,leaveDeductionValue,basicValue,hraValue,daValue,otherAllowanceValue,"{{working_days}}",{{salary_data['deductionpercentage']}})
+          console.log(epfoValue,ptValue,tdsValue,leaveDeductionValue,otherDeductionValue,dedOutstandingAdjustmentValue)
+          var totalDeductionValue =
+            epfoValue +
+            ptValue +
+            tdsValue +
+            leaveDeductionValue +
+            otherDeductionValue +
+            dedOutstandingAdjustmentValue;
+            console.log(epfoValue,ptValue,tdsValue,leaveDeductionValue,otherDeductionValue,dedOutstandingAdjustmentValue,totalDeductionValue.toFixed(2))
+
+          var netSalaryValue = grossSalaryValue - totalDeductionValue;
+
+          if (grossSalary) {
+            grossSalary.value = grossSalaryValue.toFixed(2);
+          }
+
+          if (leaveDeduction) {
+            leaveDeduction.value = leaveDeductionValue.toFixed(2);
+          }
+          console.log(totalDeduction)
+          if (totalDeduction) {
+            console.log(totalDeductionValue)
+            totalDeduction.value = totalDeductionValue.toFixed(2);
+            console.log(totalDeduction.value)
+          }
+
+          if (netSalary) {
+            netSalary.value = netSalaryValue.toFixed(2);
+          }
         });
+      });
     });
-</script>
 
+
+
+
+</script>
 
 
 <!--Script for only number input -->
@@ -330,8 +428,11 @@ td, th {
             event.preventDefault();
         }
     };
-</script>
 
+
+
+
+</script>
 
 
 {% endblock %}

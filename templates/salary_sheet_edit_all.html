@@ -55,15 +55,39 @@ td, th {
 }
 
 .other-child {
-  width:120px;
+  width:150px;
 }
 
 .earning-child {
-  width:1000px;
+  width:1500px;
 }
 .deduction-child {
   width:1000px;
 }
+
+.tableFixHead {
+        /* make the table scrollable if height is more than 200 px  */
+        height: 100%; /* gives an initial height of 200px to the table */
+      }
+      table {
+        border-collapse: collapse; /* make the table borders collapse to each other */
+        width: 100%;
+      }
+      th,
+      td {
+        padding: 8px 16px;
+        border: 1px solid #ccc;
+      }
+      th {
+        background: #eee;
+      }
+
+.tableFixHead tbody tr {
+  position: sticky;
+  top: 100px; /* Adjust the left position based on your first column width */
+  background-color: #FFFFFF;
+}
+
 </style>
 {% endblock %}
 {% block content %}
@@ -118,10 +142,11 @@ td, th {
     <div class="container-fluid" style="background-color: #F4F5F7;">
         <div class="container-fluid p-3">
             <div class="wrapper">
+                <div class="tableFixHead">
                 <!-- Table Headings  -->
                 <table class="table table-bordered table-hover" style="border: 2px solid black !important;">
 
-                    <thead class="text-center center align-baseline">
+                    <thead class="text-center center align-baseline" style="position: sticky; top: 0px;">
                     <tr class="border-bottom" scope="col" style="border: 2px solid !important;">
                         <th scope="col" rowspan="2" class="fix align-middle" style="background-color: #DFE1E6;">Employee
                             Name
@@ -190,9 +215,9 @@ td, th {
                                    id="{{ key }}_lwp" onkeypress="onlyNumber(event)">
                         </td>
                         <td scope="col">
-                            <input type="text" class="form-control text-center" value='{{ data.paidLeave }}'
-                                   name="{{ key }}_paidLeave"
-                                   id="{{ key }}_paidLeave" onkeypress="onlyNumber(event)">
+                            <input type="text" class="form-control text-center" value='{{ data.totalLeave }}'
+                                   name="{{ key }}_totalLeave"
+                                   id="{{ key }}_totalLeave" onkeypress="onlyNumber(event)">
                         </td>
                         <td scope="col">
                             <input type="text" class="form-control text-center" value='{{ data.OT }}'
@@ -238,12 +263,12 @@ td, th {
                                    onkeypress="onlyNumber(event)">
                         </td>
                         <td scope="col">
-                            <input type="text" class="form-control text-center" value='{{ data.statutoryBonus }}'
+                            <input type="text" class="form-control text-center" value='{{ data.overtimeAmount }}'
                                    id="{{ key }}_overtimeAmount" name="{{ key }}_overtimeAmount"
                                    onkeypress="onlyNumber(event)">
                         </td>
                         <td scope="col">
-                            <input type="text" class="form-control text-center" value='{{ data.statutoryBonus }}'
+                            <input type="text" class="form-control text-center" value='{{ data.totalSalary }}'
                                    id="{{ key }}_totalSalary" name="{{ key }}_totalSalary"
                                    onkeypress="onlyNumber(event)" readonly>
                         </td>
@@ -296,6 +321,7 @@ td, th {
                     {% endfor %}
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
     </div>
@@ -312,6 +338,7 @@ td, th {
 
 
 </script>
+
 <script>
 function updateActionUrl() {
     // Get the current URL
@@ -330,7 +357,7 @@ function updateActionUrl() {
     var form = document.getElementById('salaryForm');
 
     // Update the form's action URL
-    form.action = `/save_edited_data?sal_id=${salid}&user_name=${username}`;
+    form.action = `/${username}/save_edited_data/${salid}`;
 }
 
 
@@ -354,9 +381,6 @@ function updateActionUrl() {
 
 
 </script>
-
-
-<!--Script For Automated Calculation of Edit data -->
 
 <!--Script For Automated Calculation of Edit data -->
 <script>
@@ -384,6 +408,8 @@ function updateActionUrl() {
           var statutoryBonus = document.getElementById(
             key + "_statutoryBonus"
           ).value;
+          var overtimeAmount = document.getElementById(key + "_overtimeAmount").value;
+          var totalSalary = document.getElementById(key + "_totalSalary").value;
           var grossSalary = document.getElementById(key + "_grossSalary");
           var epfo = document.getElementById(key + "_epfo").value;
           var pt = document.getElementById(key + "_pt").value;
@@ -396,6 +422,10 @@ function updateActionUrl() {
           ).value;
           var totalDeduction = document.getElementById(key + "_totalDeduction");
           var netSalary = document.getElementById(key + "_netSalary");
+
+
+          console.log(overtimeAmount)
+          console.log(totalSalary)
   
           // Function to handle NaN values and set them to 0
           function handleEmptyValue(value) {
@@ -419,6 +449,8 @@ function updateActionUrl() {
             grsOutstandingAdjustment
           );
           var statutoryBonusValue = handleEmptyValue(statutoryBonus);
+          var overtimeAmountValue = handleEmptyValue(overtimeAmount);
+          var totalSalaryValue = handleEmptyValue(totalSalary);
           var epfoValue = handleEmptyValue(epfo);
           var ptValue = handleEmptyValue(pt);
           var tdsValue = handleEmptyValue(tds);
@@ -427,7 +459,8 @@ function updateActionUrl() {
           var dedOutstandingAdjustmentValue = handleEmptyValue(
             dedOutstandingAdjustment
           );
-  
+
+
           var grossSalaryValue =
             basicValue +
             hraValue +
@@ -436,14 +469,15 @@ function updateActionUrl() {
             incentiveValue +
             arrearsValue +
             grsOutstandingAdjustmentValue +
-            statutoryBonusValue;
+            statutoryBonusValue +
+            overtimeAmountValue;
   
           var leaveDeductionValue =
-            (lwpValue * (basicValue + hraValue + daValue + otherAllowanceValue)) /
+            (lwpValue * totalSalaryValue) /
             {{ working_days }}  *
             {{ salary_data['deductionpercentage'] }};
 
-            console.log( lwpValue,basicValue,hraValue,daValue,otherAllowanceValue,"{{working_days}}",{{salary_data['deductionpercentage']}})
+            console.log(overtimeAmountValue, lwpValue,totalSalaryValue,leaveDeductionValue,basicValue,hraValue,daValue,otherAllowanceValue,"{{working_days}}",{{salary_data['deductionpercentage']}})
           console.log(epfoValue,ptValue,tdsValue,leaveDeductionValue,otherDeductionValue,dedOutstandingAdjustmentValue)
           var totalDeductionValue =
             epfoValue +
