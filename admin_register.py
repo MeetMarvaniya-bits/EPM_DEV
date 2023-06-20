@@ -42,4 +42,5 @@ class Admin_Register():
         #     self.db.collection(data_dict['CompanyName']).document('month_data').set(moath_data)
         #     '''SEND ID PASS WORD MAIL'''
         #     self.mail.register_responce_mail(companyname=data_dict['CompanyName'], email=data_dict['AdminID'])
+               # self.db.collection(self.companyname).document('monthly_salary_total').set({})
         #     return True

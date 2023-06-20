@@ -15,7 +15,7 @@ class SalaryCalculation():
         today = datetime.date.today()
         year = today.year
         day=today.day
-        month = 7
+        month = today.month
         if day >=26:
             month+=1
         if day<26 and month==1:
@@ -37,7 +37,13 @@ class SalaryCalculation():
         working_days_per_week = {}
         # holidays=holidays.keys()
         holiday = 0
-
+        salary_total = {
+            'netSalary': 0,
+            'grossSalary': 0,
+            'epfo': 0,
+            'pt': 0,
+            'tds': 0,
+        }
         # Get the number of days in the current month
         prev_num_days = calendar.monthrange(year, (prev_month))[1]
 
@@ -75,8 +81,9 @@ class SalaryCalculation():
             if effective_date:
                 increment_month = int(effective_date.split('-')[1])
                 increment_date = int(effective_date.split('-')[2])
+                increment_year=int(effective_date.split('-')[0])
 
-                if ((increment_month == current_month and (increment_date) <= 25)) or ((increment_month == prev_month and (increment_date) >= 26)):
+                if ((increment_month == current_month and (increment_date) <= 25 and increment_year==year)) or ((increment_month == prev_month and (increment_date) >= 26) and increment_year==year):
                     result.append(increment)
         salary_percentage = (self.db.collection(self.companyname).document('salary_calc').get()).to_dict()
 
@@ -292,6 +299,17 @@ class SalaryCalculation():
                         'after_gross':salary_slip_data_aft['grossSalary'],
                         'incremented_salary':'yes'
                     }
+                    salary_total.update({
+
+                        'netSalary': round(salary_total['netSalary'] + float(salary_slip_data["netSalary"]), 2),
+                        'grossSalary': round(
+                            salary_total['grossSalary'] + float(salary_slip_data["grossSalary"]), 2),
+                        'epfo': round(salary_total['epfo'] + float(salary_slip_data["epfo"]), 2),
+                        'pt': round(salary_total['pt'] + float(salary_slip_data["pt"]), 2),
+                        'tds': round((salary_total['tds'] + float(salary_slip_data["tds"])), 2)
+                    })
+
+
                     users_ref = self.db.collection(self.companyname).document('employee').collection(
                         'employee').document(empid)
 
@@ -301,10 +319,9 @@ class SalaryCalculation():
                 elif emp_data['designation']=='Employee' :
                     this_month = int(emp_data['doj'].split('-')[1])
                     this_date = int(emp_data['doj'].split('-')[2])
-                    print(emp_data['doj'])
-                    print(this_month,this_date)
-                    print(current_month,prev_month)
-                    if ((this_month == current_month and (this_date) <= 25) or (this_month == prev_month and (this_date) >= 26)):
+                    this_year = int(emp_data['doj'].split('-')[0])
+                    if ((this_month <= current_month and (this_date) <= 25) or (this_month <= prev_month and (this_date) >= 26) or year>this_year ):
+
 
                         emp_salary = emp_data['salary'] / 12
 
@@ -378,14 +395,34 @@ class SalaryCalculation():
                             'netSalary': net_salary, 'month': current_month, 'year': year, 'cosecID': emp_data['cosecID'], 'WO': 0,
                             'UL': 0, 'Auth_OT': "00:00", 'WrkHrs': "00:00", 'CL': 0, 'PL': 0, 'SL': 0
                         }
+                        salary_total.update({
+
+                            'netSalary': round(salary_total['netSalary'] + float(
+                                salary_slip_data["netSalary"]), 2),
+                            'grossSalary': round(
+                                salary_total['grossSalary'] + float(
+                                    salary_slip_data["grossSalary"]), 2),
+                            'epfo': round(
+                                salary_total['epfo'] + float(salary_slip_data["epfo"]),
+                                2),
+                            'pt': round(
+                                salary_total['pt'] + float(salary_slip_data["pt"]), 2),
+                            'tds': round(
+                                (salary_total['tds'] + float(salary_slip_data["tds"])),
+                                2)
+                        })
                         users_ref = self.db.collection(self.companyname).document('employee').collection('employee').document(empid)
 
                         users_ref.collection('salaryslips').document(f'sal00{current_month}_{year}').set(salary_slip_data)
 
-                month_name = calendar.month_name[current_month]
-                if day<26 and month==1:
-                     self.db.collection(self.companyname).document('salary_status').update({str(year):{month_name:"None"}})
-                self.db.collection(self.companyname).document('salary_status').update({f'{year}.{month_name}': 'None'})
+        month_name = calendar.month_name[current_month]
+        if( day<26 and month==2) or( day>26 and month==1):
+             self.db.collection(self.companyname).document('salary_status').update({str(year):{month_name:"None"}})
+             self.db.collection(self.companyname).document('monthly_salary_total').update({str(year):{f'sal00{current_month}_{year}':salary_total}})
+
+        else:
+            self.db.collection(self.companyname).document('salary_status').update({f'{year}.{month_name}': 'None'})
+            self.db.collection(self.companyname).document('monthly_salary_total').update({str(f'{year}.sal00{current_month}_{year}'): salary_total})
 
 
 

@@ -55,7 +55,7 @@ mail_obj = Mail()
 companyname='alian_software'
 FIREBASE_WEB_API_KEY = "AIzaSyDe2qwkIds8JwMdLBbY3Uw7JQkFRNXtFqo"
 rest_api_url = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
-
+CURRENT_YEAR=datetime.date.today().year
 
 SECOND_FIREBASE_API_KEY = "AIzaSyB_RwtduOw9glo9UIoL-S7ng7b2LKY7iDo"
 # Testing path
@@ -891,17 +891,18 @@ def set_storage_path(username, salid):
 
 
 
-@app.route('/<username>/salary', methods=['GET', 'POST'])
+@app.route('/<username>/salary/', methods=['GET', 'POST'])
+@app.route('/<username>/salary/<year>', methods=['GET', 'POST'])
 @login_required
-def salary(username):
+def salary(username,year=datetime.datetime.now().year):
     ''' DISPLAY SALARY DETAILS OF ALL MONTH IN YEAR '''
+    year=year
     holidays = db.collection(companyname).document('holidays').get().to_dict()
     if datetime.datetime.now().day == 1 and 'session_salary' not in session:
         SalaryCalculation(db, companyname).generate_salary(holidays=holidays)
         leaveobj.leave_add(companyname)
         session['session_salary'] = datetime.datetime.now()
         print("create session Variable")
-
     if request.method == 'POST':
         form = request.form
         data_dict = {}
@@ -915,39 +916,42 @@ def salary(username):
             db.collection(companyname).document('salary_calc').set(data_dict)
         else:
             db.collection(companyname).document('salary_calc').update(data_dict)
-
     def get_salary_criteria():
         return db.collection(str(companyname)).document('salary_calc').get().to_dict()
 
-    def get_all_month_salary_data():
-        return Salarymanage(db).get_all_month_salary_data(companyname)
+    def get_all_month_salary_data(year):
+        data=db.collection(companyname).document('monthly_salary_total').get().to_dict()
+        # print(data.to_dict())
 
-    def get_salary_status():
+        return data[str(year)]
+
+    def get_salary_status(year):
         data_dict=db.collection(companyname).document('salary_status').get().to_dict()
-        today = datetime.date.today()
-        year = today.year
-        day = today.day
-        month = today.month
-        if day >= 26:
-            month += 1
-        if day < 26 and month == 1:
-            year -= 1
-        return data_dict['2023']
+        year = year
+
+
+        return data_dict[str(year)],list(data_dict.keys()),year
 
     with ThreadPoolExecutor(max_workers=3) as executor:
         salary_criteria_future = executor.submit(get_salary_criteria)
-        salary_list_future = executor.submit(get_all_month_salary_data)
-        salary_status_future = executor.submit(get_salary_status)
+        salary_list_future = executor.submit(get_all_month_salary_data,year=year)
+        salary_status_future = executor.submit(get_salary_status,year=year)
 
     salary_criteria = salary_criteria_future.result()
     salary_list = salary_list_future.result()
-    print(salary_list)
-    salary_status = salary_status_future.result()
-
-    year = datetime.datetime.now().year
+    salary_status,years,current_year = salary_status_future.result()
     return render_template('salary_sheet_month.html', data=salary_list, salary_criteria=salary_criteria
-                           , username=username, salary_status=salary_status, year=year)
+                           , username=username, salary_status=salary_status, current_year=current_year,years=years)
 
+
+@app.route('/<username>/generatesalary/')
+def generate_salarysheet (username):
+    holidays = db.collection(companyname).document('holidays').get().to_dict()
+    SalaryCalculation(db, companyname).generate_salary(holidays=holidays)
+    leaveobj.leave_add(companyname)
+    session['session_salary'] = datetime.datetime.now()
+    print("create session Variable")
+    return redirect(url_for('salary',username=username))    
 
 
 @app.route('/<username>/upload/<salid>', methods=['POST'])
@@ -1016,19 +1020,15 @@ def salary_sheet_view(username, salid):
     salary_list = Salarymanage(db).get_all_emp_salary_data(companyname, salid)
 
     salary_status = db.collection(companyname).document('salary_status').get()
-    today = datetime.date.today()
-    year = today.year
-    day=today.day
-    month = today.month
-    if day >=26:
-        month+=1
-    if day<26 and month==1:
-        year-=1
-    salary_status=(salary_status.to_dict()[str(year)])
-    month_name=datetime.date(1900, int(salid.split('_')[0][4:]), 1).strftime('%B')
-    salary_status = salary_status[datetime.date(1900, int(salid.split('_')[0][4:]), 1).strftime('%B')]
+
+    months=(salary_status.to_dict()[salid.split('_')[1]])
+    month_name=datetime.date(1900, int(salid.split('_')[0][3:]), 1).strftime('%B')
+    print(month_name)
+    salary_status = months[month_name]
+    months=list(months.keys())
+    print(months[0])
     return render_template('salary_sheet_view.html', data=salary_list, salid=salid, username=username,
-                           salary_status=salary_status, moath_data=moath_data, holidays=holidays,month_name=month_name)
+                           salary_status=salary_status, moath_data=moath_data, holidays=holidays,month_name=month_name,months=months)
 
 @app.route('/<username>/salarysheetedit/<empid> <salid>', methods=['GET', 'POST'])
 @login_required
@@ -1036,7 +1036,8 @@ def salary_sheet_edit_(username, empid, salid):
     ''' EDIT SALARY DETAILS OF EMPLOYEE IN MONTH '''
     if request.method == 'POST':
         result = request.form
-        Salarymanage(db).salary_update(companyname, empid, salid, data=result)
+        print(result)
+        # Salarymanage(db).salary_update(companyname, empid, salid, data=result)
         return redirect(url_for('salary_sheet_view', salid=salid, username=username))
 
     holidays = db.collection(companyname).document('holidays').get().to_dict()
@@ -1074,9 +1075,16 @@ def save_edited_data():
     username = request.args.get('user_name')
     # print(f"{salid} is salid and {username} is username")
 
-    print(form_dict)
+
 
     all_data = {}
+    salary_total = {
+            'netSalary': 0,
+            'grossSalary': 0,
+            'epfo': 0,
+            'pt': 0,
+            'tds': 0,
+        }
 
     for key, value in form_dict.items():
         if value == '':
@@ -1092,8 +1100,29 @@ def save_edited_data():
 
     # Updating the document in Firestore
     for emp_id, sal_data in all_data.items():
+        salary_total.update({
+
+            'netSalary': round(salary_total['netSalary'] + float(
+                sal_data["netSalary"]), 2),
+            'grossSalary': round(
+                salary_total['grossSalary'] + float(
+                    sal_data["grossSalary"]), 2),
+            'epfo': round(
+                salary_total['epfo'] + float(sal_data["epfo"]),
+                2),
+            'pt': round(
+                salary_total['pt'] + float(sal_data["pt"]), 2),
+            'tds': round(
+                (salary_total['tds'] + float(sal_data["tds"])),
+                2)
+        })
+
         db.collection(companyname).document('employee').collection('employee').document(emp_id).collection('salaryslips').document(salid).update(sal_data)
 
+    year=salid.split("_")[1]
+    month=int(salid.split("_")[0][-3:])
+    db.collection(companyname).document('monthly_salary_total').update(
+        {str(f'{salid.split("_")[1]}.sal00{month}_{year}'): salary_total})
     # Return a response to the client
     return redirect(url_for('salary_sheet_view', username=username, salid=salid))
 
@@ -1103,19 +1132,11 @@ def save_edited_data():
 def set_status(username, salid, status):
     ''' SALARY SLIP PDF GENERATION '''
     status = status
-    today = datetime.date.today()
-    year = today.year
-    day=today.day
-    month = salid[3:]
-    print(month)
-    if day >=26:
-        month+=1
-    if day<26 and month==1:
-        year-=1
+
     month = datetime.date(1900, int(salid.split("_")[0][3:]), 1).strftime('%B')
     print(month)
 
-    status=db.collection(companyname).document('salary_status').update({f'{str(year)}.{month}': status})
+    status=db.collection(companyname).document('salary_status').update({f'{str(salid.split("_")[1])}.{month}': status})
     print(status)
     return redirect(url_for('salary_sheet_view', username=username, salid=salid))
 

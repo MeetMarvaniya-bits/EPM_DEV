@@ -84,8 +84,45 @@ td, th {
                                 </li>
                                 <li>
                                     <div class="form-outline text-start">
-                                  
-                                        <input name="" id="forminput" class="form-control" readonly placeholder="{{month_name }}">
+                   {% set months_dict = {'001': 'January', '002': 'February', '003': 'March', '004': 'April', '005': 'May',
+                '006': 'June', '007': 'July', '008': 'August', '009': 'September', '0010': 'October', '0011':
+                'November',
+                '0012': 'December'} %}
+                                        
+                <select id="monthDropdown" class="form-control" style="width: 13rem;">
+                    {% set months_dict = {'001': 'January', '002': 'February', '003': 'March', '004': 'April', '005': 'May', '006': 'June', '007': 'July', '008': 'August', '009': 'September', '0010': 'October', '0011': 'November', '0012': 'December'} %}
+                    {% for month_dict in months_dict %}
+                      {% if months_dict[month_dict] in months %}
+                        {% set month_value = 'sal' + month_dict+'_'+ salid.split('_')[1] %}
+                        <option value="{{ month_value }}" onclick="window.location.href='url_for(salary_sheet_view,username,month_id)'" {% if months_dict[month_dict] == month_name %} selected {% endif %}>{{ months_dict[month_dict] }}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+
+                                   
+                  <script>
+                    // Set the default selected option
+                    var defaultMonth = "{{month_name}}"; // Specify the default month here
+                  
+                    // Find the corresponding option and set it as selected
+                    var dropdown = document.getElementById("monthDropdown");
+                    for (var i = 0; i < dropdown.options.length; i++) {
+                      if (dropdown.options[i].text === defaultMonth) {
+                        dropdown.selectedIndex = i;
+                        break;
+                      }
+                    }
+                  </script>
+                  <script>
+                    // Handle the selection change event
+                    document.getElementById("monthDropdown").addEventListener('change', function() {
+                      var selectedOption = this.options[this.selectedIndex];
+                      var selectedUrl = selectedOption.value;
+                      
+                      // Redirect to the selected URL
+                      window.location.href = selectedUrl;
+                    });
+                  </script>
                                     </div>
                                 </li>
                             </ul>
@@ -210,9 +247,6 @@ td, th {
                             </button>
                         </div>
                     </li>
-
-
-
                     <!-- HOLIDAYS MODAL -->
                     <div class="modal" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModalLabel"
                     aria-hidden="true">

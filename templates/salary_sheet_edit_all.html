@@ -83,7 +83,7 @@ td, th {
                                 'September', 'sal0010': 'October',
                                 'sal0011': 'November', 'sal0012': 'December'} %}
                                 <input name="" id="forminput" class="form-control" readonly
-                                       placeholder="{{month_dict[salid]}}">
+                                       placeholder="{{month_dict[salid.split('_')[0]]}}">
                             </div>
                         </div>
 
@@ -284,7 +284,7 @@ td, th {
                         </td>
                         <td scope="col">
                             <input type="text" class="form-control text-center" value='{{ data.totalDeduction }}'
-                                   id="{{ key }}_totaldeduction" name="{{ key }}_totalDeduction"
+                                   id="{{ key }}_totalDeduction" name="{{ key }}_totalDeduction"
                                    onkeypress="onlyNumber(event)" readonly>
                         </td>
                         <td scope="col" class="fix last-child" style="background-color: #FFFFFF;">
@@ -361,100 +361,124 @@ function updateActionUrl() {
 <!--Script For Automated Calculation of Edit data -->
 <script>
     // Do all your JavaScript in a separate JavaScript section
-    var inputs = Array.prototype.slice.call(document.querySelectorAll("td > input"));
-
-    inputs.forEach(function(input) {
-        input.addEventListener("keyup", function() {
-            var key = input.getAttribute("id").split("_")[0];
-            var basic = document.getElementById(key + "_basic").value;
-            var hra = document.getElementById(key + "_hra").value;
-            var da = document.getElementById(key + "_da").value;
-            var lwp = document.getElementById(key + "_lwp").value;
-            var otherAllowance = document.getElementById(key + "_otherAllowance").value;
-            var incentive = document.getElementById(key + "_incentive").value;
-            var arrears = document.getElementById(key + "_arrears").value;
-            var grsOutstandingAdjustment = document.getElementById(key + "_grsOutstandingAdjustment").value;
-            var statutoryBonus = document.getElementById(key + "_statutoryBonus").value;
-            var grossSalary = document.getElementById(key + "_grossSalary").value;
-            var epfo = document.getElementById(key + "_epfo").value;
-            var pt = document.getElementById(key + "_pt").value;
-            var tds = document.getElementById(key + "_tds").value;
-            var leaveDeduction = document.getElementById(key + "_leaveDeduction").value;
-            var otherDeduction = document.getElementById(key + "_otherDeduction").value;
-            var dedOutstandingAdjustment = document.getElementById(key + "_dedOutstandingAdjustment").value;
-            var totalDeduction = document.getElementById(key + "_totalDeduction").value;
-            var netSalary = document.getElementById(key + "_netSalary").value;
-            var hraPercentage = {{ salary_data['hrapercentage'] }};
-            var daPercentage = {{ salary_data['dapercentage'] }};
-            var workingDays = {{ working_days }};
-            var deductionPercentage = {{ salary_data['deductionpercentage'] }};
-
-            // Function to handle NaN values and set them to 0
-            function handleEmptyValue(value) {
-                return value === "" || value === null || value === undefined ? 0 : parseFloat(value);
+    document.addEventListener("DOMContentLoaded", function () {
+      var inputs = Array.prototype.slice.call(
+        document.querySelectorAll("td > input")
+      );
+  
+      inputs.forEach(function (input) {
+        input.addEventListener("keyup", function () {
+          var key = input.getAttribute("id").split("_")[0];
+          var basic = document.getElementById(key + "_basic").value;
+          var hra = document.getElementById(key + "_hra").value;
+          var da = document.getElementById(key + "_da").value;
+          var lwp = document.getElementById(key + "_lwp").value;
+          var otherAllowance = document.getElementById(
+            key + "_otherAllowance"
+          ).value;
+          var incentive = document.getElementById(key + "_incentive").value;
+          var arrears = document.getElementById(key + "_arrears").value;
+          var grsOutstandingAdjustment = document.getElementById(
+            key + "_grsOutstandingAdjustment"
+          ).value;
+          var statutoryBonus = document.getElementById(
+            key + "_statutoryBonus"
+          ).value;
+          var grossSalary = document.getElementById(key + "_grossSalary");
+          var epfo = document.getElementById(key + "_epfo").value;
+          var pt = document.getElementById(key + "_pt").value;
+          var tds = document.getElementById(key + "_tds").value;
+          var leaveDeduction = document.getElementById(key + "_leaveDeduction");
+          var otherDeduction = document.getElementById(key + "_otherDeduction")
+            .value;
+          var dedOutstandingAdjustment = document.getElementById(
+            key + "_dedOutstandingAdjustment"
+          ).value;
+          var totalDeduction = document.getElementById(key + "_totalDeduction");
+          var netSalary = document.getElementById(key + "_netSalary");
+  
+          // Function to handle NaN values and set them to 0
+          function handleEmptyValue(value) {
+            if (value === "" || value === null || value === undefined) {
+              return 0;
+            } else if (isNaN(parseFloat(value))) {
+              return 0;
+            } else {
+              return parseFloat(value);
             }
+          }
+  
+          var lwpValue = handleEmptyValue(lwp);
+          var basicValue = handleEmptyValue(basic);
+          var hraValue = handleEmptyValue(hra);
+          var daValue = handleEmptyValue(da);
+          var otherAllowanceValue = handleEmptyValue(otherAllowance);
+          var incentiveValue = handleEmptyValue(incentive);
+          var arrearsValue = handleEmptyValue(arrears);
+          var grsOutstandingAdjustmentValue = handleEmptyValue(
+            grsOutstandingAdjustment
+          );
+          var statutoryBonusValue = handleEmptyValue(statutoryBonus);
+          var epfoValue = handleEmptyValue(epfo);
+          var ptValue = handleEmptyValue(pt);
+          var tdsValue = handleEmptyValue(tds);
+          var leaveDeductionValue = handleEmptyValue(leaveDeduction.value);
+          var otherDeductionValue = handleEmptyValue(otherDeduction);
+          var dedOutstandingAdjustmentValue = handleEmptyValue(
+            dedOutstandingAdjustment
+          );
+  
+          var grossSalaryValue =
+            basicValue +
+            hraValue +
+            daValue +
+            otherAllowanceValue +
+            incentiveValue +
+            arrearsValue +
+            grsOutstandingAdjustmentValue +
+            statutoryBonusValue;
+  
+          var leaveDeductionValue =
+            (lwpValue * (basicValue + hraValue + daValue + otherAllowanceValue)) /
+            {{ working_days }}  *
+            {{ salary_data['deductionpercentage'] }};
 
-
-            var lwpValue = handleEmptyValue(lwp);
-            var basicValue = handleEmptyValue(basic);
-            var hraValue = handleEmptyValue(hra);
-            var daValue = handleEmptyValue(da);
-            var otherAllowanceValue = handleEmptyValue(otherAllowance);
-            var incentiveValue = handleEmptyValue(incentive);
-            var arrearsValue = handleEmptyValue(arrears);
-            var grsOutstandingAdjustmentValue = handleEmptyValue(grsOutstandingAdjustment);
-            var statutoryBonusValue = handleEmptyValue(statutoryBonus);
-            var epfoValue = handleEmptyValue(epfo);
-            var ptValue = handleEmptyValue(pt);
-            var tdsValue = handleEmptyValue(tds);
-            var leaveDeductionValue = handleEmptyValue(leaveDeduction);
-            var otherDeductionValue = handleEmptyValue(otherDeduction);
-            var dedOutstandingAdjustmentValue = handleEmptyValue(dedOutstandingAdjustment);
-
-            hra = (hraValue);
-            da = (daValue);
-            grossSalary = (
-                basicValue +
-                hraValue +
-                daValue +
-                otherAllowanceValue +
-                incentiveValue +
-                arrearsValue +
-                grsOutstandingAdjustmentValue +
-                statutoryBonusValue
-            ).toFixed(2);
-            leaveDeduction = (
-                lwpValue * ((basicValue + hraValue + daValue + otherAllowanceValue) / {{working_days}}) * {{salary_data['deductionpercentage']}}
-            ).toFixed(2);
-            totalDeduction = (
-                epfoValue +
-                ptValue +
-                tdsValue +
-                leaveDeductionValue +
-                otherDeductionValue +
-                dedOutstandingAdjustmentValue
-            ).toFixed(2);
-            netSalary = (
-                grossSalary -
-                epfoValue -
-                ptValue -
-                tdsValue -
-                leaveDeductionValue -
-                otherDeductionValue -
-                dedOutstandingAdjustmentValue
-            ).toFixed(2);
-
-            document.getElementById(key + "_hra").value = hra;
-            document.getElementById(key + "_da").value = da;
-            document.getElementById(key + "_grossSalary").value = grossSalary;
-            document.getElementById(key + "_leaveDeduction").value = leaveDeduction;
-            document.getElementById(key + "_totalDeduction").value = totalDeduction;
-            document.getElementById(key + "_netSalary").value = netSalary;
+            console.log( lwpValue,basicValue,hraValue,daValue,otherAllowanceValue,"{{working_days}}",{{salary_data['deductionpercentage']}})
+          console.log(epfoValue,ptValue,tdsValue,leaveDeductionValue,otherDeductionValue,dedOutstandingAdjustmentValue)
+          var totalDeductionValue =
+            epfoValue +
+            ptValue +
+            tdsValue +
+            leaveDeductionValue +
+            otherDeductionValue +
+            dedOutstandingAdjustmentValue;
+            console.log(epfoValue,ptValue,tdsValue,leaveDeductionValue,otherDeductionValue,dedOutstandingAdjustmentValue,totalDeductionValue.toFixed(2))
+  
+          var netSalaryValue = grossSalaryValue - totalDeductionValue;
+  
+          if (grossSalary) {
+            grossSalary.value = grossSalaryValue.toFixed(2);
+          }
+  
+          if (leaveDeduction) {
+            leaveDeduction.value = leaveDeductionValue.toFixed(2);
+          }
+          console.log(totalDeduction)
+          if (totalDeduction) {
+            console.log(totalDeductionValue)
+            totalDeduction.value = totalDeductionValue.toFixed(2);
+            console.log(totalDeduction.value)
+          }
+  
+          if (netSalary) {
+            netSalary.value = netSalaryValue.toFixed(2);
+          }
         });
+      });
     });
-</script>
-
-<!--Script for only number input -->
+  </script>
+  
+  
 <script>
     const onlyNumber = (event) => {
         let keyCode = event.keyCode ? event.keyCode : event.which;

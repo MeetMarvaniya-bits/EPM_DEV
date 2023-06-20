@@ -2,6 +2,55 @@
 {% block title %}Salary{% endblock %}
 {% block head %}
 {{ super() }}
+<style>
+    #yearDropdown {
+      
+      width:12rem;
+      overflow-y: scroll;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 5px;
+      background-color: #fff;
+    }
+    
+    #yearDropdown option {
+      background-color: #fff;
+      color: #333;
+      font-weight: bold;
+      padding: 5px;
+    }
+    
+    #yearDropdown option:hover {
+      background-color: #f2f2f2;
+    }
+    
+    #yearDropdown option:checked {
+      background-color: #e0e0e0;
+      font-style: italic;
+    }
+    
+    #yearDropdown option::before {
+      content: '';
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      margin-right: 5px;
+      background-color: #333;
+      border-radius: 50%;
+    }
+    
+    #yearDropdown option:hover::before {
+      background-color: #ccc;
+    }
+    
+    #yearDropdown option:checked::before {
+      background-color: #999;
+    }
+    
+    #yearDropdown option:hover {
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  </style>
 
 {% endblock %}
 {% block content %}
@@ -21,9 +70,49 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <div class="form-outline  text-start ">
-                    <input type="text" class="form-control" id="forminput" placeholder="{{year-1}}-{{year}}" readonly/>
-                </div>
+                                    <div class="form-outline text-start">
+                                        {% set months_dict = {'001': 'January', '002': 'February', '003': 'March', '004': 'April', '005': 'May',
+                                     '006': 'June', '007': 'July', '008': 'August', '009': 'September', '0010': 'October', '0011':
+                                     'November',
+                                     '0012': 'December'} %}
+                                                             
+                                     <select id="yearDropdown" class="form-control" style="width: 13rem;">
+                                         {% set months_dict = {'001': 'January', '002': 'February', '003': 'March', '004': 'April', '005': 'May', '006': 'June', '007': 'July', '008': 'August', '009': 'September', '0010': 'October', '0011': 'November', '0012': 'December'} %}
+                                       
+                                         {% for year in years %}
+                                        
+                                        
+                                            <!-- <option value="{{ month_value }}" onclick="window.location.href='url_for(salary_sheet_view,username,month_id)'" {% if months_dict[month_dict] == month_name %} selected {% endif %}>{{ months_dict[month_dict] }}</option> -->
+                                            <option value="{{ year }}"  >{{ year }}</option>
+
+                                         {% endfor %}
+                                       </select>
+                     
+                                                        
+                                       <script>
+                                         // Set the default selected option
+                                         var defaultYear = "{{current_year}}"; // Specify the default month here
+                                       
+                                         // Find the corresponding option and set it as selected
+                                         var dropdown = document.getElementById("yearDropdown");
+                                         for (var i = 0; i < dropdown.options.length; i++) {
+                                           if (dropdown.options[i].text === defaultYear) {
+                                             dropdown.selectedIndex = i;
+                                             break;
+                                           }
+                                         }
+                                       </script>
+                                       <script>
+                                         // Handle the selection change event
+                                         document.getElementById("yearDropdown").addEventListener('change', function() {
+                                           var selectedOption = this.options[this.selectedIndex];
+                                           var selectedUrl = selectedOption.value;
+                                           
+                                           // Redirect to the selected URL
+                                           window.location.href = selectedUrl;
+                                         });
+                                       </script>
+                                    </div>
                                 </li>
                             </ul>
                         </div>
@@ -72,6 +161,15 @@
                                     </div>
                                 </div>
 
+                                <li class="nav-item me-2">
+                                    <div class="dropdown">
+                                        <a href="{{url_for('generate_salarysheet',username=username)}}">
+                                        <button class="btn border-1 btn-secondary " type="button">
+                                            Generate Salarysheet
+                                        </button>
+                                    </a>
+                                    </div>
+                                </li>
                                 <li class="nav-item me-2">
                                     <div class="dropdown">
                                         <button class="btn border-1 btn-secondary " type="button" aria-haspopup="true"
@@ -124,7 +222,7 @@
                 '0012': 'December'} %}
                 <td scope="col" id="demo">{{ month_dict[i.split("_")[0][3:]] }}</td>
                 <td scope="col">{{ i }}</td>
-                <td scope="col">{{ data[i]['epfo'] }}</td>
+                <td scope="col">{{ data[i]['grossSalary'] }}</td>
                 <td scope="col">{{ data[i]['pt'] }}</td>
                 <td scope="col">{{ data[i]['tds'] }}</td>
                 <td scope="col">{{ data[i]['netSalary'] }}</td>
@@ -132,7 +230,7 @@
                     <label class="status-label p-1" style="border-radius: 50px; align: center;     width: 100px;
     text-align: center;">{{salary_status[ month_dict[i.split("_")[0][3:]]]}}</label>
                 </td>
-
+               
                 <td scope="col d-flex">
                     <ul class="nav ">
                    

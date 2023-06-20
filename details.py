@@ -43,7 +43,9 @@ class Profile:
         data_dict = {}
         for doc in docs:
             print(doc.to_dict())
+            print(doc.id)
             month_name = calendar.month_name[int(doc.id.split('_')[0][5:])]
-            if salary_status[str(datetime.datetime.today().year)][month_name]=='Paid':
+            year=doc.id.split('_')[1]
+            if salary_status[year][month_name]=='Paid':
                 data_dict.update({doc.id: doc.to_dict()})
         return data_dict

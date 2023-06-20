@@ -25,13 +25,13 @@ class Salarymanage():
             salary_list.update({doc.id: doc.to_dict()})
         return {emp.id: salary_list}
 
-    def calculate_salary_data(self, employee_salary):
+    def calculate_salary_data(self, employee_salary,year):
         salary_data = {}
         for i in employee_salary:
             for j in employee_salary[i]:
                 if j == "salid":
                     continue
-                if j not in salary_data.keys():
+                if j not in salary_data.keys() and str(year) in j :
                     salary_data.update({j: {
                         'netSalary': 0,
                         'grossSalary': 0,
@@ -39,8 +39,10 @@ class Salarymanage():
                         'pt': 0,
                         'tds': 0,
                     }})
-                if j != "salid":
+                if j != "salid" and str(year) in j:
+                    print(i, j)
                     salary_data.update({j: {
+
                         'netSalary': round(salary_data[j]['netSalary'] + float(employee_salary[i][j]["netSalary"]), 2),
                         'grossSalary': round(salary_data[j]['grossSalary'] + float(employee_salary[i][j]["grossSalary"]), 2),
                         'epfo': round(salary_data[j]['epfo'] + float(employee_salary[i][j]["epfo"]), 2),
@@ -49,7 +51,7 @@ class Salarymanage():
                     }})
         return salary_data
 
-    def get_all_month_salary_data(self, companyname):
+    def get_all_month_salary_data(self, companyname,year):
         docs = self.db.collection(companyname).document(u'employee').collection('employee')
         employee_salary = {}
         with ThreadPoolExecutor() as executor:
@@ -57,7 +59,7 @@ class Salarymanage():
             for future in futures:
                 employee_salary.update(future.result())
 
-        salary_data = self.calculate_salary_data(employee_salary)
+        salary_data = self.calculate_salary_data(employee_salary,year)
         return salary_data
 
     def get_all_emp_salary_data(self, companyname, salid):
