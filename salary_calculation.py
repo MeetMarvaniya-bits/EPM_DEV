@@ -103,7 +103,7 @@ class SalaryCalculation():
         for key, value in employee_list.items():
 
             empid = key
-            print(empid)
+            #print(empid)
             emp_data = value
             if emp_data['role']!='Admin':
                 emp_name = emp_data['employeeName']
@@ -112,7 +112,7 @@ class SalaryCalculation():
                 if increment != [] and emp_data['designation']=='Employee':
                     empid = increment[0]['empid']
                     effective_date = increment[0]['effectiveDate']
-                    print("effective_date",effective_date)
+                    #print("effective_date",effective_date)
                     before_days = 0
                     after_days = 0
                     for date in data_date:
@@ -301,9 +301,9 @@ class SalaryCalculation():
                 elif emp_data['designation']=='Employee' :
                     this_month = int(emp_data['doj'].split('-')[1])
                     this_date = int(emp_data['doj'].split('-')[2])
-                    print(emp_data['doj'])
-                    print(this_month,this_date)
-                    print(current_month,prev_month)
+                    #print(emp_data['doj'])
+                    #print(this_month,this_date)
+                    #print(current_month,prev_month)
                     if ((this_month == current_month and (this_date) <= 25) or (this_month == prev_month and (this_date) >= 26)):
 
                         emp_salary = emp_data['salary'] / 12

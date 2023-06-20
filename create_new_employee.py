@@ -54,7 +54,7 @@ class Create():
 
 
             user = auth.create_user(email=request.form.get('workEmail'), password=request.form.get('password'))
-            print(user.uid)
+            #print(user.uid)
             personal_data = {
                 'employeeName': request.form.get('name'), 'userID': user.uid, 'department': request.form.get('department'),
                 'email': request.form.get('email'),
@@ -86,7 +86,7 @@ class Create():
             self.db.collection(self.companyname).document(u'employee').collection('employee').document(user.uid).collection("leaveMST").document("total_leaves").set(leave_data["total_leaves"])
             doc_ref = self.db.collection(self.companyname).document('increments')
             if request.form.get('doj') !=None and request.form.get('doj')!='':
-                doc_ref.update({'increments': firestore.ArrayUnion([{'empid': new_id,
+                doc_ref.update({'increments': firestore.ArrayUnion([{'empid': user.uid,
                                                                      'effectiveDate': request.form.get('doj'),
                                                                      'total': float(request.form.get('salary')/12),
                                                                      'grossSalary':0

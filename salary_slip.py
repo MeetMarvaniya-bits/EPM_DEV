@@ -54,7 +54,7 @@ class SalarySlip():
 
         # GET MONTH NAME
         mont_in_num = int(salid.split('_')[0][5:])
-        print(mont_in_num)
+        #print(mont_in_num)
         month = calendar.month_name[mont_in_num]
 
         # PDF STORAGE LOCATION
