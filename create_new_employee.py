@@ -71,9 +71,11 @@ class Create():
                 'accountNumber': request.form.get('accountno'), 'ifscCode': request.form.get('ifsccode'),
                 'branchName': request.form.get('branchName'),
                 'aadharCardNo': request.form.get('aadharno'), 'panCardNo': request.form.get('panno'),
-                'passportNo': request.form.get('passportno'),
-                'pfAccountNo': 'MABAN00000640000000125', 'uanNo': '100904319456', 'esicNo': '31–00–123456–000–0001'
+                'passportNo': request.form.get('passportno'), 'epfo_status': request.form.get('epfo'),
+                'pfAccountNo': request.form.get('pfAccountNo'), 'uanNo': request.form.get('esicNo'), 'esicNo': request.form.get('passportno'),
+                'abry': request.form.get('abry')
             }
+            # print(personal_data)
             self.db.collection(self.companyname).document(u'employee').collection('employee').document(user.uid).set(personal_data)
 
             # ADD LEAVE DATA

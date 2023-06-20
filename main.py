@@ -54,9 +54,9 @@ dashboard_obj = Dashboard(db)
 register_obj = Register(db)
 admin_register_obj = Admin_Register(db)
 login_obj = Login(db)
-upload_excel = Uploaddata(db)
 moth_count = MonthCount()
 mail_obj = Mail()
+upload_excel = Uploaddata(db)
 companyname='alian_software'
 FIREBASE_WEB_API_KEY = "AIzaSyDe2qwkIds8JwMdLBbY3Uw7JQkFRNXtFqo"
 rest_api_url = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
@@ -631,7 +631,7 @@ def employee_profile(username, id):
         department_data = executor.submit(get_department_data)
     department = department_data.result()
 
-    #print(data)
+
     return render_template('employee_profile.html', leave=leave_status, data=data, total_leave=total_leave,
                            leave_list=leave_list, leave_date=leave_status_date,username=username, department=department,
                            increment_data=increment_list, contract_data=contract_list, effective_dates=effective_dates)
@@ -977,9 +977,7 @@ def salary(username):
 
     salary_criteria = salary_criteria_future.result()
     salary_list = salary_list_future.result()
-    #print(salary_list)
     salary_status = salary_status_future.result()
-
     year = datetime.datetime.now().year
     return render_template('salary_sheet_month.html', data=salary_list, salary_criteria=salary_criteria
                            , username=username, salary_status=salary_status, year=year)
@@ -990,7 +988,7 @@ def salary(username):
 @login_required
 def upload(username,salid):
     ''' IMPORT EXCEL SHEET FOR SALARY DATA '''
-    #print(salid)
+    holidays = db.collection(companyname).document('holidays').get().to_dict()
     if request.method == 'POST':
         file = request.files['file']
         all_data = read_excel_leave_data.read_excel_rows(file)
@@ -1004,7 +1002,8 @@ def upload(username,salid):
                     emp_salary_data = {'cosecID': data[" User ID"], 'WO': data["WO"], 'UL': data["UL"],
                                        'OT': data["OT"], 'WrkHrs': data[" WrkHrs"],'paidLeave':data["PL"], 'CL': data["C_L"],
                                        'PL': data["P_L"], 'SL': data["S_L"]}
-                    #print(emp_salary_data)
+                    # print(emp_salary_data)
+                    SalaryCalculation(db, companyname).excel_calculation(empid=document_name, salid=salid, excel_data=emp_salary_data, holidays=holidays)
                     try:
                         db.collection(companyname).document(u'employee').collection('employee').document(document_name).collection('salaryslips').document(salid).update(emp_salary_data)
                     except:

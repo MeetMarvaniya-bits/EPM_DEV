@@ -809,12 +809,27 @@
                                                                                                                                     Home
                                                                                                                                     Loan
                                                                                                                                 </th>
-                                                                                                                                <td class="col-4">
-                                                                                                                                    <input
-                                                                                                                                            class="form-control"
-                                                                                                                                            style="background-color: #FFFFFF"
-                                                                                                                                            name="hlperiod"
-                                                                                                                                            value='{{ data["tds_data"]["hlperiod"] }}'>
+                                                                                                                                <td class="col-4"
+                                                                                                                                    id="hlperiod">
+                                                                                                                                    <div class="input-group"
+                                                                                                                                         style="width:auto !important;">
+                                                                                                                                        <input type="date"
+                                                                                                                                               class="form-control"
+                                                                                                                                               value='{{ data["tds_data"]["hlStartDate"] }}'
+                                                                                                                                               name="hlStartDate"
+                                                                                                                                               id="hlStartDate"
+                                                                                                                                               placeholder='{{ data["tds_data"]["hlEndDate"] }}'>
+                                                                                                                                        <p class="mt-2">
+                                                                                                                                            &ensp;
+                                                                                                                                            to
+                                                                                                                                            &ensp;</p>
+                                                                                                                                        <input type="date"
+                                                                                                                                               class="form-control"
+                                                                                                                                               value='{{ data["tds_data"]["hlEndDate"] }}'
+                                                                                                                                               name="hlEndDate"
+                                                                                                                                               id="hlEndDate"
+                                                                                                                                               placeholder='{{ data["tds_data"]["hlEndDate"] }}'>
+                                                                                                                                    </div>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -890,21 +905,6 @@
                                                                                                                                             value='{{ data["tds_data"]["pino"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
-                                                                                                                            <tr>
-                                                                                                                                <th class="col-3">
-                                                                                                                                    Annual
-                                                                                                                                    Amount
-                                                                                                                                    of
-                                                                                                                                    Policy
-                                                                                                                                </th>
-                                                                                                                                <td class="col-4">
-                                                                                                                                    <input
-                                                                                                                                            class="form-control"
-                                                                                                                                            style="background-color: #FFFFFF"
-                                                                                                                                            name="piannual"
-                                                                                                                                            value='{{ data["tds_data"]["piannual"] }}'>
-                                                                                                                                </td>
-                                                                                                                            </tr>
                                                                                                                             </thead>
                                                                                                                             <tbody>
                                                                                                                             </tbody>
@@ -915,16 +915,15 @@
                                                                                                                             <thead>
                                                                                                                             <tr>
                                                                                                                                 <th class="col-3">
-                                                                                                                                    Name
-                                                                                                                                    of
-                                                                                                                                    Insured
+                                                                                                                                    Annual Policy
+                                                                                                                                    Amount
                                                                                                                                 </th>
                                                                                                                                 <td class="col-4">
                                                                                                                                     <input
                                                                                                                                             class="form-control"
                                                                                                                                             style="background-color: #FFFFFF"
-                                                                                                                                            name="piname"
-                                                                                                                                            value='{{ data["tds_data"]["piname"] }}'>
+                                                                                                                                            name="piannual"
+                                                                                                                                            value='{{ data["tds_data"]["piannual"] }}'>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -964,10 +963,8 @@
                                                                                                                             </tr>
                                                                                                                             <tr>
                                                                                                                                 <th class="col-3">
-                                                                                                                                    Annual
+                                                                                                                                    Annual Policy
                                                                                                                                     Amount
-                                                                                                                                    of
-                                                                                                                                    Policy
                                                                                                                                 </th>
                                                                                                                                 <td class="col-4">
                                                                                                                                     <input
@@ -1006,12 +1003,27 @@
                                                                                                                                     of
                                                                                                                                     Insurance
                                                                                                                                 </th>
-                                                                                                                                <td class="col-4">
-                                                                                                                                    <input
-                                                                                                                                            class="form-control"
-                                                                                                                                            style="background-color: #FFFFFF"
-                                                                                                                                            name="hipperiod"
-                                                                                                                                            value='{{ data["tds_data"]["hipperiod"] }}'>
+                                                                                                                                <td class="col-4"
+                                                                                                                                    id="hipperiod">
+                                                                                                                                    <div class="input-group"
+                                                                                                                                         style="width:auto !important;">
+                                                                                                                                        <input type="date"
+                                                                                                                                               class="form-control"
+                                                                                                                                               value='{{ data["tds_data"]["hipStartDate"] }}'
+                                                                                                                                               name="hipStartDate"
+                                                                                                                                               id="hipStartDate"
+                                                                                                                                               placeholder='{{ data["tds_data"]["hipStartDate"] }}'>
+                                                                                                                                        <p class="mt-2">
+                                                                                                                                            &ensp;
+                                                                                                                                            to
+                                                                                                                                            &ensp;</p>
+                                                                                                                                        <input type="date"
+                                                                                                                                               class="form-control"
+                                                                                                                                               value='{{ data["tds_data"]["hipEndDate"] }}'
+                                                                                                                                               name="hipEndDate"
+                                                                                                                                               id="hipEndDate"
+                                                                                                                                               placeholder='{{ data["tds_data"]["hipEndDate"] }}'>
+                                                                                                                                    </div>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -1051,10 +1063,8 @@
                                                                                                                             </tr>
                                                                                                                             <tr>
                                                                                                                                 <th class="col-3">
-                                                                                                                                    Annual
+                                                                                                                                    Annual Policy
                                                                                                                                     Amount
-                                                                                                                                    of
-                                                                                                                                    Policy
                                                                                                                                 </th>
                                                                                                                                 <td class="col-4">
                                                                                                                                     <input
@@ -1093,12 +1103,27 @@
                                                                                                                                     of
                                                                                                                                     Insurance
                                                                                                                                 </th>
-                                                                                                                                <td class="col-4">
-                                                                                                                                    <input
-                                                                                                                                            class="form-control"
-                                                                                                                                            style="background-color: #FFFFFF"
-                                                                                                                                            name="hisperiod"
-                                                                                                                                            value='{{ data["tds_data"]["hisperiod"] }}'>
+                                                                                                                                <td class="col-4"
+                                                                                                                                    id="hisperiod">
+                                                                                                                                    <div class="input-group"
+                                                                                                                                         style="width:auto !important;">
+                                                                                                                                        <input type="date"
+                                                                                                                                               class="form-control"
+                                                                                                                                               value='{{ data["tds_data"]["hisStartDate"] }}'
+                                                                                                                                               name="hisStartDate"
+                                                                                                                                               id="hisStartDate"
+                                                                                                                                               placeholder='{{ data["tds_data"]["hisStartDate"] }}'>
+                                                                                                                                        <p class="mt-2">
+                                                                                                                                            &ensp;
+                                                                                                                                            to
+                                                                                                                                            &ensp;</p>
+                                                                                                                                        <input type="date"
+                                                                                                                                               class="form-control"
+                                                                                                                                               value='{{ data["tds_data"]["hisEndDate"] }}'
+                                                                                                                                               name="hisEndDate"
+                                                                                                                                               id="hisEndDate"
+                                                                                                                                               placeholder='{{ data["tds_data"]["hisEndDate"] }}'>
+                                                                                                                                    </div>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -1138,18 +1163,30 @@
                                                                                                                             </tr>
                                                                                                                             <tr>
                                                                                                                                 <th class="col-3">
-                                                                                                                                    Annual
+                                                                                                                                    Annual Policy
                                                                                                                                     Amount
-                                                                                                                                    of
-                                                                                                                                    Policy
                                                                                                                                 </th>
-                                                                                                                                <td class="col-4">
-                                                                                                                                    <input
-                                                                                                                                            class="form-control"
-                                                                                                                                            pattern="^\d*\.?\d*$"
-                                                                                                                                            style="background-color: #FFFFFF"
-                                                                                                                                            name="hifannual"
-                                                                                                                                            value='{{ data["tds_data"]["hifannual"] }}'>
+                                                                                                                                <td class="col-4"
+                                                                                                                                    id="hifperiod">
+                                                                                                                                    <div class="input-group"
+                                                                                                                                         style="width:auto !important;">
+                                                                                                                                        <input type="date"
+                                                                                                                                               class="form-control"
+                                                                                                                                               value='{{ data["tds_data"]["hifStartDate"] }}'
+                                                                                                                                               name="hifStartDate"
+                                                                                                                                               id="hifStartDate"
+                                                                                                                                               placeholder='{{ data["tds_data"]["hifStartDate"] }}'>
+                                                                                                                                        <p class="mt-2">
+                                                                                                                                            &ensp;
+                                                                                                                                            to
+                                                                                                                                            &ensp;</p>
+                                                                                                                                        <input type="date"
+                                                                                                                                               class="form-control"
+                                                                                                                                               value='{{ data["tds_data"]["hifEndDate"] }}'
+                                                                                                                                               name="hifEndDate"
+                                                                                                                                               id="hifEndDate"
+                                                                                                                                               placeholder='{{ data["tds_data"]["hifEndDate"] }}'>
+                                                                                                                                    </div>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -1318,12 +1355,27 @@
                                                                                                                                     of
                                                                                                                                     Date
                                                                                                                                 </th>
-                                                                                                                                <td class="col-4">
-                                                                                                                                    <input
-                                                                                                                                            class="form-control"
-                                                                                                                                            style="background-color: #FFFFFF"
-                                                                                                                                            name="ahrperiod"
-                                                                                                                                            value='{{ data["tds_data"]["ahrperiod"] }}'>
+                                                                                                                                <td class="col-4"
+                                                                                                                                    id="ahrperiod">
+                                                                                                                                    <div class="input-group"
+                                                                                                                                         style="width:auto !important;">
+                                                                                                                                        <input type="date"
+                                                                                                                                               class="form-control"
+                                                                                                                                               value='{{ data["tds_data"]["ahrStartDate"] }}'
+                                                                                                                                               name="ahrStartDate"
+                                                                                                                                               id="ahrStartDate"
+                                                                                                                                               placeholder='{{ data["tds_data"]["ahrStartDate"] }}'>
+                                                                                                                                        <p class="mt-2">
+                                                                                                                                            &ensp;
+                                                                                                                                            to
+                                                                                                                                            &ensp;</p>
+                                                                                                                                        <input type="date"
+                                                                                                                                               class="form-control"
+                                                                                                                                               value='{{ data["tds_data"]["ahrEndDate"] }}'
+                                                                                                                                               name="ahrEndDate"
+                                                                                                                                               id="ahrEndDate"
+                                                                                                                                               placeholder='{{ data["tds_data"]["ahrEndDate"] }}'>
+                                                                                                                                    </div>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -1409,12 +1461,27 @@
                                                                                                                                     of
                                                                                                                                     Date
                                                                                                                                 </th>
-                                                                                                                                <td class="col-4">
-                                                                                                                                    <input
-                                                                                                                                            class="form-control"
-                                                                                                                                            style="background-color: #FFFFFF"
-                                                                                                                                            name="elssperiod"
-                                                                                                                                            value='{{ data["tds_data"]["elssperiod"] }}'>
+                                                                                                                                <td class="col-4"
+                                                                                                                                    id="elssperiod">
+                                                                                                                                    <div class="input-group"
+                                                                                                                                         style="width:auto !important;">
+                                                                                                                                        <input type="date"
+                                                                                                                                               class="form-control"
+                                                                                                                                               value='{{ data["tds_data"]["elssStartDate"] }}'
+                                                                                                                                               name="elssStartDate"
+                                                                                                                                               id="elssStartDate"
+                                                                                                                                               placeholder='{{ data["tds_data"]["elssStartDate"] }}'>
+                                                                                                                                        <p class="mt-2">
+                                                                                                                                            &ensp;
+                                                                                                                                            to
+                                                                                                                                            &ensp;</p>
+                                                                                                                                        <input type="date"
+                                                                                                                                               class="form-control"
+                                                                                                                                               value='{{ data["tds_data"]["elssEndDate"] }}'
+                                                                                                                                               name="elssEndDate"
+                                                                                                                                               id="elssEndDate"
+                                                                                                                                               placeholder='{{ data["tds_data"]["elssEndDate"] }}'>
+                                                                                                                                    </div>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -1465,12 +1532,27 @@
                                                                                                                                     of
                                                                                                                                     Date
                                                                                                                                 </th>
-                                                                                                                                <td class="col-4">
-                                                                                                                                    <input
-                                                                                                                                            class="form-control"
-                                                                                                                                            style="background-color: #FFFFFF"
-                                                                                                                                            name="tfperiod"
-                                                                                                                                            value='{{ data["tds_data"]["tfperiod"] }}'>
+                                                                                                                                <td class="col-4"
+                                                                                                                                    id="tfperiod">
+                                                                                                                                    <div class="input-group"
+                                                                                                                                         style="width:auto !important;">
+                                                                                                                                        <input type="date"
+                                                                                                                                               class="form-control"
+                                                                                                                                               value='{{ data["tds_data"]["tfStartDate"] }}'
+                                                                                                                                               name="tfStartDate"
+                                                                                                                                               id="tfStartDate"
+                                                                                                                                               placeholder='{{ data["tds_data"]["tfStartDate"] }}'>
+                                                                                                                                        <p class="mt-2">
+                                                                                                                                            &ensp;
+                                                                                                                                            to
+                                                                                                                                            &ensp;</p>
+                                                                                                                                        <input type="date"
+                                                                                                                                               class="form-control"
+                                                                                                                                               value='{{ data["tds_data"]["tfEndDate"] }}'
+                                                                                                                                               name="tfEndDate"
+                                                                                                                                               id="tfEndDate"
+                                                                                                                                               placeholder='{{ data["tds_data"]["tfEndDate"] }}'>
+                                                                                                                                    </div>
                                                                                                                                 </td>
                                                                                                                             </tr>
                                                                                                                             </thead>
@@ -2384,7 +2466,9 @@
                                                                                             Loan
                                                                                         </th>
                                                                                         <td class="col-3">{{
-                                                                                            data["tds_data"]["hlperiod"]
+                                                                                            data["tds_data"]["hlStartDate"]
+                                                                                            }} to {{
+                                                                                            data["tds_data"]["hlEndDate"]
                                                                                             }}
                                                                                         </td>
                                                                                     </tr>
@@ -2440,16 +2524,6 @@
                                                                                             data["tds_data"]["pino"] }}
                                                                                         </td>
                                                                                     </tr>
-                                                                                    <tr>
-                                                                                        <th class="col-3">Annual Amount
-                                                                                            of
-                                                                                            Policy
-                                                                                        </th>
-                                                                                        <td class="col-3">{{
-                                                                                            data["tds_data"]["piannual"]
-                                                                                            }}
-                                                                                        </td>
-                                                                                    </tr>
                                                                                     </thead>
                                                                                     <tbody>
                                                                                     </tbody>
@@ -2459,11 +2533,10 @@
                                                                                 <table class="table table-striped">
                                                                                     <thead>
                                                                                     <tr>
-                                                                                        <th class="col-3">Name of
-                                                                                            Insured
+                                                                                        <th class="col-3">Annual Policy Amount
                                                                                         </th>
                                                                                         <td class="col-3">{{
-                                                                                            data["tds_data"]["piname"]
+                                                                                            data["tds_data"]["piannual"]
                                                                                             }}
                                                                                         </td>
                                                                                     </tr>
@@ -2493,9 +2566,7 @@
                                                                                         </td>
                                                                                     </tr>
                                                                                     <tr>
-                                                                                        <th class="col-3">Annual Amount
-                                                                                            of
-                                                                                            Policy
+                                                                                        <th class="col-3">Annual Policy Amount
                                                                                         </th>
                                                                                         <td class="col-3">{{
                                                                                             data["tds_data"]["hipannual"]
@@ -2524,7 +2595,9 @@
                                                                                             Insurance
                                                                                         </th>
                                                                                         <td class="col-3">{{
-                                                                                            data["tds_data"]["hipperiod"]
+                                                                                            data["tds_data"]["hipStartDate"]
+                                                                                            }} to {{
+                                                                                            data["tds_data"]["hipEndDate"]
                                                                                             }}
                                                                                         </td>
                                                                                     </tr>
@@ -2554,9 +2627,7 @@
                                                                                         </td>
                                                                                     </tr>
                                                                                     <tr>
-                                                                                        <th class="col-3">Annual Amount
-                                                                                            of
-                                                                                            Policy
+                                                                                        <th class="col-3">Annual Policy Amount
                                                                                         </th>
                                                                                         <td class="col-3">{{
                                                                                             data["tds_data"]["hisname"]
@@ -2585,7 +2656,9 @@
                                                                                             Insurance
                                                                                         </th>
                                                                                         <td class="col-3">{{
-                                                                                            data["tds_data"]["hisperiod"]
+                                                                                            data["tds_data"]["hisStartDate"]
+                                                                                            }} to {{
+                                                                                            data["tds_data"]["hisEndDate"]
                                                                                             }}
                                                                                         </td>
                                                                                     </tr>
@@ -2615,9 +2688,7 @@
                                                                                         </td>
                                                                                     </tr>
                                                                                     <tr>
-                                                                                        <th class="col-3">Annual Amount
-                                                                                            of
-                                                                                            Policy
+                                                                                        <th class="col-3">Annual Policy Amount
                                                                                         </th>
                                                                                         <td class="col-3">{{
                                                                                             data["tds_data"]["hifannual"]
@@ -2646,7 +2717,9 @@
                                                                                             Insurance
                                                                                         </th>
                                                                                         <td class="col-3">{{
-                                                                                            data["tds_data"]["hifperiod"]
+                                                                                            data["tds_data"]["hifStartDate"]
+                                                                                            }} to {{
+                                                                                            data["tds_data"]["hifEndDate"]
                                                                                             }}
                                                                                         </td>
                                                                                     </tr>
@@ -2740,7 +2813,9 @@
                                                                                         <th class="col-3">Period of Date
                                                                                         </th>
                                                                                         <td class="col-3">{{
-                                                                                            data["tds_data"]["ahrperiod"]
+                                                                                            data["tds_data"]["ahrStartDate"]
+                                                                                            }} to {{
+                                                                                            data["tds_data"]["ahrEndDate"]
                                                                                             }}
                                                                                         </td>
                                                                                     </tr>
@@ -2809,7 +2884,9 @@
                                                                                             Date
                                                                                         </th>
                                                                                         <td class="col-3">{{
-                                                                                            data["tds_data"]["elssperiod"]
+                                                                                            data["tds_data"]["elssStartDate"]
+                                                                                            }} to {{
+                                                                                            data["tds_data"]["elssEndDate"]
                                                                                             }}
                                                                                         </td>
                                                                                     </tr>
@@ -2852,7 +2929,9 @@
                                                                                             Date
                                                                                         </th>
                                                                                         <td class="col-3">{{
-                                                                                            data["tds_data"]["tfperiod"]
+                                                                                            data["tds_data"]["tfStartDate"]
+                                                                                            }} to {{
+                                                                                            data["tds_data"]["tfEndDate"]
                                                                                             }}
                                                                                         </td>
                                                                                     </tr>

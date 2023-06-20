@@ -15,7 +15,7 @@ class SalaryCalculation():
         today = datetime.date.today()
         year = today.year
         day=today.day
-        month = 7
+        month = today.month
         if day >=26:
             month+=1
         if day<26 and month==1:
