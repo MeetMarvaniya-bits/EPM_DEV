@@ -664,68 +664,111 @@
                                                                                                                             Other
                                                                                                                             Details</h3>
                                                                                                                     </div>
-                                                                                                                    <div class="col-6">
-                                                                                                                        <table class="table table-striped">
-                                                                                                                            <thead>
-                                                                                                                            <tr>
-                                                                                                                                <th class="col-3">
-                                                                                                                                    PF
-                                                                                                                                    Account
-                                                                                                                                    No.
-                                                                                                                                </th>
-                                                                                                                                <td class="col-4">
-                                                                                                                                    <input
-                                                                                                                                            class="form-control"
-                                                                                                                                            pattern="^[a-zA-Z0-9]*$"
-                                                                                                                                            style="background-color: #FFFFFF"
-                                                                                                                                            name="pfAccountNo"
-                                                                                                                                            value='{{ data["personal_data"]["pfAccountNo"] }}'>
-                                                                                                                                </td>
-                                                                                                                            </tr>
-                                                                                                                            <tr>
-                                                                                                                                <th class="col-3">
-                                                                                                                                    ESIC
-                                                                                                                                    No.
-                                                                                                                                </th>
-                                                                                                                                <td class="col-4">
-                                                                                                                                    <input
-                                                                                                                                            class="form-control"
-                                                                                                                                            pattern="\d+"
-                                                                                                                                            style="background-color: #FFFFFF"
-                                                                                                                                            name="esicNo"
-                                                                                                                                            value='{{ data["personal_data"]["esicNo"] }}'>
-                                                                                                                                </td>
-                                                                                                                            </tr>
-                                                                                                                            </thead>
-                                                                                                                            <tbody>
-                                                                                                                        </table>
-
+                                                                                                                    <div class="row">
+                                                                                                                        <div class="col-4">
+                                                                                                                            <div class="form-group row pmd-textfield pmd-textfield-floating-label">
+                                                                                                                                <label class="col-form-label control-label col-sm-4"
+                                                                                                                                       for="epfo" style="color:black;"><b>EPFO
+                                                                                                                                    Status</b></label>
+                                                                                                                            </div>
+                                                                                                                        </div>
+                                                                                                                        <div class="col-3 text-start" id="epfo">
+                                                                                                                            <div class="form-check form-check-inline">
+                                                                                                                                <input class="form-check-input"
+                                                                                                                                       type="radio"
+                                                                                                                                       name="epfo"
+                                                                                                                                       id="inlineRadio1"
+                                                                                                                                       value="yes"
+                                                                                                                                       onclick="toggleDataFields(true)">
+                                                                                                                                <label class="form-check-label"
+                                                                                                                                       for="inlineRadio1" style="color:black;">Yes</label>
+                                                                                                                            </div>
+                                                                                                                            <div class="form-check form-check-inline">
+                                                                                                                                <input class="form-check-input"
+                                                                                                                                       type="radio"
+                                                                                                                                       name="epfo"
+                                                                                                                                       id="inlineRadio2"
+                                                                                                                                       value="no"
+                                                                                                                                       checked
+                                                                                                                                       onclick="toggleDataFields(false)">
+                                                                                                                                <label class="form-check-label"
+                                                                                                                                       for="inlineRadio2" style="color:black;">No</label>
+                                                                                                                            </div>
+                                                                                                                        </div>
                                                                                                                     </div>
-                                                                                                                    <div class="col-6">
-
-                                                                                                                        <table class="table table-striped">
-                                                                                                                            <thead>
-                                                                                                                            <tr>
-                                                                                                                                <th class="col-3">
-                                                                                                                                    UAN
-                                                                                                                                    No.
-                                                                                                                                </th>
-                                                                                                                                <td class="col-4">
-                                                                                                                                    <input
-                                                                                                                                            class="form-control"
-                                                                                                                                            pattern="\d+"
-                                                                                                                                            style="background-color: #FFFFFF"
-                                                                                                                                            name="uanNo"
-                                                                                                                                            value='{{ data["personal_data"]["uanNo"] }}'>
-                                                                                                                                </td>
-                                                                                                                            </tr>
-                                                                                                                            </thead>
-                                                                                                                            <tbody>
-                                                                                                                        </table>
-
-                                                                                                                    </div>
+                                                                                                                    <div id="additionalDataFields"
+                                                                                                                             style="display: none;">
+                                                                                                                            <div class="row p-3">
+                                                                                                                                <div class="col-6 col-sm-6 col-md-6">
+                                                                                                                                    <div class="form-group row pmd-textfield pmd-textfield-floating-label">
+                                                                                                                                        <label class="col-form-label control-label col-sm-4"
+                                                                                                                                               for="uanNo" style="color:black;"><b>UAN
+                                                                                                                                            Number</b></label>
+                                                                                                                                        <div class="col-sm-5">
+                                                                                                                                            <input type="text"
+                                                                                                                                                   pattern="\d+"
+                                                                                                                                                   class="form-control"
+                                                                                                                                                   id="uanNo"
+                                                                                                                                                   name="uanNo"
+                                                                                                                                                   value='{{ data["personal_data"]["uanNo"] }}'
+                                                                                                                                                   placeholder="Enter 12 Digit Number">
+                                                                                                                                        </div>
+                                                                                                                                        <span class="pmd-textfield-focused"></span>
+                                                                                                                                    </div>
+                                                                                                                                    <br>
+                                                                                                                                    <div class="form-group row pmd-textfield pmd-textfield-floating-label">
+                                                                                                                                        <label class="col-form-label control-label col-sm-4"
+                                                                                                                                               for="pfAccountNo" style="color:black;"><b>PF
+                                                                                                                                            Account
+                                                                                                                                            Number</b></label>
+                                                                                                                                        <div class="col-sm-5">
+                                                                                                                                            <input type="text"
+                                                                                                                                                   pattern="^[a-zA-Z0-9]*$"
+                                                                                                                                                   class="form-control"
+                                                                                                                                                   id="pfAccountNo"
+                                                                                                                                                   name="pfAccountNo"
+                                                                                                                                                   value='{{ data["personal_data"]["pfAccountNo"] }}'
+                                                                                                                                                   placeholder="Enter 9 Digit Number">
+                                                                                                                                        </div>
+                                                                                                                                        <span class="pmd-textfield-focused"></span>
+                                                                                                                                    </div>
+                                                                                                                                    <br>
+                                                                                                                                </div>
+                                                                                                                                <div class="col-6 col-sm-6 col-md-6">
+                                                                                                                                    <div class="form-group row pmd-textfield pmd-textfield-floating-label">
+                                                                                                                                        <label class="col-form-label control-label col-sm-4"
+                                                                                                                                               for="esicNo" style="color:black;"><b>ESIC
+                                                                                                                                            Number</b></label>
+                                                                                                                                        <div class="col-sm-5">
+                                                                                                                                            <input type="text"
+                                                                                                                                                   pattern="\d+"
+                                                                                                                                                   class="form-control"
+                                                                                                                                                   id="esicNo"
+                                                                                                                                                   name="esicNo"
+                                                                                                                                                   value='{{ data["personal_data"]["esicNo"] }}'
+                                                                                                                                                   placeholder="Enter 10 Digit Number">
+                                                                                                                                        </div>
+                                                                                                                                        <span class="pmd-textfield-focused"></span>
+                                                                                                                                    </div>
+                                                                                                                                    <br>
+                                                                                                                                    <div class="form-group row pmd-textfield pmd-textfield-floating-label">
+                                                                                                                                      <label class="col-form-label control-label col-sm-4" for="abry" style="color:black;"><b>ABRY</b></label>
+                                                                                                                                      <div class="col-sm-5" id="abry">
+                                                                                                                                        <div class="form-check form-check-inline">
+                                                                                                                                          <input class="form-check-input" type="radio" name="abry" id="abryYes" value="yes" onclick="setAbryValue('yes')">
+                                                                                                                                          <label class="form-check-label" for="abryYes" style="color:black;">Yes</label>
+                                                                                                                                        </div>
+                                                                                                                                        <div class="form-check form-check-inline">
+                                                                                                                                          <input class="form-check-input" type="radio" name="abry" id="abryNo" value="no" onclick="setAbryValue('no')">
+                                                                                                                                          <label class="form-check-label" for="abryNo" style="color:black;">No</label>
+                                                                                                                                        </div>
+                                                                                                                                      </div>
+                                                                                                                                      <span class="pmd-textfield-focused"></span>
+                                                                                                                                    </div>
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                        </div>
                                                                                                                 </div>
-
                                                                                                             </div>
                                                                                                             <hr style="width:100%;color:black;text-align:left;margin-left:0">
                                                                                                             <div class="text-center">
@@ -2042,17 +2085,17 @@
                                                                                 <table class="table table-striped">
                                                                                     <thead>
                                                                                     <tr>
-                                                                                        <th class="col-3">PF Account No.
-                                                                                        </th>
+                                                                                        <th class="col-3">UAN No.</th>
                                                                                         <td class="col-3">{{
-                                                                                            data["personal_data"]["pfAccountNo"]
+                                                                                            data["personal_data"]["uanNo"]
                                                                                             }}
                                                                                         </td>
                                                                                     </tr>
                                                                                     <tr>
-                                                                                        <th class="col-3">ESIC No.</th>
+                                                                                        <th class="col-3">PF Account No.
+                                                                                        </th>
                                                                                         <td class="col-3">{{
-                                                                                            data["personal_data"]["esicNo"]
+                                                                                            data["personal_data"]["pfAccountNo"]
                                                                                             }}
                                                                                         </td>
                                                                                     </tr>
@@ -2066,9 +2109,16 @@
                                                                                 <table class="table table-striped">
                                                                                     <thead>
                                                                                     <tr>
-                                                                                        <th class="col-3">UAN No.</th>
+                                                                                        <th class="col-3">ESIC No.</th>
                                                                                         <td class="col-3">{{
-                                                                                            data["personal_data"]["uanNo"]
+                                                                                            data["personal_data"]["esicNo"]
+                                                                                            }}
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                    <tr>
+                                                                                        <th class="col-3">ABRY</th>
+                                                                                        <td class="col-3">{{
+                                                                                            data["personal_data"]["abry"]
                                                                                             }}
                                                                                         </td>
                                                                                     </tr>
@@ -4197,5 +4247,49 @@ function handleDropdownChange(index) {
   
 
 
+<!--Script For PF Status Radio Button -->
+<script>
+  function toggleDataFields(show) {
+    var additionalDataFields = document.getElementById('additionalDataFields');
+    var epfoYesRadioButton = document.getElementById('inlineRadio1');
+    var epfoNoRadioButton = document.getElementById('inlineRadio2');
+
+    if (show) {
+      additionalDataFields.style.display = 'block';
+      epfoYesRadioButton.checked = true;
+      epfoNoRadioButton.checked = false;
+    } else {
+      additionalDataFields.style.display = 'none';
+      epfoYesRadioButton.checked = false;
+      epfoNoRadioButton.checked = true;
+    }
+  }
+
+  var epfoValue = "{{ data['personal_data']['epfo_status'] }}";
+  if (epfoValue === 'yes') {
+    toggleDataFields(true);
+  } else {
+    toggleDataFields(false);
+  }
+</script>
+
+<!--ABRY Status -->
+<script>
+  function setAbryValue(value) {
+    var abryYesRadioButton = document.getElementById('abryYes');
+    var abryNoRadioButton = document.getElementById('abryNo');
+
+    if (value === 'yes') {
+      abryYesRadioButton.checked = true;
+      abryNoRadioButton.checked = false;
+    } else {
+      abryYesRadioButton.checked = false;
+      abryNoRadioButton.checked = true;
+    }
+  }
+
+  var abryValue = "{{ data['personal_data']['abry'] }}";
+  setAbryValue(abryValue);
+</script>
 
 {% endblock %}

@@ -72,7 +72,7 @@ class Create():
                 'branchName': request.form.get('branchName'),
                 'aadharCardNo': request.form.get('aadharno'), 'panCardNo': request.form.get('panno'),
                 'passportNo': request.form.get('passportno'), 'epfo_status': request.form.get('epfo'),
-                'pfAccountNo': request.form.get('pfAccountNo'), 'uanNo': request.form.get('esicNo'), 'esicNo': request.form.get('passportno'),
+                'pfAccountNo': request.form.get('pfAccountNo'), 'uanNo': request.form.get('uanNo'), 'esicNo': request.form.get('esicNo'),
                 'abry': request.form.get('abry')
             }
             # print(personal_data)
@@ -90,7 +90,7 @@ class Create():
             if request.form.get('doj') !=None and request.form.get('doj')!='':
                 doc_ref.update({'increments': firestore.ArrayUnion([{'empid': user.uid,
                                                                      'effectiveDate': request.form.get('doj'),
-                                                                     'total': float(request.form.get('salary')/12),
+                                                                     'total': round(float(request.form.get('salary'))/12, 2),
                                                                      'grossSalary':0
                                                                      }])})
 
