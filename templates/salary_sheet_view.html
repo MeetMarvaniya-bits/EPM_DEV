@@ -100,10 +100,45 @@ td, th {
                                 </li>
                                 <li>
                                     <div class="form-outline text-start">
-              {% set month_dict = {'sal001': 'January', 'sal002': 'February', 'sal003': 'March', 'sal004': 'April',
-              'sal005': 'May', 'sal006': 'June', 'sal007': 'July', 'sal008': 'August', 'sal009': 'September', 'sal0010': 'October',
-              'sal0011': 'November', 'sal0012': 'December'} %}
-                                        <input name="" id="forminput" class="form-control" readonly placeholder="{{month_dict[salid]}}">
+                   {% set months_dict = {'001': 'January', '002': 'February', '003': 'March', '004': 'April', '005': 'May',
+                '006': 'June', '007': 'July', '008': 'August', '009': 'September', '0010': 'October', '0011':
+                'November',
+                '0012': 'December'} %}
+                                        
+                <select id="monthDropdown" class="form-control" style="width: 13rem;">
+                    {% set months_dict = {'001': 'January', '002': 'February', '003': 'March', '004': 'April', '005': 'May', '006': 'June', '007': 'July', '008': 'August', '009': 'September', '0010': 'October', '0011': 'November', '0012': 'December'} %}
+                    {% for month_dict in months_dict %}
+                      {% if months_dict[month_dict] in months %}
+                        {% set month_value = 'sal' + month_dict+'_'+ salid.split('_')[1] %}
+                        <option value="{{ month_value }}" onclick="window.location.href='url_for(salary_sheet_view,username,month_id)'" {% if months_dict[month_dict] == month_name %} selected {% endif %}>{{ months_dict[month_dict] }}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+
+                                   
+                  <script>
+                    // Set the default selected option
+                    var defaultMonth = "{{month_name}}"; // Specify the default month here
+                  
+                    // Find the corresponding option and set it as selected
+                    var dropdown = document.getElementById("monthDropdown");
+                    for (var i = 0; i < dropdown.options.length; i++) {
+                      if (dropdown.options[i].text === defaultMonth) {
+                        dropdown.selectedIndex = i;
+                        break;
+                      }
+                    }
+                  </script>
+                  <script>
+                    // Handle the selection change event
+                    document.getElementById("monthDropdown").addEventListener('change', function() {
+                      var selectedOption = this.options[this.selectedIndex];
+                      var selectedUrl = selectedOption.value;
+                      
+                      // Redirect to the selected URL
+                      window.location.href = selectedUrl;
+                    });
+                  </script>
                                     </div>
                                 </li>
                             </ul>
@@ -311,6 +346,105 @@ td, th {
                     </li>
                     {% endif %}
 
+                    <li class="nav-item me-2">
+                        <div class="dropdown">
+                            <button id="edit-row-button" class="btn border-1 btn-secondary" type="button">
+                                Edit Rows
+                            </button>
+                        </div>
+                    </li>
+                    
+                    <li class="nav-item me-2">
+                        <div class="dropdown">
+                            <!-- Button trigger modal -->
+                            <button id="uploadButton" class="btn border-1 btn-secondary" type="button">
+                                Import Excel Sheet
+                            </button>
+                        </div>
+                    </li>
+                    <!-- HOLIDAYS MODAL -->
+                    <div class="modal" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                        <div class="modal-dialog vh-100  modal-dialog-scrollable justify-content-end p-0 me-0 mt-0 mb-0">
+                            <div class="modal-content vh-100">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="managmonthdays">Manage Month Days</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="container">
+                                    <form action="{{url_for('salary_sheet_view', username=username, salid=salid)}}" method="POST"
+                                          id="monthdata" class="pb-4">
+
+                                        <h6 class="modal-title pt-4" id="addholidays">ADD Holidays</h6>
+
+                                        <div class="modal-body inline">
+
+                                            <input type="date" name="date" id="date" value="" required
+                                                   class="form-control-sm pe-3">
+
+                                            <input type="text" name="description" id="description" value=""
+                                                   placeholder="Description"
+                                                   class="form-control-sm" required>
+                                        </div>
+                                        <div class="modal-footer justify-content-center">
+                                            <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Close
+                                            </button>
+                                            <button type="submit" value="submit"
+                                                    class="btn btn-primary">ADD
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <hr>
+                                <div class="container">
+                                    <h6 class="modal-title pb-4" id="exampleModalLabel">Holidays</h6>
+                                    <table>
+                                        {% for month_str, month_data in holidays.items(): %}
+                                        <tr class="p-2">
+                                            <th colspan="2">
+                                                <b class="ps-2 pt-4"> {{month_str}} </b>
+                                            </th>
+                                        </tr>
+                                        {% for date_str, value in month_data.items():%}
+                                        <tr>
+                                            <td col=1>
+                                                <b class="ps-5"> {{date_str }} </b>
+                                            </td>
+                                            <td col=1>
+                                                <i class="ps-5"> {{value }} </i>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                        {% endfor %}
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <li class="nav-item me-2">
+                        <div class="dropdown">
+                            <!-- Button trigger modal -->
+                            <button class="btn border-1 btn-secondary " type="button"
+                                data-bs-toggle="modal" data-bs-target="#exampleModal3" aria-haspopup="true"
+                                aria-expanded="false">
+                                Holidays
+                            </button>
+                        </div>
+                    </li>
+
+                 
+
+                    <li class="nav-item me-2">
+                        <div>
+                             <input type="text" id="searchInput" class="form-control" placeholder="Search for files..." onkeyup="checkInput()">
+                     </div>
+                            </li>
+                    <li class="nav-item me-2">
+                     <button onclick="searchTable()" class="btn border-1 btn-secondary ">Search</button>
+                    </li>
 
 
                 </ul>

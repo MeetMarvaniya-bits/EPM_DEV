@@ -39,7 +39,7 @@ class MonthCount():
         prev_month_dates = [f"{year:04}-{prev_month:02}-{day:02}" for day in range(26, prev_num_days+1)]
         current_month_dates=[f"{year:04}-{current_month:02}-{day:02}" for day in range(1, 26)]
         dates=prev_month_dates+current_month_dates
-        print(dates)
+        #print(dates)
         data_date = []
         if holidays != None:
             for day in range(1, len(prev_month_dates)+1):
@@ -51,7 +51,7 @@ class MonthCount():
                 else:
                     Week_off += 1
             for day in range(1,26):
-                print(current_month_dates[day-1])
+                #print(current_month_dates[day-1])
                 if dates[day - 1] in holidays:
                     holiday += 1
                 elif calendar.weekday(year, current_month, day) not in (calendar.SATURDAY, calendar.SUNDAY):
@@ -67,7 +67,7 @@ class MonthCount():
         }
 
 
-        print(data_date)
+        #print(data_date)
         target_date = '2023-05-12'
 
         lesser_dates = 0
@@ -79,9 +79,9 @@ class MonthCount():
             else:
                 greater_dates += 1
 
-        print("Number of dates <= target date:", lesser_dates)
-        print("Number of dates > target date:", greater_dates)
-        print('curreent',data)
+        #print("Number of dates <= target date:", lesser_dates)
+        #print("Number of dates > target date:", greater_dates)
+        #print('curreent',data)
         return data
     # def count(self, holidays):
     #     """ COUNT CURRENT MONTH WORKING DAYS FOR DASHBOARD """
@@ -155,12 +155,12 @@ class MonthCount():
         prev_month_dates = [f"{year:04}-{prev_month:02}-{day:02}" for day in range(26, prev_num_days + 1)]
         current_month_dates = [f"{year:04}-{current_month:02}-{day:02}" for day in range(1, 26)]
         dates = prev_month_dates + current_month_dates
-        print(dates)
+        #print(dates)
         data = {}
         if holidays != None:
             for day in range(1, len(prev_month_dates) + 1):
                 # print(dates[day - 1])
-                print(current_month_dates[day - 1])
+                #print(current_month_dates[day - 1])
                 if current_month_dates[day - 1] in holidays:
                     holiday += 1
                 elif calendar.weekday(year, prev_month, day) not in (calendar.SATURDAY, calendar.SUNDAY):
@@ -168,7 +168,7 @@ class MonthCount():
                 else:
                     Week_off += 1
             for day in range(1, 26):
-                print(current_month_dates[day - 1])
+                #print(current_month_dates[day - 1])
                 if dates[day - 1] in holidays:
                     holiday += 1
                 elif calendar.weekday(year, current_month, day) not in (calendar.SATURDAY, calendar.SUNDAY):
@@ -181,7 +181,7 @@ class MonthCount():
             'workingDays': num_working_days,
             'holydays': holiday
         }
-        print('curreent', data)
+        #print('curreent', data)
         return data
 
     def count_previous_month(self, holidays, salid):
@@ -189,11 +189,11 @@ class MonthCount():
         # Get current year and month
         today = datetime.date.today()
         year=today.year
-        print(salid.split("_"))
+        #print(salid.split("_"))
         salid=salid.split("_")[0]
-        print(salid)
+        #print(salid)
         month = int(salid[-3:])
-        print(month)
+        #print(month)
         if month == 1:
             prev_month = 12
             current_month = 1
@@ -217,12 +217,12 @@ class MonthCount():
         prev_month_dates = [f"{year:04}-{prev_month:02}-{day:02}" for day in range(26, prev_num_days + 1)]
         current_month_dates = [f"{year:04}-{current_month:02}-{day:02}" for day in range(1, 26)]
         dates = prev_month_dates + current_month_dates
-        print(dates)
+        #print(dates)
         data = {}
         if holidays != None:
             for day in range(1, len(prev_month_dates) + 1):
                 # print(dates[day - 1])
-                print(current_month_dates[day - 1])
+                #print(current_month_dates[day - 1])
                 if current_month_dates[day - 1] in holidays:
                     holiday += 1
                 elif calendar.weekday(year, prev_month, day) not in (calendar.SATURDAY, calendar.SUNDAY):
@@ -230,7 +230,7 @@ class MonthCount():
                 else:
                     Week_off += 1
             for day in range(1, 26):
-                print(current_month_dates[day - 1])
+                #print(current_month_dates[day - 1])
                 if dates[day - 1] in holidays:
                     holiday += 1
                 elif calendar.weekday(year, current_month, day) not in (calendar.SATURDAY, calendar.SUNDAY):
@@ -243,7 +243,7 @@ class MonthCount():
             'workingDays': num_working_days,
             'holydays': holiday
         }
-        print('curreent', data)
+        #print('curreent', data)
         return data
 
     def get_holidays(self, holidays):

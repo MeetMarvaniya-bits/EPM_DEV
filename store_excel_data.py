@@ -39,7 +39,7 @@ class Uploaddata():
                 header_row_index = i
 
         if header_row_index is None:
-            print("Invalid data format. Unable to find header row or attendance data.")
+            #print("Invalid data format. Unable to find header row or attendance data.")
             exit()
         #
         column_headers = data[header_row_index]
@@ -65,7 +65,7 @@ class Uploaddata():
                         'designation': data["Designation"], "password": data['Password'],
                         'confirmPassword': data["Confirm Password"], 'doj': doj,
                         'salary': data['CTC ₹ per year'], 'workEmail': data['Email']}
-            # print(emp_data)
+            # #print(emp_data)
 
             try:
                 user = auth.create_user(email=emp_data['workEmail'], password=emp_data['password'])

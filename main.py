@@ -34,6 +34,7 @@ import requests
 from functools import wraps
 import os
 import platform
+from urllib.parse import unquote
 from store_excel_data import Uploaddata
 
 
@@ -59,7 +60,7 @@ upload_excel = Uploaddata(db)
 companyname='alian_software'
 FIREBASE_WEB_API_KEY = "AIzaSyDe2qwkIds8JwMdLBbY3Uw7JQkFRNXtFqo"
 rest_api_url = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
-
+CURRENT_YEAR=datetime.date.today().year
 
 SECOND_FIREBASE_API_KEY = "AIzaSyB_RwtduOw9glo9UIoL-S7ng7b2LKY7iDo"
 # Testing path
@@ -105,17 +106,24 @@ def SECOND_sign_in_with_email_and_password(email: str, password: str, return_sec
     return r.json()
 
 
-
 def login_required(route_function):
     @wraps(route_function)
     def wrapper(*args, **kwargs):
         if 'auth_user_id' in session:
-            # User is logged in, proceed with the route function
-            return route_function(*args, **kwargs)
+            # User is logged in, check if they have permission to access the route
+            user_role = session['role']
+            url_role = request.path.split('/')[1]
+            if user_role == url_role:
+                # User has permission to access the route, proceed with the route function
+                return route_function(*args, **kwargs)
+            else:
+                # User does not have permission to access the route, redirect to login page
+                return redirect(url_for('login'))
         else:
             # User is not logged in, redirect to login page
             return redirect(url_for('login'))
     return wrapper
+
 
 
 @app.route('/', methods=["POST", "GET"])
@@ -128,30 +136,34 @@ def login():
         result = {}
         for key, value in data.items():
             result[key] = value
-        print(result)
+        #print(result)
 
         user_auth = sign_in_with_email_and_password(email=result['email'], password=result['password'])
         if "registered" in user_auth:
             # print(user_auth['registered'])
             # print(user_auth['localId'])
-            print(user_auth)
+
             session['auth_user_id'] = user_auth['localId']
             responce = login_obj.login(user_auth, companyname)
-        else:
-            print(user_auth["error"]["message"])
-
-
-
-        if responce == 'Admin':
-            return redirect(url_for('employee_list', username=responce))
-        elif responce == 'HR':
-            return redirect(url_for('employee_list', username=responce))
-
-        elif responce == "Employee":
-            return redirect(url_for('employee_list', username=responce))
+            session["role"] = responce
+            if responce == 'Admin':
+                return redirect(url_for('employee_list', username=responce))
+            elif responce == 'HR':
+                return redirect(url_for('employee_list', username=responce))
+        
+            elif responce == "Employee":
+                return redirect(url_for('employee_view', username=responce, id=user_auth['localId']))
+            else:
+                responce = 'Inavalid Id and Password'
 
         else:
-            responce = 'Inavalid Id and Password'
+            responce = 'Inavalid Id and Password please check them again'
+
+
+
+
+
+
     company_list = []
     collections = db.collections()
     for collection in collections:
@@ -172,7 +184,7 @@ def logout():
 @app.route('/forgot_password', methods=["POST", "GET"])
 def forgot_password():
     if request.method == 'POST':
-        print(request.form.to_dict())
+        #print(request.form.to_dict())
         email = request.form.to_dict()['email']
         if email != None:
             Admin = db.collection(companyname).document('admin').get().to_dict()
@@ -254,7 +266,7 @@ def dashboard(username):
     if datetime.datetime.now().day == 1 and 'session_leave' not in session:
         leaveobj.leave_add(companyname)
         session['session_leave'] = datetime.datetime.now()
-        print("create session Variable")
+        #print("create session Variable")
 
 
     if datetime.datetime.today().day == 1 and datetime.datetime.today().month == 1:
@@ -270,8 +282,6 @@ def dashboard(username):
         users_ref = db.collection(companyname).document('employee').collection('employee')
         for emp_doc in users_ref.stream():
             employee_data.append(executor.submit(dashboard_obj._get_employee_data, emp_doc))
-    for future in employee_data:
-        print(future.result())
     employee_on_leave, total_leaves, employee_birthday, employee_anniversary = {}, {}, {}, {}
     for future in concurrent.futures.as_completed(employee_data):
         result = future.result()
@@ -292,7 +302,7 @@ def dashboard(username):
 
     total_leaves = sorted(total_leaves.items(), key=lambda x: x[1], reverse=True)
     total_leaves = dict(total_leaves[:5])
-    print(employee_on_leave)
+    #print(employee_on_leave)
     # Get current month and year
 
     # Print the resulting dictionary
@@ -300,6 +310,22 @@ def dashboard(username):
     return render_template('dashboard.html', employee_on_leave=employee_on_leave, total_leaves=total_leaves,
                            employee_birthday=employee_birthday, employee_anniversary=employee_anniversary,
                            moath_data=moath_data, holidays=holidays, username=username, dashboard_data=dashboard_data)
+
+
+
+@app.route('/edit_google_app_password', methods=['GET', 'POST'])
+
+def edit_google_app_password():
+    print("here")
+    if request.method == 'POST':
+        data = request.json.get('data')  # Get the input data from the request
+        print(data)
+        db.collection(companyname).document("admin").set({"auth_password": data})
+        return 'Password updated successfully'
+
+    return 'Invalid request'
+
+
 
 
 @app.route('/<username>/employeelist', methods=['GET', 'POST'])
@@ -310,7 +336,7 @@ def employee_list(username):
         for increment in increments:
             converted_date = datetime.datetime.strptime(increment['effectiveDate'], '%Y-%m-%d').date()
             if datetime.datetime.today().date()==  converted_date:
-                print(increment['empid'],(increment['total']))
+                #print(increment['empid'],(increment['total']))
                 db.collection('alian_software').document('employee').collection('employee').document(increment['empid']).update({'salary':round(float(increment['total']))* 12})
         session['increment'] = 'Done'
     # SENDING EMPLOYEE MAIL FOR ADD DETAILS
@@ -379,7 +405,7 @@ def employee_list(username):
         department_data = executor.submit(get_department_data)
     employee_list = employee_data.result()
     department = department_data.result()
-    print(employee_list)
+    #print(employee_list)
     return render_template('employees_list.html', data=employee_list, department=department, username=username)
 
 
@@ -542,7 +568,7 @@ def employee_profile(username, id):
     total_leave = total_leave_future.result()
     leave_list = leave_list_future.result()
     end=datetime.datetime.now()
-    print(end-start)
+    #print(end-start)
     ''' GET EMPLOYEE DATA '''
     start=datetime.datetime.now()
 
@@ -554,7 +580,7 @@ def employee_profile(username, id):
     increment_data = []
     personal_data = personal_data_future.result()
     end = datetime.datetime.now()
-    print(end - start)
+    #print(end - start)
 
     start=datetime.datetime.now()
     for key,value in personal_data.items():
@@ -564,12 +590,12 @@ def employee_profile(username, id):
 
     increment_data = sorted(increment_data, key=lambda x: x[list(x.keys())[0]]['effectiveDate'])
     increment_list = [(index, content) for index, content in enumerate(increment_data)]
-    print(increment_list)
+    #print(increment_list)
 
     keys = [next(iter(item[1])) for item in increment_list]
-    print(keys)
+    #print(keys)
     effective_dates = [item[1][keys[i]]['effectiveDate'] for i, item in enumerate(increment_list)]
-    print(effective_dates)
+    #print(effective_dates)
 
     contract_data = []
     personal_data = personal_data_future.result()
@@ -582,7 +608,7 @@ def employee_profile(username, id):
             'salary_data': salary_data_future.result()}
 
     end = datetime.datetime.now()
-    print(end - start)
+    #print(end - start)
     start=datetime.datetime.now()
 
     leave_status = False
@@ -595,7 +621,7 @@ def employee_profile(username, id):
                 leave_status_date = (f'{leave_list[i]["fromdate"]} to {leave_list[i]["todate"]} ')
 
     end = datetime.datetime.now()
-    print(end - start)
+    #print(end - start)
 
     def get_department_data():
         department = (db.collection(companyname).document(u'department').get()).to_dict()
@@ -795,7 +821,7 @@ def save_data(empid, username):
         db.collection(companyname).document(u'employee').collection('employee').document(empid).update(contract_increment_data)
         if "increment_01" in contract_increment_data and len(contract_increment_data) >len(increment_data):
             inc_key = list(contract_increment_data.keys())
-            print(inc_key[-1])
+            #print(inc_key[-1])
 
             contract_increment_data[inc_key[-1]]['empid'] = empid
             contract_increment_data[inc_key[-1]]['incrementDate']= (datetime.datetime.today().date()).strftime("%Y-%m-%d")
@@ -809,23 +835,23 @@ def save_data(empid, username):
             last_record = contract_increment_data[last_key]
             effective_date = datetime.datetime.strptime(last_record['effectiveDate'], '%Y-%m-%d').date()
             today = datetime.datetime.today().date()
-            print(today,effective_date)
+            #print(today,effective_date)
 
             if effective_date <= today:
                 doc_ref = db.collection(companyname).document('increments')
                 increments = db.collection('alian_software').document('increments').get().to_dict()['increments']
 
                 db.collection(companyname).document('employee').collection('employee').document(empid).update({'salary':round(float(last_record['total']))* 12})
-                print("updated")
+                #print("updated")
             else:
                 doc_ref = db.collection(companyname).document('increments')
                 increments = doc_ref.get().to_dict()['increments']
                 inc_key = list(contract_increment_data.keys())
                 contract_increment_data[inc_key[-1]]['updateIncrementDate'] = str(datetime.datetime.today().date())
-                print(contract_increment_data)
+                #print(contract_increment_data)
                 doc_ref = db.collection(companyname).document('increments')
                 doc_ref.update({'increments': firestore.ArrayUnion([contract_increment_data[inc_key[-1]]])})
-                print("update date")
+                #print("update date")
 
     return redirect(url_for('employee_profile', id=empid, username=username))
 @app.route('/<username>/tds_data_update/<id>', methods=['GET', 'POST'])
@@ -841,8 +867,9 @@ def tds_data_update(username, id):
 @login_required
 def delete_increment(id, username,key, data_dict):
     # Convert the string representation of the dictionary back to a dictionary
+    data_dict = unquote(unquote(data_dict))
     data = eval(data_dict)
-    print(data,id,username,key)
+    #print(data,id,username,key)
     doc_ref=db.collection(companyname).document('increments')
     data.update({'empid':id})
 
@@ -856,15 +883,7 @@ def delete_increment(id, username,key, data_dict):
         array_data = doc.to_dict().get('increments', [])
         # Remove the desired dictionary from the array
         modified_array = [item for item in array_data if item != data]
-        print(modified_array)
-        print(modified_array)
-        # Update the document with the modified array
         doc_ref.set({'increments': modified_array}, merge=True)
-
-        print("Dictionary deleted successfully from the array field.")
-    else:
-        print("Document does not exist.")
-
 
     db.collection(companyname).document('employee').collection('employee').document(id).update({key: firestore.DELETE_FIELD})
 
@@ -908,16 +927,18 @@ def set_storage_path(username, salid):
 
 
 
-@app.route('/<username>/salary', methods=['GET', 'POST'])
+@app.route('/<username>/salary/', methods=['GET', 'POST'])
+@app.route('/<username>/salary/<year>', methods=['GET', 'POST'])
 @login_required
-def salary(username):
+def salary(username,year=datetime.datetime.now().year):
     ''' DISPLAY SALARY DETAILS OF ALL MONTH IN YEAR '''
+    year=year
     holidays = db.collection(companyname).document('holidays').get().to_dict()
     if datetime.datetime.now().day == 1 and 'session_salary' not in session:
         SalaryCalculation(db, companyname).generate_salary(holidays=holidays)
         leaveobj.leave_add(companyname)
         session['session_salary'] = datetime.datetime.now()
-        print("create session Variable")
+        #print("create session Variable")
 
     if request.method == 'POST':
         form = request.form
@@ -932,37 +953,42 @@ def salary(username):
             db.collection(companyname).document('salary_calc').set(data_dict)
         else:
             db.collection(companyname).document('salary_calc').update(data_dict)
-
     def get_salary_criteria():
         return db.collection(str(companyname)).document('salary_calc').get().to_dict()
 
-    def get_all_month_salary_data():
-        return Salarymanage(db).get_all_month_salary_data(companyname)
+    def get_all_month_salary_data(year):
+        data=db.collection(companyname).document('monthly_salary_total').get().to_dict()
+        # print(data.to_dict())
 
-    def get_salary_status():
+        return data[str(year)]
+
+    def get_salary_status(year):
         data_dict=db.collection(companyname).document('salary_status').get().to_dict()
-        today = datetime.date.today()
-        year = today.year
-        day = today.day
-        month = today.month
-        if day >= 26:
-            month += 1
-        if day < 26 and month == 1:
-            year -= 1
-        return data_dict['2023']
+        year = year
+
+
+        return data_dict[str(year)],list(data_dict.keys()),year
 
     with ThreadPoolExecutor(max_workers=3) as executor:
         salary_criteria_future = executor.submit(get_salary_criteria)
-        salary_list_future = executor.submit(get_all_month_salary_data)
-        salary_status_future = executor.submit(get_salary_status)
+        salary_list_future = executor.submit(get_all_month_salary_data,year=year)
+        salary_status_future = executor.submit(get_salary_status,year=year)
 
     salary_criteria = salary_criteria_future.result()
     salary_list = salary_list_future.result()
-    salary_status = salary_status_future.result()
-    year = datetime.datetime.now().year
+    salary_status,years,current_year = salary_status_future.result()
     return render_template('salary_sheet_month.html', data=salary_list, salary_criteria=salary_criteria
-                           , username=username, salary_status=salary_status, year=year)
+                           , username=username, salary_status=salary_status, current_year=current_year,years=years)
 
+
+@app.route('/<username>/generatesalary/')
+def generate_salarysheet (username):
+    holidays = db.collection(companyname).document('holidays').get().to_dict()
+    SalaryCalculation(db, companyname).generate_salary(holidays=holidays)
+    leaveobj.leave_add(companyname)
+    session['session_salary'] = datetime.datetime.now()
+    print("create session Variable")
+    return redirect(url_for('salary',username=username))    
 
 
 @app.route('/<username>/upload/<salid>', methods=['POST'])
@@ -1002,11 +1028,11 @@ def salary_sheet_view(username, salid):
 
     if request.method == 'POST':
         form = request.form
-        print(form)
+        #print(form)
         if 'date' in form.keys():
             form = form.to_dict()
             data = {str(form["date"]): form["description"]}
-            print(data)
+            #print(data)
             db.collection(companyname).document('holidays').update(data)
             holidays = db.collection(companyname).document('holidays').get().to_dict()
             moath_data = moth_count.count(holidays)
@@ -1032,19 +1058,15 @@ def salary_sheet_view(username, salid):
     salary_list = Salarymanage(db).get_all_emp_salary_data(companyname, salid)
 
     salary_status = db.collection(companyname).document('salary_status').get()
-    today = datetime.date.today()
-    year = today.year
-    day=today.day
-    month = today.month
-    if day >=26:
-        month+=1
-    if day<26 and month==1:
-        year-=1
-    salary_status=(salary_status.to_dict()[str(year)])
-    month_name=datetime.date(1900, int(salid.split('_')[0][4:]), 1).strftime('%B')
-    salary_status = salary_status[datetime.date(1900, int(salid.split('_')[0][4:]), 1).strftime('%B')]
+
+    months=(salary_status.to_dict()[salid.split('_')[1]])
+    month_name=datetime.date(1900, int(salid.split('_')[0][3:]), 1).strftime('%B')
+    print(month_name)
+    salary_status = months[month_name]
+    months=list(months.keys())
+    print(months[0])
     return render_template('salary_sheet_view.html', data=salary_list, salid=salid, username=username,
-                           salary_status=salary_status, moath_data=moath_data, holidays=holidays,month_name=month_name)
+                           salary_status=salary_status, moath_data=moath_data, holidays=holidays,month_name=month_name,months=months)
 
 @app.route('/<username>/salarysheetedit/<empid> <salid>', methods=['GET', 'POST'])
 @login_required
@@ -1052,7 +1074,8 @@ def salary_sheet_edit_(username, empid, salid):
     ''' EDIT SALARY DETAILS OF EMPLOYEE IN MONTH '''
     if request.method == 'POST':
         result = request.form
-        Salarymanage(db).salary_update(companyname, empid, salid, data=result)
+        print(result)
+        # Salarymanage(db).salary_update(companyname, empid, salid, data=result)
         return redirect(url_for('salary_sheet_view', salid=salid, username=username))
 
     holidays = db.collection(companyname).document('holidays').get().to_dict()
@@ -1090,9 +1113,16 @@ def save_edited_data():
     username = request.args.get('user_name')
     # print(f"{salid} is salid and {username} is username")
 
-    print(form_dict)
+
 
     all_data = {}
+    salary_total = {
+            'netSalary': 0,
+            'grossSalary': 0,
+            'epfo': 0,
+            'pt': 0,
+            'tds': 0,
+        }
 
     for key, value in form_dict.items():
         if value == '':
@@ -1108,8 +1138,29 @@ def save_edited_data():
 
     # Updating the document in Firestore
     for emp_id, sal_data in all_data.items():
+        salary_total.update({
+
+            'netSalary': round(salary_total['netSalary'] + float(
+                sal_data["netSalary"]), 2),
+            'grossSalary': round(
+                salary_total['grossSalary'] + float(
+                    sal_data["grossSalary"]), 2),
+            'epfo': round(
+                salary_total['epfo'] + float(sal_data["epfo"]),
+                2),
+            'pt': round(
+                salary_total['pt'] + float(sal_data["pt"]), 2),
+            'tds': round(
+                (salary_total['tds'] + float(sal_data["tds"])),
+                2)
+        })
+
         db.collection(companyname).document('employee').collection('employee').document(emp_id).collection('salaryslips').document(salid).update(sal_data)
 
+    year=salid.split("_")[1]
+    month=int(salid.split("_")[0][-3:])
+    db.collection(companyname).document('monthly_salary_total').update(
+        {str(f'{salid.split("_")[1]}.sal00{month}_{year}'): salary_total})
     # Return a response to the client
     return redirect(url_for('salary_sheet_view', username=username, salid=salid))
 
@@ -1119,19 +1170,11 @@ def save_edited_data():
 def set_status(username, salid, status):
     ''' SALARY SLIP PDF GENERATION '''
     status = status
-    today = datetime.date.today()
-    year = today.year
-    day=today.day
-    month = salid[3:]
-    print(month)
-    if day >=26:
-        month+=1
-    if day<26 and month==1:
-        year-=1
-    month = datetime.date(1900, int(salid.split("_")[0][3:]), 1).strftime('%B')
-    print(month)
 
-    status=db.collection(companyname).document('salary_status').update({f'{str(year)}.{month}': status})
+    month = datetime.date(1900, int(salid.split("_")[0][3:]), 1).strftime('%B')
+    #print(month)
+
+    status=db.collection(companyname).document('salary_status').update({f'{str(salid.split("_")[1])}.{month}': status})
     print(status)
     return redirect(url_for('salary_sheet_view', username=username, salid=salid))
 
@@ -1176,7 +1219,7 @@ def download_pdf():
 def pdf_all(username, salid):
     ''' SALARY SLIP PDF GENERATION '''
     salary_list = Salarymanage(db).get_all_emp_salary_data(salid=salid, companyname=companyname)
-    print(salary_list)
+    #print(salary_list)
     responses = []
     for i in salary_list:
         empid = salary_list[i]["userID"]

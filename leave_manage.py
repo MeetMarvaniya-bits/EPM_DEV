@@ -10,7 +10,7 @@ class Leavemanage():
         for doc in docs.get():
             leaves_ref = docs.document(doc.id).collection('leaveMST').document('total_leaves')
             leaves = leaves_ref.get().to_dict()
-            print(leaves)
+            #print(leaves)
             if leaves !=None:
                 leaves_ref.set({
                     'SL': (float(leaves['SL']) + 0.5),
@@ -42,7 +42,8 @@ class Leavemanage():
 
     def take_leave(self, ref_obj, data=None):
         if data == None:
-            print('Error')
+            #print('Error')
+            pass
         else:
             data_dict = {}
             leaves = ref_obj.document('total_leaves').get().to_dict()
@@ -61,7 +62,7 @@ class Leavemanage():
                 })
             
             leave_id = len(ref_obj.get())
-            print(data_dict)
+            #print(data_dict)
             if leave_id < 9:
                 doc_name = f'leave00{leave_id}'
             else:
@@ -70,7 +71,8 @@ class Leavemanage():
 
     def take_leave_edit(self, ref_obj, data=None):
         if data == None:
-            print('Error')
+            pass
+            #print('Error')
         else:
             data_dict = data
             leaves = ref_obj.document('total_leaves').get().to_dict()
@@ -84,7 +86,7 @@ class Leavemanage():
                 })
 
             leave_id = len(ref_obj.get())
-            print(data_dict)
+            #print(data_dict)
             doc_name = (f'leave00{leave_id}')
             data = ref_obj.document(doc_name).set(data_dict)
 

@@ -10,7 +10,6 @@ class Login():
         docs = self.db.collection(comapyname).get()
         if len(docs)> 0:
             docs = self.db.collection(comapyname).document('employee').collection("employee").where('workEmail', '==', user_auth['email']).get()
-            print(docs[0].to_dict())
             data = docs[0].to_dict()
             return data['role']
 

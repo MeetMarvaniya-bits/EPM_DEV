@@ -54,7 +54,7 @@ class Create():
 
 
             user = auth.create_user(email=request.form.get('workEmail'), password=request.form.get('password'))
-            print(user.uid)
+            #print(user.uid)
             personal_data = {
                 'employeeName': request.form.get('name'), 'userID': user.uid, 'department': request.form.get('department'),
                 'email': request.form.get('email'),

@@ -239,41 +239,35 @@ td, th {
     </div>
 </div>
 
-
 <script>
     // Do all your JavaScript in a separate JavaScript section
+    var basic = document.getElementById("basic");
+    var hra = document.getElementById("hra");
+    var lwp = document.getElementById("lwp");
+    var da = document.getElementById("da");
+    var otherAllowance = document.getElementById("otherAllowance");
+    var incentive = document.getElementById("incentive");
+    var arrears = document.getElementById("arrears");
+    var grsOutstandingAdjustment = document.getElementById("grsOutstandingAdjustment");
+    var statutoryBonus = document.getElementById("statutoryBonus");
+    var grossSalary = document.getElementById("grossSalary");
+    var epfo = document.getElementById("epfo");
+    var pt = document.getElementById("pt");
+    var tds = document.getElementById("tds");
+    var leaveDeduction = document.getElementById("leaveDeduction");
+    var otherDeduction = document.getElementById("otherDeduction");
+    var dedOutstandingAdjustment = document.getElementById("dedOutstandingAdjustment");
+    var totalDeduction = document.getElementById("totalDeduction");
+    var netSalary = document.getElementById("netSalary");
 
-    document.addEventListener("DOMContentLoaded", function() {
-        var basic = document.getElementById("basic");
-        var hra = document.getElementById("hra");
-        var lwp = document.getElementById("lwp");
-        var da = document.getElementById("da");
-        var otherAllowance = document.getElementById("otherAllowance");
-        var incentive = document.getElementById("incentive");
-        var arrears = document.getElementById("arrears");
-        var grsOutstandingAdjustment = document.getElementById("grsOutstandingAdjustment");
-        var statutoryBonus = document.getElementById("statutoryBonus");
-        var grossSalary = document.getElementById("grossSalary");
-        var epfo = document.getElementById("epfo");
-        var pt = document.getElementById("pt");
-        var tds = document.getElementById("tds");
-        var leaveDeduction = document.getElementById("leaveDeduction");
-        var otherDeduction = document.getElementById("otherDeduction");
-        var dedOutstandingAdjustment = document.getElementById("dedOutstandingAdjustment");
-        var netSalary = document.getElementById("netSalary");
+    var inputs = Array.prototype.slice.call(document.querySelectorAll("td > input"));
 
-        var inputs = Array.prototype.slice.call(document.querySelectorAll("td > input"));
-
-        inputs.forEach(function(input) {
-            input.addEventListener("input", calculateSalary);
-        });
-
-        function calculateSalary() {
+    inputs.forEach(function(input) {
+        input.addEventListener("keypress", function() {
             // Function to handle blank or none values
             function handleEmptyValue(value) {
                 return value === "" || value === null || value === undefined ? 0 : parseFloat(value);
             }
-
             var lwpValue = handleEmptyValue(lwp.value);
             var basicValue = handleEmptyValue(basic.value);
             var hraValue = handleEmptyValue(hra.value);
@@ -290,7 +284,9 @@ td, th {
             var otherDeductionValue = handleEmptyValue(otherDeduction.value);
             var dedOutstandingAdjustmentValue = handleEmptyValue(dedOutstandingAdjustment.value);
 
-            var grossSalaryValue = (
+            hra.value = hraValue;
+            da.value = daValue;
+            grossSalary.value = (
                 basicValue +
                 hraValue +
                 daValue +
@@ -300,14 +296,19 @@ td, th {
                 grsOutstandingAdjustmentValue +
                 statutoryBonusValue
             ).toFixed(2);
-            grossSalary.value = grossSalaryValue;
-
-            var workingDays = {{ working_days }}; // Assuming 30 days in a month
-            var leaveDeductionValue = (lwpValue * (basicValue + hraValue + daValue + otherAllowanceValue) / workingDays).toFixed(2);
-            leaveDeduction.value = leaveDeductionValue;
-
-            var netSalaryValue = (
-                grossSalaryValue -
+            leaveDeduction.value = (
+                lwpValue * ((basicValue + hraValue + daValue + otherAllowanceValue) / {{working_days}}) * 1
+            ).toFixed(2);
+            totalDeduction.value = (
+                epfoValue +
+                ptValue +
+                tdsValue +
+                leaveDeductionValue +
+                otherDeductionValue +
+                dedOutstandingAdjustmentValue
+            ).toFixed(2);
+            netSalary.value = (
+                parseFloat(grossSalary.value) -
                 epfoValue -
                 ptValue -
                 tdsValue -
@@ -315,12 +316,9 @@ td, th {
                 otherDeductionValue -
                 dedOutstandingAdjustmentValue
             ).toFixed(2);
-            netSalary.value = netSalaryValue;
-        }
+        });
     });
 </script>
-
-
 
 
 
