@@ -67,7 +67,7 @@ class Create():
                 'gender': request.form.get('gender'), 'phoneNo': request.form.get('mobileno'),
                 'emergencyNumber': request.form.get('emergencyNumber'),
                 'relationWithPerson': request.form.get('relationWithPerson'),
-                'bankName': request.form.get('bankname'), 'accountHolderName': request.form.get('accountholdername'),
+                'bankName': request.form.get('bankname'), 'accountHolderName': request.form.get('accountHolderName'),
                 'accountNumber': request.form.get('accountno'), 'ifscCode': request.form.get('ifsccode'),
                 'branchName': request.form.get('branchName'),
                 'aadharCardNo': request.form.get('aadharno'), 'panCardNo': request.form.get('panno'),
