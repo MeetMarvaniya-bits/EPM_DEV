@@ -37,13 +37,12 @@ class Profile:
     def salary_data(self):
         salary_status = self.db.collection(self.companyname).document(u'salary_status').get().to_dict()
 
-        print(salary_status)
+        #print(salary_status)
         docs = self.db.collection(self.companyname).document(u'employee').collection('employee').document(
             str(self.id)).collection('salaryslips').stream()
         data_dict = {}
         for doc in docs:
-            print(doc.to_dict())
-            print(doc.id)
+            #print(doc.to_dict())
             month_name = calendar.month_name[int(doc.id.split('_')[0][5:])]
             year=doc.id.split('_')[1]
             if salary_status[year][month_name]=='Paid':

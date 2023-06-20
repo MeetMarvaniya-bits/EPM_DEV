@@ -104,6 +104,7 @@ def read_excel_rows(file):
 
     attendance_records = []
 
+
     for d1, d2 in zip(attendance_record_1, attendance_record_2):
         PL = 0
         CL = 0

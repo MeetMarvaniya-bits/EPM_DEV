@@ -22,25 +22,4 @@ class Admin_Register():
             "userID":user.uid
         }
         self.db.collection(companyname).document("employee").collection('employee').document(user.uid).set(set_data)
-        print(user.uid)
         return True
-
-        # docs = self.db.collection(data_dict['CompanyName']).get()
-        # if len(docs) > 0:
-        #
-        #     return 'Already Company Registered'
-        # else:
-        #     self.db.collection(data_dict['CompanyName']).document('admin').set(data_dict)
-        #     self.db.collection(data_dict['CompanyName']).document('department').set({})
-        #     self.db.collection(data_dict['CompanyName']).document('employee').set({})
-        #     self.db.collection(data_dict['CompanyName']).document('month_data').set({})
-        #     data={'dapercentage':30,'deductionpercentage':1,'hrapercentage':50}
-        #     self.db.collection(data_dict['CompanyName']).document('salary_calc').set(data)
-        #     self.db.collection(data_dict['CompanyName']).document('holidays').set({})
-        #     self.db.collection(data_dict['CompanyName']).document('salary_status').set({})
-        #     holidays = self.db.collection(data_dict['CompanyName']).document('holidays').get().to_dict()
-        #     self.db.collection(data_dict['CompanyName']).document('month_data').set(moath_data)
-        #     '''SEND ID PASS WORD MAIL'''
-        #     self.mail.register_responce_mail(companyname=data_dict['CompanyName'], email=data_dict['AdminID'])
-               # self.db.collection(self.companyname).document('monthly_salary_total').set({})
-        #     return True

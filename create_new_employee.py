@@ -54,7 +54,7 @@ class Create():
 
 
             user = auth.create_user(email=request.form.get('workEmail'), password=request.form.get('password'))
-            print(user.uid)
+            #print(user.uid)
             personal_data = {
                 'employeeName': request.form.get('name'), 'userID': user.uid, 'department': request.form.get('department'),
                 'email': request.form.get('email'),
@@ -71,9 +71,11 @@ class Create():
                 'accountNumber': request.form.get('accountno'), 'ifscCode': request.form.get('ifsccode'),
                 'branchName': request.form.get('branchName'),
                 'aadharCardNo': request.form.get('aadharno'), 'panCardNo': request.form.get('panno'),
-                'passportNo': request.form.get('passportno'),
-                'pfAccountNo': 'MABAN00000640000000125', 'uanNo': '100904319456', 'esicNo': '31–00–123456–000–0001'
+                'passportNo': request.form.get('passportno'), 'epfo_status': request.form.get('epfo'),
+                'pfAccountNo': request.form.get('pfAccountNo'), 'uanNo': request.form.get('esicNo'), 'esicNo': request.form.get('passportno'),
+                'abry': request.form.get('abry')
             }
+            # print(personal_data)
             self.db.collection(self.companyname).document(u'employee').collection('employee').document(user.uid).set(personal_data)
 
             # ADD LEAVE DATA
@@ -86,7 +88,7 @@ class Create():
             self.db.collection(self.companyname).document(u'employee').collection('employee').document(user.uid).collection("leaveMST").document("total_leaves").set(leave_data["total_leaves"])
             doc_ref = self.db.collection(self.companyname).document('increments')
             if request.form.get('doj') !=None and request.form.get('doj')!='':
-                doc_ref.update({'increments': firestore.ArrayUnion([{'empid': new_id,
+                doc_ref.update({'increments': firestore.ArrayUnion([{'empid': user.uid,
                                                                      'effectiveDate': request.form.get('doj'),
                                                                      'total': float(request.form.get('salary')/12),
                                                                      'grossSalary':0

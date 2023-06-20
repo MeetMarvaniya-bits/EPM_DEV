@@ -16,6 +16,7 @@ class SalaryCalculation():
         year = today.year
         day=today.day
         month = today.month
+        month = today.month
         if day >=26:
             month+=1
         if day<26 and month==1:
@@ -110,7 +111,7 @@ class SalaryCalculation():
         for key, value in employee_list.items():
 
             empid = key
-            print(empid)
+            #print(empid)
             emp_data = value
             if emp_data['role']!='Admin':
                 emp_name = emp_data['employeeName']
@@ -119,7 +120,7 @@ class SalaryCalculation():
                 if increment != [] and emp_data['designation']=='Employee':
                     empid = increment[0]['empid']
                     effective_date = increment[0]['effectiveDate']
-                    print("effective_date",effective_date)
+                    #print("effective_date",effective_date)
                     before_days = 0
                     after_days = 0
                     for date in data_date:
@@ -276,23 +277,23 @@ class SalaryCalculation():
                     salary_slip_data = {
                         'employeeName': emp_name, 'userID': empid, 'slip_id': f'sal00{current_month}_{year}',
                         'lwp': salary_slip_data_aft['lwp'] + salary_slip_data_bfr['lwp'],
-                        'basic': salary_slip_data_aft['basic'] + salary_slip_data_bfr['basic'],
-                        'da': salary_slip_data_aft['da'] + salary_slip_data_bfr['da'],
-                        'hra': salary_slip_data_aft['hra'] + salary_slip_data_bfr['hra'],
-                        'otherAllowance': salary_slip_data_aft['otherAllowance'] + salary_slip_data_bfr['otherAllowance'],
-                        'incentive': salary_slip_data_aft['incentive'] + salary_slip_data_bfr['incentive'],
-                        'grsOutstandingAdjustment': salary_slip_data_aft['grsOutstandingAdjustment'] + salary_slip_data_bfr['grsOutstandingAdjustment'],
-                        'arrears': salary_slip_data_aft['arrears'] + salary_slip_data_bfr['arrears'],
+                        'basic': round((salary_slip_data_aft['basic'] + salary_slip_data_bfr['basic']), 2),
+                        'da': round((salary_slip_data_aft['da'] + salary_slip_data_bfr['da']), 2),
+                        'hra': round((salary_slip_data_aft['hra'] + salary_slip_data_bfr['hra']), 2),
+                        'otherAllowance': round((salary_slip_data_aft['otherAllowance'] + salary_slip_data_bfr['otherAllowance']), 2),
+                        'incentive': round((salary_slip_data_aft['incentive'] + salary_slip_data_bfr['incentive']), 2),
+                        'grsOutstandingAdjustment': round((salary_slip_data_aft['grsOutstandingAdjustment'] + salary_slip_data_bfr['grsOutstandingAdjustment']), 2),
+                        'arrears': round((salary_slip_data_aft['arrears'] + salary_slip_data_bfr['arrears']), 2),
                         'statutoryBonus': salary_slip_data_aft['statutoryBonus'] + salary_slip_data_bfr['statutoryBonus'],
-                        'grossSalary': salary_slip_data_aft['grossSalary'] + salary_slip_data_bfr['grossSalary'],
+                        'grossSalary': round((salary_slip_data_aft['grossSalary'] + salary_slip_data_bfr['grossSalary']), 2),
                         'epfo': salary_slip_data_aft['epfo'] + salary_slip_data_bfr['epfo'],
                         'dedOutstandingAdjustment': salary_slip_data_aft['dedOutstandingAdjustment'] + salary_slip_data_bfr['dedOutstandingAdjustment'],
                         'pt': salary_slip_data_aft['pt'] + salary_slip_data_bfr['pt'],
-                        'tds': salary_slip_data_aft['tds'] + salary_slip_data_bfr['tds'],
+                        'tds': round((salary_slip_data_aft['tds'] + salary_slip_data_bfr['tds']), 2),
                         'otherDeduction': salary_slip_data_aft['otherDeduction'] + salary_slip_data_bfr['otherDeduction'],
                         'leaveDeduction': salary_slip_data_aft['leaveDeduction'] + salary_slip_data_bfr['leaveDeduction'],
                         'totalDeduction': salary_slip_data_aft['totalDeduction'] + salary_slip_data_bfr['totalDeduction'],
-                        'netSalary': salary_slip_data_aft['netSalary'] + salary_slip_data_bfr['netSalary'],
+                        'netSalary': round((salary_slip_data_aft['netSalary'] + salary_slip_data_bfr['netSalary']), 2),
                         'month': current_month, 'year': year, 'cosecID': emp_data['cosecID'], 'WO': 0,
                         'UL': 0, 'Auth_OT': "00:00", 'WrkHrs': "00:00", 'CL': 0, 'PL': 0, 'SL': 0,
                         'before_gross':salary_slip_data_bfr['grossSalary'],

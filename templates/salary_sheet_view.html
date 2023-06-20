@@ -39,7 +39,7 @@ td, th {
 .third-child {
   position:sticky;
   left:140px;
-  width:180px;
+  width:150px;
   background: white;
 }
 .second-last-child {
@@ -64,18 +64,34 @@ td, th {
 .deduction-child {
   width:1000px;
 }
+.tableFixHead {
+        overflow-y: auto; /* make the table scrollable if height is more than 200 px  */
+        height: 350px; /* gives an initial height of 200px to the table */
+      }
+      table {
+        border-collapse: collapse; /* make the table borders collapse to each other */
+        width: 100%;
+      }
+      th,
+      td {
+        padding: 8px 16px;
+        border: 1px solid #ccc;
+      }
+      th {
+        background: #eee;
+      }
+
 </style>
 {% endblock %}
 {% block content %}
 
 <!-- Header -->
 <div class="container-fluid" style="background-color: #ffffff;">
-    <div class="wrapper">
         <div class="main">
             <main class="content">
                 <div class="container-fluid p-1">
                     <div class="row">
-                        <div class="col-3 mt-2">
+                        <div class="col-lg-6 col-sm-12 mt-2">
                             <ul class="nav justify-content-start">
                                 <li class="nav-item">
                                     <a class="nav-link active" aria-current="page" href="#">
@@ -127,8 +143,106 @@ td, th {
                                 </li>
                             </ul>
                         </div>
-                          <div class="col-9 end-0">
+                          <div class="col end-0">
                 <ul class="nav justify-content-end  mt-2">
+
+
+                    <li class="nav-item me-2">
+                        <div class="dropdown">
+                            <button id="edit-row-button" class="btn border-1 btn-secondary" type="button">
+                                Edit Rows
+                            </button>
+                        </div>
+                    </li>
+                    
+                    <li class="nav-item me-2">
+                        <div class="dropdown">
+                            <!-- Button trigger modal -->
+                            <button id="uploadButton" class="btn border-1 btn-secondary" type="button">
+                                Import Excel Sheet
+                            </button>
+                        </div>
+                    </li>
+
+
+
+                    <!-- HOLIDAYS MODAL -->
+                    <div class="modal" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                        <div class="modal-dialog vh-100  modal-dialog-scrollable justify-content-end p-0 me-0 mt-0 mb-0">
+                            <div class="modal-content vh-100">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="managmonthdays">Manage Month Days</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="container">
+                                    <form action="{{url_for('salary_sheet_view', username=username, salid=salid)}}" method="POST"
+                                          id="monthdata" class="pb-4">
+
+                                        <h6 class="modal-title pt-4" id="addholidays">ADD Holidays</h6>
+
+                                        <div class="modal-body inline">
+
+                                            <input type="date" name="date" id="date" value="" required
+                                                   class="form-control-sm pe-3">
+
+                                            <input type="text" name="description" id="description" value=""
+                                                   placeholder="Description"
+                                                   class="form-control-sm" required>
+                                        </div>
+                                        <div class="modal-footer justify-content-center">
+                                            <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Close
+                                            </button>
+                                            <button type="submit" value="submit"
+                                                    class="btn btn-primary">ADD
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <hr>
+                                <div class="container">
+                                    <h6 class="modal-title pb-4" id="exampleModalLabel">Holidays</h6>
+                                    <table>
+                                        {% for month_str, month_data in holidays.items(): %}
+                                        <tr class="p-2">
+                                            <th colspan="2">
+                                                <b class="ps-2 pt-4"> {{month_str}} </b>
+                                            </th>
+                                        </tr>
+                                        {% for date_str, value in month_data.items():%}
+                                        <tr>
+                                            <td col=1>
+                                                <b class="ps-5"> {{date_str }} </b>
+                                            </td>
+                                            <td col=1>
+                                                <i class="ps-5"> {{value }} </i>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                        {% endfor %}
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <li class="nav-item me-2">
+                        <div class="dropdown">
+                            <!-- Button trigger modal -->
+                            <button class="btn border-1 btn-secondary " type="button"
+                                data-bs-toggle="modal" data-bs-target="#exampleModal3" aria-haspopup="true"
+                                aria-expanded="false">
+                                Holidays
+                            </button>
+                        </div>
+                    </li>
+
+
+
+
+
                     <li class="nav-item me-2">
                         <div class="dropdown">
                            <label   style="    width: 100px;
@@ -139,6 +253,7 @@ td, th {
                            color: white;
                            font-weight: bold;
                           " id="salary_status">
+
                            </label>
                         </div>
                     </li>
@@ -338,13 +453,11 @@ td, th {
                 </div>
             </main>
         </div>
-    </div>
 </div>
 
 <!-- Buttons  -->
 <div class="container-fluid" style="background-color: #F4F5F7;">
     <div class="container-fluid p-3">
-        <div>
             <div class="pt-3">
                 <p class="p-2 ps-5  error">
                     {% for key, value in moath_data.items() %}
@@ -353,18 +466,21 @@ td, th {
                     <!-- <a href="#">Click</a> -->
                 </p>
             </div>
-        </div>
         <!-- Employees Salary Data -->
-        <div style="overflow-x: auto;">
+        <div class="table-scroll" style="overflow-x: auto;">
             <div class="wrapper">
-            <table class="table table-bordered table-hover" style="border: 2px solid black !important;" id="fileTable" >
+                <div class="tableFixHead">
+            <table id="myTable" class="table table-bordered table-hover" style="border: 2px solid black !important;">
                 <!-- Table Header  -->
-                <thead class="text-center center align-baseline">
-                <tr class="border-bottom" scope="col" style="border: 2px solid !important;">
-                    <th scope="col" rowspan="2" class="fix align-middle" style="background-color: #DFE1E6;">Employee
+
+
+<!--                <thead class="text-center center align-baseline" style="position: sticky !important; top: -5px !important;">-->
+                <thead class="text-center" style="position: sticky; top: 0px;">
+                <tr class="border-bottom center align-baseline" style="border: 2px solid !important;  background-color: #FFFFFF;">
+                    <th scope="col rwo-2" rowspan="2" class="fix align-middle" style="background-color: #DFE1E6;">Employee
                         Name
                     </th>
-                    <th scope="col" rowspan="2" class="third-child align-middle" style="background-color: #DFE1E6;">Working Hours
+                    <th scope="col rwo-2" rowspan="2" class="third-child align-middle" style="background-color: #DFE1E6;">Working Hours
                     </th>
                     <th scope="col rwo-2" rowspan="2" class="other-child align-middle" style="background-color: #DFE1E6;">LWP
                     </th>
@@ -373,17 +489,17 @@ td, th {
                     <th scope="col rwo-2" rowspan="2" class="other-child align-middle" style="background-color: #DFE1E6;">Overtime Hours
                     </th>
                     <th scope="col" colspan="9" class="earning-child align-middle" style="background-color: #DCFDD9;">Earning</th>
-                    <th scope="row col" rowspan="2" class="other-child align-middle" style="background-color: #DFE1E6;">Total Salary
+                    <th scope="col rwo-2" rowspan="2" class="other-child align-middle" style="background-color: #DFE1E6;">Total Salary
                     </th>
-                    <th scope="row col" rowspan="2" class="other-child align-middle" style="background-color: #DFE1E6;">Gross Salary
+                    <th scope="col rwo-2" rowspan="2" class="other-child align-middle" style="background-color: #DFE1E6;">Gross Salary
                     </th>
                     <th scope="col-6" colspan="7" class="deduction-child align-middle" style="background-color: #FDD9DB;">Deduction</th>
-                    <th scope="row-2 col" rowspan="2" class="second-last-child align-middle" style="background-color: #DFE1E6;">Net
+                    <th scope="col rwo-2" rowspan="2" class="second-last-child align-middle" style="background-color: #DFE1E6;">Net
                         Payable
                     </th>
-                    <th scope="row-2 col" rowspan="2" class="fix last-child align-middle" style="background-color: #DFE1E6;"></th>
+                    <th scope="col rwo-2" rowspan="2" class="fix last-child align-middle" style="background-color: #DFE1E6;"></th>
                 </tr>
-                <tr class="border-bottom" style="border:2px solid black !important;">
+                <tr class="border-bottom center align-baseline" style="border:2px solid black !important;">
                     <th scope="col" class="align-middle" style="background-color: #DCFDD9;">Basic</th>
                     <th scope="col" class="align-middle" style="background-color: #DCFDD9;">HRA</th>
                     <th scope="col" class="align-middle" style="background-color: #DCFDD9;">DA</th>
@@ -462,11 +578,45 @@ td, th {
 
                     {% endfor%}
                 </tbody>
+                <!-- Sticky row for column totals -->
+                <tfoot class="text-center"  style="position: sticky; bottom: -5px;">
+
+                <tr class="border-bottom" style="border:2px solid black !important;">
+                  <th class="fix align-middle" style="background-color: #FFFFFF;"></th>
+                  <th class="third-child align-middle" style="background-color: #FFFFFF;"></th>
+                  <th class="other-child align-middle" style="background-color: #FFFFFF;"></th>
+                  <th style="background-color: #FFFFFF;"></th>
+                  <th style="background-color: #FFFFFF;"></th>
+                  <th id="totalBasic" style="background-color: #FFFFFF;"></th>
+                  <th id="totalHra" style="background-color: #FFFFFF;"></th>
+                  <th id="totalDa" style="background-color: #FFFFFF;"></th>
+                  <th id="totalOtherAllowance" style="background-color: #FFFFFF;"></th>
+                  <th id="totalIncentive" style="background-color: #FFFFFF;"></th>
+                  <th id="totalArrears" style="background-color: #FFFFFF;"></th>
+                  <th id="totalGrsOutstandingAdjustment" style="background-color: #FFFFFF;"></th>
+                  <th id="totalStatutoryBonus" style="background-color: #FFFFFF;"></th>
+                  <th id="totalOvertimeAmount" style="background-color: #FFFFFF;"></th>
+                  <th id="totalTotalSalary" style="background-color: #FFFFFF;"></th>
+                  <th id="totalGrossSalary" style="background-color: #FFFFFF;"></th>
+                  <th id="totalEpfo" style="background-color: #FFFFFF;"></th>
+                  <th id="totalPt" style="background-color: #FFFFFF;"></th>
+                  <th id="totalTds" style="background-color: #FFFFFF;"></th>
+                  <th id="totalLeaveDeduction" style="background-color: #FFFFFF;"></th>
+                  <th id="totalOtherDeduction" style="background-color: #FFFFFF;"></th>
+                  <th id="totalDedOutstandingAdjustment" style="background-color: #FFFFFF;"></th>
+                  <th id="totalTotalDeduction" style="background-color: #FFFFFF;"></th>
+                  <th  class="second-last-child" style="background-color: #FFFFFF;" id="totalNetSalary" style="background-color: #FFFFFF;"></th>
+                  <th class="fix last-child align-middle" style="background-color: #FFFFFF;"></th> <!-- Edit Button column -->
+                </tr>
+                </tfoot>
             </table>
+                    </div>
                 </div>
         </div>
     </div>
 </div>
+
+
 
 
 <div class="modal " id="exampleModal1" tabindex="-1"
@@ -680,45 +830,83 @@ td, th {
 
 
 
+<!--Calculate Total of all value in column -->
+<script>
+  // Calculate the total and update the footer cells
+  function calculateTotal() {
+    const table = document.getElementById("myTable");
+    const tbody = table.getElementsByTagName("tbody")[0];
+    const rows = tbody.getElementsByTagName("tr");
+
+    let totalBasic = 0;
+    let totalHra = 0;
+    let totalDa = 0;
+    let totalOtherAllowance = 0;
+    let totalIncentive = 0;
+    let totalArrears = 0;
+    let totalGrsOutstandingAdjustment = 0;
+    let totalStatutoryBonus = 0;
+    let totalOvertimeAmount = 0;
+    let totalTotalSalary = 0;
+    let totalGrossSalary = 0;
+    let totalEpfo = 0;
+    let totalPt = 0;
+    let totalTds = 0;
+    let totalLeaveDeduction = 0;
+    let totalOtherDeduction = 0;
+    let totalDedOutstandingAdjustment = 0;
+    let totalTotalDeduction = 0;
+    let totalNetSalary = 0;
+
+    for (let i = 0; i < rows.length; i++) {
+      const cells = rows[i].getElementsByTagName("td");
+      totalBasic += parseFloat(cells[5].textContent) || 0;
+      totalHra += parseFloat(cells[6].textContent) || 0;
+      totalDa += parseFloat(cells[7].textContent) || 0;
+      totalOtherAllowance += parseFloat(cells[8].textContent) || 0;
+      totalIncentive += parseFloat(cells[9].textContent) || 0;
+      totalArrears += parseFloat(cells[10].textContent) || 0;
+      totalGrsOutstandingAdjustment += parseFloat(cells[11].textContent) || 0;
+      totalStatutoryBonus += parseFloat(cells[12].textContent) || 0;
+      totalOvertimeAmount += parseFloat(cells[13].textContent) || 0;
+      totalTotalSalary += parseFloat(cells[14].textContent) || 0;
+      totalGrossSalary += parseFloat(cells[15].textContent) || 0;
+      totalEpfo += parseFloat(cells[16].textContent) || 0;
+      totalPt += parseFloat(cells[17].textContent) || 0;
+      totalTds += parseFloat(cells[18].textContent) || 0;
+      totalLeaveDeduction += parseFloat(cells[19].textContent) || 0;
+      totalOtherDeduction += parseFloat(cells[20].textContent) || 0;
+      totalDedOutstandingAdjustment += parseFloat(cells[21].textContent) || 0;
+      totalTotalDeduction += parseFloat(cells[22].textContent) || 0;
+      totalNetSalary += parseFloat(cells[23].textContent) || 0;
+    }
+
+    // Update the footer cells with the calculated totals
+    document.getElementById("totalBasic").textContent = totalBasic.toFixed(2);
+    document.getElementById("totalHra").textContent = totalHra.toFixed(2);
+    document.getElementById("totalDa").textContent = totalDa.toFixed(2);
+    document.getElementById("totalOtherAllowance").textContent = totalOtherAllowance.toFixed(2);
+    document.getElementById("totalIncentive").textContent = totalIncentive.toFixed(2);
+    document.getElementById("totalArrears").textContent = totalArrears.toFixed(2);
+    document.getElementById("totalGrsOutstandingAdjustment").textContent = totalGrsOutstandingAdjustment.toFixed(2);
+    document.getElementById("totalStatutoryBonus").textContent = totalStatutoryBonus.toFixed(2);
+    document.getElementById("totalOvertimeAmount").textContent = totalOvertimeAmount.toFixed(2);
+    document.getElementById("totalTotalSalary").textContent = totalTotalSalary.toFixed(2);
+    document.getElementById("totalGrossSalary").textContent = totalGrossSalary.toFixed(2);
+    document.getElementById("totalEpfo").textContent = totalEpfo.toFixed(2);
+    document.getElementById("totalPt").textContent = totalPt.toFixed(2);
+    document.getElementById("totalTds").textContent = totalTds.toFixed(2);
+    document.getElementById("totalLeaveDeduction").textContent = totalLeaveDeduction.toFixed(2);
+    document.getElementById("totalOtherDeduction").textContent = totalOtherDeduction.toFixed(2);
+    document.getElementById("totalDedOutstandingAdjustment").textContent = totalDedOutstandingAdjustment.toFixed(2);
+    document.getElementById("totalTotalDeduction").textContent = totalTotalDeduction.toFixed(2);
+    document.getElementById("totalNetSalary").textContent = totalNetSalary.toFixed(2);
+  }
+
+  calculateTotal(); // Call the function to calculate the initial totals
+</script>
 
 
-
-
-<!--Search Bar JS-->
- <script>
-        function searchTable() {
-            var input, filter, table, tr, td, i, txtValue;
-            input = document.getElementById("searchInput");
-            filter = input.value.toUpperCase();
-            table = document.getElementById("fileTable");
-            tr = table.getElementsByTagName("tr");
-
-            for (i = 0; i < tr.length; i++) {
-                td = tr[i].getElementsByTagName("td")[0];
-                if (td) {
-                    txtValue = td.textContent || td.innerText;
-                    if (filter === '' || txtValue.toUpperCase().startsWith(filter)) {
-                        tr[i].style.display = "";
-                    } else {
-                        tr[i].style.display = "none";
-                    }
-                }
-            }
-        }
-
-
-        function checkInput() {
-            var input = document.getElementById("searchInput");
-            if (input.value === '') {
-                var table = document.getElementById("fileTable");
-                var tr = table.getElementsByTagName("tr");
-                for (var i = 0; i < tr.length; i++) {
-                    tr[i].style.display = "";
-                }
-            }
-        }
-    </script>
-<!-- xx-- Search Bar JS END --xx-->
 
 <script>
 // Get the salary status value from an input element or any other source

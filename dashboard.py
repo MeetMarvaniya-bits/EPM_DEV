@@ -12,7 +12,7 @@ class Dashboard():
     def _get_employee_data(self, emp_doc):
         if emp_doc.get('role') != "Admin":
 
-            print(emp_doc.get('role'))
+            #print(emp_doc.get('role'))
             employee_data = {'name': emp_doc.get('employeeName'),
                              'dob': emp_doc.get('dob'),
                              'doj': emp_doc.get('doj'),
@@ -40,17 +40,17 @@ class Dashboard():
                 if leave.id != 'total_leaves':
                     dt2 = datetime.today().date()
                     apply_date = (leaves.document(leave.id).get()).to_dict()['applydate']
-                    print(apply_date)
+                    #print(apply_date)
                     dt1 = datetime.strptime(apply_date, '%Y-%m-%d')
-                    print(dt1)
-                    print(dt2)
+                    #print(dt1)
+                    #print(dt2)
                     diff = (dt2.year - dt1.year) * 12 + (dt2.month - dt1.month)
                     if diff < 1:
                         employee_data['leaves'] = leave.get('fromdate')
                 if leave.id != 'total_leaves':
                     total_leaves += int(leave.get('days'))
             employee_data['total_leaves'] = total_leaves
-            print(total_leaves)
+            #print(total_leaves)
             return employee_data
 
     def Dashboard_data(self, companyname):

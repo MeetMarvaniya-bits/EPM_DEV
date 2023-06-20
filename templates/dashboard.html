@@ -24,24 +24,39 @@
                                         <h5><b> Dashboard </b></h5>
                                     </a>
                                 </li>
+                                
                             </ul>
                         </div>
                         <div class="col-lg-6 col-sm-12">
                             <ul class="nav justify-content-end mt-2">
-
-                                <li class="nav-item ">
-                                    <div class="dropdown">
-                                        <!-- Button trigger modal -->
-                                        <button class="btn border-1 btn-secondary " type="button"
-                                            data-bs-toggle="modal" data-bs-target="#exampleModal" aria-haspopup="true"
-                                            aria-expanded="false">
-                                            Holidays
-                                        </button>
-                                    </div>
+                                <li class="nav-item">
+                                  <div class="dropdown">
+                                    <button class="btn border-1 btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                      Holidays
+                                    </button>
+                                  </div>
                                 </li>
-
-                            </ul>
-
+                                <li class="nav-item">
+                                  <button type="button" data-bs-toggle="modal" data-bs-target="#myModal">Open Modal</button>
+                                  <div id="myModal" class="modal fade" tabindex="-1" role="dialog">
+                                    <div class="modal-dialog" role="document">
+                                      <div class="modal-content">
+                                        <div class="modal-header">
+                                          <h5 class="modal-title">Modal title</h5>
+                                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                          <input type="text" id="myInput">
+                                        </div>
+                                        <div class="modal-footer">
+                                          <button type="button" class="btn btn-primary" id="submitBtn">Submit</button>
+                                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </li>
+                              </ul>
 
                             <!-- MODAL -->
                             <div class="modal" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
@@ -459,6 +474,27 @@
     </div>
 </div>
 
+
+
+
+<script>
+    document.getElementById('submitBtn').addEventListener('click', function() {
+      var inputValue = document.getElementById('myInput').value;
+      console.log(inputValue)
+
+      // Send inputValue to Flask app
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "/edit_google_app_password", true);
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          // Handle the response from the Flask app
+          console.log(xhr.status);
+        }
+      };
+      xhr.send(JSON.stringify({ data: inputValue }));
+    });
+  </script>
 
 <script src="/static/js/app.js"></script>
 

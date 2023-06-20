@@ -210,7 +210,7 @@ class Mail():
         try:
             binary_pdf = open(pdfname, 'rb')
         except:
-            print(pdfname)
+            #print(pdfname)
             pass
 
         # print(binary_pdf)
