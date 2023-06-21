@@ -2015,8 +2015,8 @@ element.style {
         <table class="table table-hover">
             <thead style="background-color:#DFE1E6;">
             <tr>
-                <th scope="col" style="width:5%" onclick="sortTable(0)"></th>
-                <th scope="col" onclick="sortTable(1)">User ID</th>
+                <th scope="col" style="width:5%" ></th>
+                <th scope="col" onclick="sortTable(1)">Sr.No</th>
                 <th onclick="sortTable(2)">Name</th>
                 <th scope="col" onclick="sortTable(3)">Work Email</th>
                 <th scope="col" onclick="sortTable(4)">Job Position</th>
@@ -2032,10 +2032,10 @@ element.style {
             <tr>
                 <!-- <th scope="row">1</th> -->
                 <td></td>
-                <td scope="col">{{ data[id]['cosecID'] }}</td>
+                <td scope="col">{{ loop.index }}</td>
                 <td scope="col">{{data[id]['employeeName']}}</td>
-                <td scope="col">{{data[id]['email']}}</td>
-                <td scope="col">{{data[id]['jobPosition']}}</td>
+                <td scope="col">{{data[id]['workEmail']}}</td>
+                <td scope="col">{{data[id]['designation']}}</td>
                 <td scope="col">{{data[id]['department']}}</td>
                 <td scope="col">{{data[id]['doj']}}</td>
                 <td scope="col">{{data[id]['currentExperience']}}</td>
@@ -2292,11 +2292,7 @@ element.style {
       var label = document.getElementById(input.name + "Label");
       label.style.visibility = "hidden";
     }
-
-
 </script>
-
-
 <script>
 function sortTable(columnIndex) {
   const table = document.querySelector("table");
@@ -2406,7 +2402,7 @@ document.getElementById("doj").addEventListener("change", function() {
 
         {% for id in data %}
 
-            "{{ data[id]['email'] }}"{% if not loop.last %},{% endif %}
+            "{{ data[id]['workEmail'] }}"{% if not loop.last %},{% endif %}
 
         {% endfor %}
     ];
