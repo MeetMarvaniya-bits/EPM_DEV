@@ -1,3 +1,4 @@
+import calendar
 import datetime
 from concurrent.futures import ThreadPoolExecutor
 from flask import Flask, render_template, request, redirect, url_for, session, send_file, Response
@@ -1039,14 +1040,14 @@ def salary_sheet_view(username, salid):
             holidays = db.collection(companyname).document('holidays').get().to_dict()
             moath_data = moth_count.count(holidays)
             db.collection(companyname).document('month_data').set(moath_data)
-        elif 'date' not in form.keys():
-            fields = {}
-            for key, value in form.items():
-                fields.update({key: value})
-
-            path = get_download_folder()
-            salary_excel = SalaryData(db)
-            salary_excel.add_data(salid=salid, fields=fields, path=path, companyname=companyname)
+        # elif 'date' not in form.keys():
+        #     fields = {}
+        #     for key, value in form.items():
+        #         fields.update({key: value})
+        #
+        #     path = get_download_folder()
+        #     salary_excel = SalaryData(db)
+        #     salary_excel.add_data(salid=salid, fields=fields, path=path, companyname=companyname)
         else:
             pass
 
@@ -1069,6 +1070,41 @@ def salary_sheet_view(username, salid):
     print(months[0])
     return render_template('salary_sheet_view.html', data=salary_list, salid=salid, username=username,
                            salary_status=salary_status, moath_data=moath_data, holidays=holidays,month_name=month_name,months=months)
+
+
+
+
+@app.route('/bank_excel/<salid>')
+# @login_required
+def generate_bank_excel(salid, username):
+    ''' SALARY EXCEL SHEET FOR BANK '''
+    # Create the Excel file
+
+    salary_excel = SalaryData(db)
+
+    wb = salary_excel.add_data(salid=salid, companyname=companyname)
+
+    # # Set name for File
+    mont_in_num = int(salid.split('_')[0][5:])
+    month = calendar.month_name[mont_in_num]
+    year = int(salid.split('_')[1])
+    file_name = f"Salary_{month}_{year}_Bank_Sheet.xlsx"
+
+    # # Save the file to a BytesIO object
+    excel_file = io.BytesIO()
+    wb.save(excel_file)
+    excel_file.seek(0)
+
+    # # Return the file as a response
+    return Response(
+        excel_file,
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        headers={
+            "Content-Disposition": f"attachment;filename={file_name}",
+            "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        }
+    )
+
 
 @app.route('/<username>/salarysheetedit/<empid> <salid>', methods=['GET', 'POST'])
 @login_required
@@ -1214,26 +1250,25 @@ def download_pdf():
     return response
 
 
-
-
 @app.route('/<username>/pdf/<salid>')
 @login_required
 def pdf_all(username, salid):
     ''' SALARY SLIP PDF GENERATION '''
     salary_list = Salarymanage(db).get_all_emp_salary_data(salid=salid, companyname=companyname)
-    #print(salary_list)
-    responses = []
-    for i in salary_list:
-        empid = salary_list[i]["userID"]
-        path = get_download_folder()
-        salary = SalarySlip(db)
-        responcedata = salary.salary_slip_personal(companyname, empid, salid, path)
-        return responcedata
-    # for response in responses:
-    #     # CHECK THE USER
-    #     return response
-    return redirect(url_for('salary', username=username, salid=salid))
+    path = get_download_folder()
+    salary = SalarySlip(db)
+    zip_buffer = salary.generate_slip(salary_list, companyname, salid, path)
+    response = make_response(zip_buffer.getvalue())
+    mont_in_num = int(salid.split('_')[0][5:])
+    month = calendar.month_name[mont_in_num]
+    year = int(salid.split('_')[1])
+    file_name = f"{month}_{year}"
 
+    # Set the appropriate headers for the response
+    response.headers['Content-Type'] = 'application/zip'
+    response.headers['Content-Disposition'] = f'attachment; filename={file_name}.zip'
+
+    return response
 
 
 # @app.route('/<username>/excel/<salid>')
