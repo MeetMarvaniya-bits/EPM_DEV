@@ -358,7 +358,6 @@ def employee_list(username):
         new_data = data
         try:
             doj = (data['doj'])
-            print(doj)
             today_date = datetime.datetime.today().date()
             start_date = (datetime.datetime.strptime(doj, '%Y-%m-%d'))
             # print(start_date)
@@ -369,8 +368,6 @@ def employee_list(username):
                 months = 0
                 days = 0
                 current_experience = {'currentExperience': f'{years} Year(s) {months} Month(s) {days} Day(s)'}
-                print(current_experience)
-                print(data['userID'])
                 db.collection(companyname).document(u'employee').collection('employee').document(data['userID']).update(current_experience)
             else:
                 # Calculate the difference
@@ -380,8 +377,6 @@ def employee_list(username):
                 months = (delta.days % 365) // 30
                 days = (delta.days % 365) % 30
                 current_experience = {'currentExperience': f'{years} Year(s) {months} Month(s) {days} Day(s)'}
-                print(current_experience)
-                print(data['userID'])
                 db.collection(companyname).document(u'employee').collection('employee').document(data['userID']).update(current_experience)
             new_data.update(current_experience)
         except:
@@ -425,7 +420,7 @@ def employee_list(username):
         department_data = executor.submit(get_department_data)
     employee_list = employee_data.result()
     department = department_data.result()
-    print(len(employee_list))
+    #print(employee_list)
     return render_template('employees_list.html', data=employee_list, department=department, username=username)
 
 
