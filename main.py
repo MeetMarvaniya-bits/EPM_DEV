@@ -17,7 +17,7 @@ from salary_slip import SalarySlip
 from register import Register
 from admin_register import Admin_Register
 from login import Login
-from moth_days import MonthCount
+from month_days import MonthCount
 from mail import Mail
 import concurrent.futures
 from salary_calculation import SalaryCalculation
@@ -57,7 +57,7 @@ login_obj = Login(db)
 moth_count = MonthCount()
 mail_obj = Mail()
 upload_excel = Uploaddata(db)
-companyname = 'alian_software_dev'
+companyname = 'alian_software'
 FIREBASE_WEB_API_KEY = "AIzaSyDe2qwkIds8JwMdLBbY3Uw7JQkFRNXtFqo"
 rest_api_url = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
 CURRENT_YEAR=datetime.date.today().year
@@ -950,9 +950,9 @@ def salary(username,year=datetime.datetime.now().year):
     year=year
     holidays = db.collection(companyname).document('holidays').get().to_dict()
     if datetime.datetime.now().day == 1 and 'session_salary' not in session:
-        SalaryCalculation(db, companyname).generate_salary(holidays=holidays)
+
         leaveobj.leave_add(companyname)
-        session['session_salary'] = datetime.datetime.now()
+        session['session_leave'] = datetime.datetime.now()
         #print("create session Variable")
 
     if request.method == 'POST':
@@ -974,18 +974,14 @@ def salary(username,year=datetime.datetime.now().year):
     def get_all_month_salary_data(year):
         data=db.collection(companyname).document('monthly_salary_total').get().to_dict()
         # print(data.to_dict())
-        if data == None:
-            return {}
+
         return data[str(year)]
 
     def get_salary_status(year):
         data_dict=db.collection(companyname).document('salary_status').get().to_dict()
         year = year
-
-        if data_dict == None or data_dict == {}:
-            return {}, [year], year
-
-        return data_dict[str(year)],list(data_dict.keys()),year
+        print(data_dict['excel_upload'])
+        return data_dict[str(year)],list(data_dict.keys()),year,data_dict['excel_upload']
 
     with ThreadPoolExecutor(max_workers=3) as executor:
         salary_criteria_future = executor.submit(get_salary_criteria)
@@ -994,18 +990,35 @@ def salary(username,year=datetime.datetime.now().year):
 
     salary_criteria = salary_criteria_future.result()
     salary_list = salary_list_future.result()
-    salary_status,years,current_year = salary_status_future.result()
-    print(salary_list)
-    print(year)
-    print(years)
-    return render_template('salary_sheet_month.html', data=salary_list, salary_criteria=salary_criteria
-                           , username=username, salary_status=salary_status, current_year=current_year,years=years)
+    salary_status,years,current_year,register_button = salary_status_future.result()
+    years = [i for i in years if 'excel_upload'!= i]
+    return render_template('salary_sheet_month.html', data=salary_list, salary_criteria=salary_criteria,username=username, salary_status=salary_status, current_year=current_year,years=years,register_button=register_button)
 
 
-@app.route('/<username>/generatesalary/')
-def generate_salarysheet (username):
+@app.route('/<username>/generatesalary/<date1>/<date2>')
+def generate_salarysheet(username, date1, date2):
+    print(type(date2),date1)
+
+    startdate = date1
+
+    enddate = date2
+    startday = startdate.split("-")[-1]
+    startmonth = startdate.split("-")[1]
+    startyear = startdate.split("-")[0]
+
+    endday = enddate.split("-")[-1]
+    endmonth = enddate.split("-")[1]
+    endyear = enddate.split("-")[0]
+
+    print(endyear, endday )
+    print(startyear, startday)
+
+
     holidays = db.collection(companyname).document('holidays').get().to_dict()
-    SalaryCalculation(db, companyname).generate_salary(holidays=holidays)
+
+    working_days=moth_count.count_working_days(holidays, startdate, enddate)
+    print(working_days)
+    SalaryCalculation(db, companyname).generate_salary(holidays=holidays,startdate=date1,enddate=date2)
     leaveobj.leave_add(companyname)
     session['session_salary'] = datetime.datetime.now()
     print("create session Variable")
@@ -1022,12 +1035,14 @@ def upload(username,salid):
         all_data = read_excel_leave_data.read_excel_rows(file)
         # GET ALL EMPLOYEE USER ID FROM EXCEL SHEET
         for data in all_data:
-            # print(data)
-            cosecID = int(data[" User ID"])
+            print(data)
+            cosecID = (data[" User ID"])
+            print(cosecID)
             new_data = db.collection(companyname).document(u'employee').collection('employee').where('cosecID', '==', cosecID).get()
             print(new_data)
             if len(new_data) != 0:
                 for details in new_data:
+                    print(new_data[0].to_dict(),"detailos")
                     document_name = details.to_dict()['userID']
                     emp_salary_data = {'cosecID': data[" User ID"], 'WO': data["WO"], 'UL': data["UL"],
                                        'OT': data["OT"], 'WrkHrs': data[" WrkHrs"],'paidLeave':data["PL"], 'CL': data["C_L"],
@@ -1311,6 +1326,7 @@ def send_employee_salaryslip(username, salid):
         mail_obj.send_employee_pdf(company_mail=company_mail, data=data, auth_password=auth_password, path=path,
                                    companyname=companyname)
     return redirect(url_for('salary_sheet_view', salid=salid, username=username))
+
 
 
 if __name__ == '__main__':

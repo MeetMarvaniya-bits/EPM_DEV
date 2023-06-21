@@ -3,6 +3,7 @@
 {% block head %}
 {{ super() }}
 <style>
+
     #yearDropdown {
       
       width:12rem;
@@ -50,6 +51,81 @@
     #yearDropdown option:hover {
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
+
+  </style>
+ <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <style>
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #f9f9f9;
+      padding: 20px;
+      border: 1px solid #ddd;
+    }
+  </style>
+   <script>
+    $(function() {
+      $("#datepicker1").datepicker();
+      $("#datepicker2").datepicker();
+    });
+
+    function formatDate(date) {
+      var formattedDate = "";
+      var year = date.getFullYear();
+      var month = String(date.getMonth() + 1).padStart(2, '0');
+      var day = String(date.getDate()).padStart(2, '0');
+
+      formattedDate = year + "-" + month + "-" + day;
+
+      return formattedDate;
+    }
+
+    function submitForm() {
+      var date1 = $("#datepicker1").datepicker("getDate");
+      var date2 = $("#datepicker2").datepicker("getDate");
+      var username = "{{ username }}"; // Replace with the actual username value
+
+      if (date1 && date2) {
+        var formattedDate1 = formatDate(date1);
+        var formattedDate2 = formatDate(date2);
+        var url = "/" + username + "/generatesalary/" + encodeURIComponent(formattedDate1) + "/" + encodeURIComponent(formattedDate2);
+        console.log("URL:", url);
+        $("#submitBtn").attr("href", url);
+      } else {
+        displayPopup("Please select both dates.");
+      }
+    }
+
+    function displayPopup(message) {
+      var popup = $("<div>").addClass("popup").text(message);
+      $("body").append(popup);
+      setTimeout(function() {
+        popup.remove();
+      }, 3000);
+    }
+  </script>
+  </script>
+  <style>
+    .dropdown {
+      display: inline-block;
+    }
+
+    .dropdown input {
+      display: inline-block;
+      margin-right: 10px;
+      width: 150px;
+            vertical-align: middle;
+
+    }
+
+    .dropdown #submitBtn {
+      display: inline-block;
+      vertical-align: middle;
+    }
   </style>
 
 {% endblock %}
@@ -61,7 +137,7 @@
             <main class="content">
                 <div class="container-fluid p-1">
                     <div class="row">
-                        <div class="col-lg-6 col-sm-12 mt-2">
+                        <div class="col-lg-5 col-sm-12 mt-2">
                             <ul class="nav justify-content-start">
                                 <li class="nav-item">
                                     <a class="nav-link active" aria-current="page">
@@ -116,7 +192,7 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="col-lg-6 col-sm-12 mt-2">
+                        <div class="col-lg-7 col-sm-12 mt-2">
                             <ul class="nav justify-content-end  end-0">
 
                                 <!-- SALARY PERCENTAGE MODAL -->
@@ -163,11 +239,21 @@
 
                                 <li class="nav-item me-2">
                                     <div class="dropdown">
-                                        <a href="{{url_for('generate_salarysheet',username=username)}}">
-                                        <button class="btn border-1 btn-secondary " type="button">
-                                            Generate Salarysheet
-                                        </button>
-                                    </a>
+
+
+  <input type="text" id="datepicker1" placeholder="Stating Date" class="form-control border-1">
+
+
+
+  <input type="text" id="datepicker2"  placeholder="End Date" class="form-control border-1">
+
+<a href="#" id="submitBtn" onclick="submitForm()">
+      <button class="btn border-1 btn-secondary" type="button">
+        Generate Salarysheet
+      </button>
+    </a>
+
+
                                     </div>
                                 </li>
                                 <li class="nav-item me-2">

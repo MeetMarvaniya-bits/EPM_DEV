@@ -22,7 +22,7 @@ def sign_in_with_email_and_password(email: str, password: str, return_secure_tok
                       data=payload)
 
     return r.json()
-count = 0
+
 
 class Uploaddata():
 
@@ -75,6 +75,7 @@ class Uploaddata():
         all_data = employee_records
         print((all_data))
         print((all_data[1:]))
+        count = 0
 
         for data in all_data[1:]:
             doj = ''
@@ -90,26 +91,32 @@ class Uploaddata():
                         'salary': data['CTC ₹ per year'], 'workEmail': data['Email'], 'role':data['role'],
                         }
             # #print(emp_data)
-            print()
+            count+=1
+            print(count)
+
             try:
-                global count
                 print(count)
-                count += 1
-                print(emp_data['employeeName'])
-                user = auth.create_user(email=emp_data['workEmail'], password=emp_data['password'])
+
+                print(emp_data['employeeName'].strip())
+                print(emp_data['workEmail'])
+                user = auth.create_user(
+                    email=emp_data['workEmail'],
+                    password=emp_data['password']
+                )
                 emp_data["userID"] = user.uid
-                print(emp_data['userID'])
-                # self.db.collection(companyname).document(u'employee').collection('employee').document(user.uid).set(
-                # emp_data)
-            except:
-
-                user_auth = sign_in_with_email_and_password(email=emp_data['workEmail'], password=emp_data['password'])
-                print(user_auth['email'])
+                print('User created successfully:', user.uid)
+                self.db.collection(companyname).document('employee').collection('employee').document(user.uid).set(emp_data)
+            except Exception as e:
+                user_auth = sign_in_with_email_and_password(email=emp_data['workEmail'].strip(),
+                                                            password=emp_data['password'])
                 if "registered" in user_auth:
+                    print(count)
                     emp_data["userID"] = user_auth['localId']
-                    self.db.collection(companyname).document(u'employee').collection('employee').document(user_auth['localId']).set(
-                        emp_data)
-
+                    print(user_auth['email'])
+                    self.db.collection(companyname).document('employee').collection('employee').document(
+                        user_auth['localId']).set(emp_data)
+                else:
+                    print('Error:', str(e))
 
 
 
