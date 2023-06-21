@@ -6,11 +6,12 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 import smtplib
+from salary_slip import SalarySlip
 
 
 class Mail():
-    def __init__(self):
-        pass
+    def __init__(self, db):
+        self.db = db
 
     def register_mail(self, email):
         # Set up the connection to the SMTP server
@@ -165,17 +166,19 @@ class Mail():
         # Close the SMTP connection
         server.quit()
 
-    def send_employee_pdf(self, data, companyname, company_mail, auth_password, path):
+    def send_employee_pdf(self, data, companyname, company_mail, auth_password, path, salid):
         """ SEND SALARY SLIP """
         # sending as mail
         MY_EMAIL = company_mail
         MY_PASSWORD = auth_password
+
         TO_EMAIL = data['email']
+        # TO_EMAIL = data['send_mail']
 
         # Setup the MIME
         message = MIMEMultipart()
         message['From'] = MY_EMAIL
-        message['To'] = MY_PASSWORD
+        message['To'] = TO_EMAIL
         message['Subject'] = 'This email has an attachment, a pdf file'
 
         # message in mail
@@ -199,11 +202,11 @@ class Mail():
         year = 2023
 
         empid = data['userID']
-        salid = 'sal00' + str(current_month - 1)
 
-        # FETCH PDF FILE FROM STORAGE LOCATION
-        pdfname = f'{path}/EPMS/Salaryslips/{month_name}_{year}/{empid}_{salid}.pdf'
+        salary_slip = SalarySlip(db=self.db)
 
+        # GENERATE PDF FILE
+        pdfname = salary_slip.salary_slip_mail(companyname=companyname, salid=salid, id=empid)
 
         # open the file in bynary
         binary_pdf = ''
@@ -232,8 +235,10 @@ class Mail():
 
             # enable security
             session.starttls()
+
+            text = message.as_string()
             # login with mail_id and password
             session.login(MY_EMAIL, MY_PASSWORD)
-        text = message.as_string()
-        session.sendmail(MY_EMAIL, TO_EMAIL, text)
-        session.quit()
+
+            session.sendmail(MY_EMAIL, TO_EMAIL, text)
+            session.quit()
