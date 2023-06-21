@@ -631,7 +631,7 @@ element.style {
                                                                                                                         <br>
                                                                                                                         <div class="form-group input-group row pmd-textfield pmd-textfield-floating-label">
                                                                                                                             <label class="col-form-label control-label col-md-4 col-sm-4"
-                                                                                                                                   ><b>Role </b><span class="required" id="roleLabel"></span></label>
+                                                                                                                                   ><b>Role </b><span class="required" id="salaryLabel"></span></label>
                                                                                                                             <div class="col-md-5 col-sm-5">
                                                                                                                                     <input type="text"
                                                                                                                                     class="form-control"
@@ -1057,11 +1057,11 @@ element.style {
                                                                                                                                 <div class="col-4">
                                                                                                                                     <div class="form-group row pmd-textfield pmd-textfield-floating-label">
                                                                                                                                         <label class="col-form-label control-label col-sm-4"
-                                                                                                                                               for="epfo"><b>EPFO
+                                                                                                                                               for="panno"><b>EPFO
                                                                                                                                             Status</b></label>
                                                                                                                                     </div>
                                                                                                                                 </div>
-                                                                                                                                <div class="col-3 text-start" id="epfo">
+                                                                                                                                <div class="col-3 text-start">
                                                                                                                                     <div class="form-check form-check-inline">
                                                                                                                                         <input class="form-check-input"
                                                                                                                                                type="radio"
@@ -1146,7 +1146,7 @@ element.style {
                                                                                                                                           <label class="form-check-label" for="abryYes">Yes</label>
                                                                                                                                         </div>
                                                                                                                                         <div class="form-check form-check-inline">
-                                                                                                                                          <input class="form-check-input" type="radio" name="abry" id="abryNo" value="no" checked>
+                                                                                                                                          <input class="form-check-input" type="radio" name="abry" id="abryNo" value="no">
                                                                                                                                           <label class="form-check-label" for="abryNo">No</label>
                                                                                                                                         </div>
                                                                                                                                       </div>
@@ -2015,8 +2015,8 @@ element.style {
         <table class="table table-hover">
             <thead style="background-color:#DFE1E6;">
             <tr>
-                <th scope="col" style="width:5%" onclick="sortTable(0)"></th>
-                <th scope="col" onclick="sortTable(1)">User ID</th>
+                <th scope="col" style="width:5%" ></th>
+                <th scope="col" onclick="sortTable(1)">Sr.No</th>
                 <th onclick="sortTable(2)">Name</th>
                 <th scope="col" onclick="sortTable(3)">Work Email</th>
                 <th scope="col" onclick="sortTable(4)">Job Position</th>
@@ -2032,7 +2032,7 @@ element.style {
             <tr>
                 <!-- <th scope="row">1</th> -->
                 <td></td>
-                <td scope="col">{{ data[id]['cosecID'] }}</td>
+                <td scope="col">{{ loop.index }}</td>
                 <td scope="col">{{data[id]['employeeName']}}</td>
                 <td scope="col">{{data[id]['email']}}</td>
                 <td scope="col">{{data[id]['jobPosition']}}</td>
@@ -2138,10 +2138,6 @@ element.style {
 <!-- /build -->
 
 <script>
-
-
-
-
         // Upload Profile Picture
         var readURL = function(input) {
             if (input.files && input.files[0]) {
@@ -2292,11 +2288,7 @@ element.style {
       var label = document.getElementById(input.name + "Label");
       label.style.visibility = "hidden";
     }
-
-
 </script>
-
-
 <script>
 function sortTable(columnIndex) {
   const table = document.querySelector("table");
