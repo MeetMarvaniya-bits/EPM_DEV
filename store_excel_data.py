@@ -1,7 +1,28 @@
+import json
 
+import requests
 from openpyxl import load_workbook
 from datetime import datetime
 from firebase_admin import auth
+
+FIREBASE_WEB_API_KEY = "AIzaSyDe2qwkIds8JwMdLBbY3Uw7JQkFRNXtFqo"
+rest_api_url = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
+
+
+
+def sign_in_with_email_and_password(email: str, password: str, return_secure_token: bool = True):
+    payload = json.dumps({
+        "email": email,
+        "password": password,
+        "returnSecureToken": return_secure_token
+    })
+
+    r = requests.post(rest_api_url,
+                      params={"key": FIREBASE_WEB_API_KEY},
+                      data=payload)
+
+    return r.json()
+count = 0
 
 class Uploaddata():
 
@@ -35,7 +56,7 @@ class Uploaddata():
         header_row_index = None
 
         for i, row in enumerate(data):
-            if row == ['Name', 'Department', 'Job Position', 'Designation', 'COSEC ID', 'Password', 'Confirm Password', 'Date of Joining (DD/MM/YYYY)', 'CTC ₹ per year', 'Email']:
+            if row == ['Name', 'Department', 'Job Position', 'Designation', 'COSEC ID', 'Password', 'Confirm Password', 'Date of Joining (DD/MM/YYYY)', 'CTC ₹ per year', 'Email','role']:
                 header_row_index = i
 
         if header_row_index is None:
@@ -52,6 +73,8 @@ class Uploaddata():
                 employee_records.append(record)
 
         all_data = employee_records
+        print((all_data))
+        print((all_data[1:]))
 
         for data in all_data[1:]:
             doj = ''
@@ -64,14 +87,32 @@ class Uploaddata():
             emp_data = {'cosecID': data["COSEC ID"], 'employeeName': data["Name"], 'department': data["Department"],
                         'designation': data["Designation"], "password": data['Password'],
                         'confirmPassword': data["Confirm Password"], 'doj': doj,
-                        'salary': data['CTC ₹ per year'], 'workEmail': data['Email']}
+                        'salary': data['CTC ₹ per year'], 'workEmail': data['Email'], 'role':data['role'],
+                        }
             # #print(emp_data)
-
+            print()
             try:
+                global count
+                print(count)
+                count += 1
+                print(emp_data['employeeName'])
                 user = auth.create_user(email=emp_data['workEmail'], password=emp_data['password'])
-                self.db.collection(companyname).document(u'employee').collection('employee').document(user.uid).set(emp_data)
+                emp_data["userID"] = user.uid
+                print(emp_data['userID'])
+                # self.db.collection(companyname).document(u'employee').collection('employee').document(user.uid).set(
+                # emp_data)
             except:
-                pass
+
+                user_auth = sign_in_with_email_and_password(email=emp_data['workEmail'], password=emp_data['password'])
+                print(user_auth['email'])
+                if "registered" in user_auth:
+                    emp_data["userID"] = user_auth['localId']
+                    self.db.collection(companyname).document(u'employee').collection('employee').document(user_auth['localId']).set(
+                        emp_data)
+
+
+
+
 
 
 

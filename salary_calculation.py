@@ -76,16 +76,18 @@ class SalaryCalculation():
         employee_list_with_increments = (self.db.collection(self.companyname).document('increments').get()).to_dict()
 
         result = []
+        if employee_list_with_increments == None or employee_list_with_increments == {}:
+            pass
+        else:
+            for increment in employee_list_with_increments['increments']:
+                effective_date = increment.get('effectiveDate')
+                if effective_date:
+                    increment_month = int(effective_date.split('-')[1])
+                    increment_date = int(effective_date.split('-')[2])
+                    increment_year=int(effective_date.split('-')[0])
 
-        for increment in employee_list_with_increments['increments']:
-            effective_date = increment.get('effectiveDate')
-            if effective_date:
-                increment_month = int(effective_date.split('-')[1])
-                increment_date = int(effective_date.split('-')[2])
-                increment_year=int(effective_date.split('-')[0])
-
-                if ((increment_month == current_month and (increment_date) <= 25 and increment_year==year)) or ((increment_month == prev_month and (increment_date) >= 26) and increment_year==year):
-                    result.append(increment)
+                    if ((increment_month == current_month and (increment_date) <= 25 and increment_year==year)) or ((increment_month == prev_month and (increment_date) >= 26) and increment_year==year):
+                        result.append(increment)
         salary_percentage = (self.db.collection(self.companyname).document('salary_calc').get()).to_dict()
 
         employee_list = {}
@@ -117,7 +119,7 @@ class SalaryCalculation():
                 emp_name = emp_data['employeeName']
 
                 increment = [d for d in result if d.get('empid') == empid]
-                if increment != [] and emp_data['designation']=='Employee':
+                if increment != [] and emp_data['role']=='Employee':
                     empid = increment[0]['empid']
                     effective_date = increment[0]['effectiveDate']
                     #print("effective_date",effective_date)
@@ -143,15 +145,15 @@ class SalaryCalculation():
 
                         emp_da_bfr = 0
 
-                        other_allowance_bfr = emp_salary_bfr - emp_basic_salary_bfr - emp_hra_bfr - emp_da_bfr
+                        other_allowance_bfr = round((emp_salary_bfr - emp_basic_salary_bfr - emp_hra_bfr - emp_da_bfr), 2)
 
                     else:
 
-                        emp_hra_bfr = emp_salary_bfr - emp_basic_salary_bfr
+                        emp_hra_bfr = round((emp_salary_bfr - emp_basic_salary_bfr), 2)
 
                         emp_da_bfr = 0
 
-                        other_allowance_bfr = emp_salary_bfr - emp_basic_salary_bfr - emp_hra_bfr - emp_da_bfr
+                        other_allowance_bfr = round((emp_salary_bfr - emp_basic_salary_bfr - emp_hra_bfr - emp_da_bfr), 2)
 
                     incentive_bfr = 0
 
@@ -181,7 +183,7 @@ class SalaryCalculation():
 
                     pt_bfr = 0
 
-                    tds_bfr = TDSData(db=self.db).deduction(id=empid, epfo=epfo_bfr, companyname=self.companyname)
+                    tds_bfr = round((TDSData(db=self.db).deduction(id=empid, epfo=epfo_bfr, companyname=self.companyname)), 2)
                     other_deduction_bfr = 0
                     leave_deduction_bfr = 0
                     total_deduction_bfr = round(
@@ -215,15 +217,15 @@ class SalaryCalculation():
 
                         emp_da_aft = 0
 
-                        other_allowance_aft = emp_salary_aft - emp_basic_salary_aft - emp_hra_aft - emp_da_aft
+                        other_allowance_aft = round((emp_salary_aft - emp_basic_salary_aft - emp_hra_aft - emp_da_aft), 2)
 
                     else:
 
-                        emp_hra_aft = emp_salary_aft - emp_basic_salary_aft
+                        emp_hra_aft = round((emp_salary_aft - emp_basic_salary_aft), 2)
 
                         emp_da_aft = 0
 
-                        other_allowance_aft = emp_salary_aft - emp_basic_salary_aft - emp_hra_aft - emp_da_aft
+                        other_allowance_aft = round((emp_salary_aft - emp_basic_salary_aft - emp_hra_aft - emp_da_aft), 2)
 
                     incentive_aft = 0
 
@@ -250,7 +252,7 @@ class SalaryCalculation():
 
                     pt_aft = 0
 
-                    tds_aft = TDSData(db=self.db).deduction(id=empid, epfo=epfo_aft, companyname=self.companyname)
+                    tds_aft = round((TDSData(db=self.db).deduction(id=empid, epfo=epfo_aft, companyname=self.companyname)), 2)
 
                     other_deduction_aft = 0
 
@@ -296,7 +298,7 @@ class SalaryCalculation():
                         'netSalary': round((salary_slip_data_aft['netSalary'] + salary_slip_data_bfr['netSalary']), 2),
                         'month': current_month, 'year': year, 'cosecID': emp_data['cosecID'], 'WO': 0,
                         'UL': 0, 'OT': "00:00", 'WrkHrs': "00:00", 'CL': 0, 'PL': 0, 'SL': 0, 'totalLeave': 0, 'overtimeAmount': 0,
-                        'totalSalary': float(increment[0]['total']),
+                        'totalSalary': round((float(increment[0]['total'])), 2),
                         'before_gross':salary_slip_data_bfr['grossSalary'],
                         'after_gross':salary_slip_data_aft['grossSalary'],
                         'incremented_salary':'yes'
@@ -318,7 +320,7 @@ class SalaryCalculation():
                     users_ref.collection('salaryslips').document(f'sal00{current_month}_{year}').set(salary_slip_data)
 
 
-                elif emp_data['designation']=='Employee' :
+                elif emp_data['role']=='Employee' :
                     this_month = int(emp_data['doj'].split('-')[1])
                     this_date = int(emp_data['doj'].split('-')[2])
                     this_year = int(emp_data['doj'].split('-')[0])
@@ -491,17 +493,19 @@ class SalaryCalculation():
         employee_list_with_increments = (self.db.collection(self.companyname).document('increments').get()).to_dict()
 
         result = []
+        if employee_list_with_increments == None or employee_list_with_increments == {}:
+            pass
+        else:
+            for increment in employee_list_with_increments['increments']:
+                if empid == increment.get('empid'):
+                    effective_date = increment.get('effectiveDate')
+                    if effective_date:
+                        increment_month = int(effective_date.split('-')[1])
+                        increment_date = int(effective_date.split('-')[2])
+                        increment_year=int(effective_date.split('-')[0])
 
-        for increment in employee_list_with_increments['increments']:
-            if empid == increment.get('empid'):
-                effective_date = increment.get('effectiveDate')
-                if effective_date:
-                    increment_month = int(effective_date.split('-')[1])
-                    increment_date = int(effective_date.split('-')[2])
-                    increment_year=int(effective_date.split('-')[0])
-
-                    if ((increment_month == current_month and (increment_date) <= 25 and increment_year==year)) or ((increment_month == prev_month and (increment_date) >= 26) and increment_year==year):
-                        result.append(increment)
+                        if ((increment_month == current_month and (increment_date) <= 25 and increment_year==year)) or ((increment_month == prev_month and (increment_date) >= 26) and increment_year==year):
+                            result.append(increment)
         salary_percentage = (self.db.collection(self.companyname).document('salary_calc').get()).to_dict()
 
         user_ref = self.db.collection(self.companyname).document('employee').collection('employee').document(empid)
@@ -545,17 +549,20 @@ class SalaryCalculation():
 
             month_working_hrs = working_days * 9
 
-            salary_per_hrs = totalSalary / month_working_hrs
+            salary_per_hrs = round((totalSalary / month_working_hrs), 2)
 
-            unpaid_leaves = float(excel_data['UL'])
+            unpaid_leaves = round((float(excel_data['UL'])),2)
 
-            paid_leaves = float(excel_data['paidLeave'])
+            paid_leaves = round((float(excel_data['paidLeave'])), 2)
 
-            emp_working_hrs = float(excel_data['WrkHrs'].split(':')[0]) + round((float(excel_data['WrkHrs'].split(':')[1]) / 60), 2)
 
-            leave_hrs = (unpaid_leaves + paid_leaves) * 9
 
-            need_working_hrs = month_working_hrs - leave_hrs
+            # emp_working_hrs = round(((float(excel_data['WrkHrs'].split(':')[0]) + round((float(excel_data['WrkHrs'].split(':')[1]) / 60), 2)), 2)
+            emp_working_hrs = round((float(excel_data['WrkHrs'])), 2)
+
+            leave_hrs = round(((unpaid_leaves + paid_leaves) * 9), 2)
+
+            need_working_hrs = round((month_working_hrs - leave_hrs), 2)
 
             lwp = 0
 
@@ -565,9 +572,9 @@ class SalaryCalculation():
 
                 remaining_hrs = need_working_hrs - emp_working_hrs
 
-                lwp += (remaining_hrs / 9)
+                lwp += round((remaining_hrs / 9), 2)
 
-                remaining_hrs_ded = remaining_hrs * salary_per_hrs * 2.5
+                remaining_hrs_ded = round((remaining_hrs * salary_per_hrs * 2.5), 2)
 
                 leave_deduction += remaining_hrs_ded
 
@@ -575,19 +582,19 @@ class SalaryCalculation():
 
                 lwp += unpaid_leaves
 
-                lwp_deduction = unpaid_leaves * salary_per_hrs * 9
+                lwp_deduction = round((unpaid_leaves * salary_per_hrs * 9), 2)
 
                 leave_deduction += lwp_deduction
 
-            overtime_hrs = float(excel_data['OT'].split(':')[0]) + round((float(excel_data['OT'].split(':')[1]) / 60), 2)
+            overtime_hrs = round((float(excel_data['OT'].split(':')[0]) + round((float(excel_data['OT'].split(':')[1]) / 60), 2)), 2)
 
-            overtime_amount = overtime_hrs * salary_per_hrs
+            overtime_amount = round((overtime_hrs * salary_per_hrs), 2)
 
-            gross_salary = basic + hra + da + otherAllowance + incentive + arrears + grsOutstandingAdjustment + statutoryBonus + overtime_amount
+            gross_salary = round((basic + hra + da + otherAllowance + incentive + arrears + grsOutstandingAdjustment + statutoryBonus + overtime_amount), 2)
 
-            total_deduction = epfo + pt + tds + leave_deduction + otherDeduction + dedOutstandingAdjustment
+            total_deduction = round((epfo + pt + tds + leave_deduction + otherDeduction + dedOutstandingAdjustment), 2)
 
-            net_salary = gross_salary - total_deduction
+            net_salary = round((gross_salary - total_deduction), 2)
 
 
             salary_slip_data = {

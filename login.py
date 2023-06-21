@@ -4,14 +4,20 @@ class Login():
         pass
 
     def login(self, user_auth, comapyname):
+
         # data_dict = {}
         # for key, value in data.items():
         #     data_dict.update({key: value})
         docs = self.db.collection(comapyname).get()
         if len(docs)> 0:
+
             docs = self.db.collection(comapyname).document('employee').collection("employee").where('workEmail', '==', user_auth['email']).get()
-            data = docs[0].to_dict()
-            return data['role']
+            if len(docs) > 0:
+                data = docs[0].to_dict()
+                return data['role']
+
+            else:
+                return False
 
         # if len(docs) > 0:
         #

@@ -57,7 +57,7 @@ login_obj = Login(db)
 moth_count = MonthCount()
 mail_obj = Mail()
 upload_excel = Uploaddata(db)
-companyname='alian_software'
+companyname = 'alian_software_dev'
 FIREBASE_WEB_API_KEY = "AIzaSyDe2qwkIds8JwMdLBbY3Uw7JQkFRNXtFqo"
 rest_api_url = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
 CURRENT_YEAR=datetime.date.today().year
@@ -145,16 +145,20 @@ def login():
 
             session['auth_user_id'] = user_auth['localId']
             responce = login_obj.login(user_auth, companyname)
-            session["role"] = responce
-            if responce == 'Admin':
-                return redirect(url_for('employee_list', username=responce))
-            elif responce == 'HR':
-                return redirect(url_for('employee_list', username=responce))
-        
-            elif responce == "Employee":
-                return redirect(url_for('employee_view', username=responce, id=user_auth['localId']))
+            if responce != False:
+                session["role"] = responce
+                print(responce)
+                if responce == 'Admin':
+                    return redirect(url_for('employee_list', username=responce))
+                elif responce == 'HR':
+                    return redirect(url_for('employee_list', username=responce))
+
+                elif responce == "Employee":
+                    return redirect(url_for('employee_view', username=responce, id=user_auth['localId']))
+                else:
+                    responce = 'Inavalid Id and Password'
             else:
-                responce = 'Inavalid Id and Password'
+                responce = "invalid password"
 
         else:
             responce = 'Inavalid Id and Password please check them again'
@@ -355,7 +359,8 @@ def employee_list(username):
         try:
             doj = (data['doj'])
             today_date = datetime.datetime.today().date()
-            start_date = datetime.datetime.strptime(doj, '%Y-%m-%d')
+            start_date = (datetime.datetime.strptime(doj, '%Y-%m-%d'))
+            # print(start_date)
             end_date = datetime.datetime.strptime(str(today_date), '%Y-%m-%d')
             if start_date > end_date:
                 # Extract the years, months, and days from the delta
@@ -387,13 +392,14 @@ def employee_list(username):
             if 'user_status' not in doc.to_dict():
                 if doc.to_dict()['role'] == 'Admin':
                     continue
-                new_data = calculate_experience(doc.to_dict())
-                employee_list.update({doc.id: new_data})
+
+                employee_list.update({doc.id: doc.to_dict()})
             elif doc.to_dict()['user_status'] != 'disable':
                 if doc.to_dict()['role'] == 'Admin':
                     continue
-                new_data = calculate_experience(doc.to_dict())
-                employee_list.update({doc.id: new_data})
+
+                employee_list.update({doc.id: doc.to_dict()})
+
         return employee_list
 
 
@@ -401,6 +407,13 @@ def employee_list(username):
     def get_department_data():
         department = (db.collection(companyname).document(u'department').get()).to_dict()
         return department
+
+
+    if 'eperence' not in session:
+        docs = db.collection(companyname).document(u'employee').collection('employee').stream()
+        for doc in docs:
+          calculate_experience(doc.to_dict())
+        session['eperence'] = 'Done'
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
         employee_data = executor.submit(get_employee_data)
@@ -445,7 +458,7 @@ def add(username):
     password = request.form.get('password')
     new_id = create.result()
     auth_data = db.collection(companyname).document('admin').get().to_dict()
-    company_mail = auth_data['AdminID']
+    company_mail = auth_data['email']
     auth_password = auth_data['auth_password']
     mail_obj.employee_registered_mail(email=employee_mail, password=password, company_mail=company_mail, auth_password=auth_password)
 
@@ -961,13 +974,16 @@ def salary(username,year=datetime.datetime.now().year):
     def get_all_month_salary_data(year):
         data=db.collection(companyname).document('monthly_salary_total').get().to_dict()
         # print(data.to_dict())
-
+        if data == None:
+            return {}
         return data[str(year)]
 
     def get_salary_status(year):
         data_dict=db.collection(companyname).document('salary_status').get().to_dict()
         year = year
 
+        if data_dict == None or data_dict == {}:
+            return {}, [year], year
 
         return data_dict[str(year)],list(data_dict.keys()),year
 
@@ -979,6 +995,9 @@ def salary(username,year=datetime.datetime.now().year):
     salary_criteria = salary_criteria_future.result()
     salary_list = salary_list_future.result()
     salary_status,years,current_year = salary_status_future.result()
+    print(salary_list)
+    print(year)
+    print(years)
     return render_template('salary_sheet_month.html', data=salary_list, salary_criteria=salary_criteria
                            , username=username, salary_status=salary_status, current_year=current_year,years=years)
 
@@ -1004,7 +1023,9 @@ def upload(username,salid):
         # GET ALL EMPLOYEE USER ID FROM EXCEL SHEET
         for data in all_data:
             # print(data)
-            new_data = db.collection(companyname).document(u'employee').collection('employee').where('cosecID', '==', data[" User ID"]).get()
+            cosecID = int(data[" User ID"])
+            new_data = db.collection(companyname).document(u'employee').collection('employee').where('cosecID', '==', cosecID).get()
+            print(new_data)
             if len(new_data) != 0:
                 for details in new_data:
                     document_name = details.to_dict()['userID']
@@ -1085,6 +1106,8 @@ def salary_sheet_edit_(username, empid, salid):
     working_days = moath_data['workingDays']
     employee_salary_data = Salarymanage(db).get_salary_data(companyname, empid, salid)
     salary_percentage = (db.collection(companyname).document('salary_calc').get()).to_dict()
+
+    print(salary_percentage)
     return render_template('salary_sheet_edit_personal.html', data=employee_salary_data, id=salid
                            , salary_data=salary_percentage, username=username,
                            working_days=working_days)
