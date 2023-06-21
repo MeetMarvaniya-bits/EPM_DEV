@@ -1,4 +1,5 @@
 import time
+import progressbar
 from openpyxl import load_workbook
 from datetime import datetime, timedelta
 
@@ -8,7 +9,7 @@ def read_excel_rows(file):
 
     sheet = workbook['Sheet1']
 
-    print(2555)
+    print(5655)
 
     max_row = sheet.max_row
 

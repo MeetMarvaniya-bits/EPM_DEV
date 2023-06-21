@@ -1,5 +1,5 @@
 from mail import Mail
-from moth_days import MonthCount
+from month_days import MonthCount
 
 moth_count = MonthCount()
 class Register():

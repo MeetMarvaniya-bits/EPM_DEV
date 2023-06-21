@@ -8,36 +8,87 @@ class SalaryCalculation():
     def __init__(self,db,companyname):
         self.db = db
         self.companyname=companyname
-    def generate_salary(self, holidays):
+    def generate_salary(self, holidays,startdate,enddate):
 
         holidays = holidays
+        startdate = startdate
 
-        today = datetime.date.today()
-        year = today.year
-        day=today.day
-        month = today.month
-        month = today.month
-        if day >=26:
-            month+=1
-        if day<26 and month==1:
-            year-=1
-        if month == 1:
-            prev_month = 11
-            current_month = 12
-        elif month == 2:
-            prev_month = 12
-            current_month = 1
-        else:
-            prev_month = month - 2
-            current_month = month - 1
-            # Get number of days in the current month and the day of the week of the first day
-        first_day, num_days = calendar.monthrange(year, month)
-        # Loop through days and count working days
+        enddate = enddate
+
+        startday = int(startdate.split("-")[-1])
+        startmonth = int(startdate.split("-")[1])
+        startyear = int(startdate.split("-")[0])
+
+        endday = int(enddate.split("-")[-1])
+        endmonth = int(enddate.split("-")[1])
+        endyear = int(enddate.split("-")[0])
+
+        print(type(endyear), endday, endmonth)
+        print(startyear, startday, startyear)
+
         num_working_days = 0
         Week_off = 0
         working_days_per_week = {}
         # holidays=holidays.keys()
         holiday = 0
+        slipid_month = endmonth
+        slipid_year = endyear
+        # Get the number of days in the current month
+        prev_month_dates = []
+        if startmonth != endmonth:
+            prev_num_days = calendar.monthrange(startyear, (startmonth))[1]
+            # Create a list of all the dates in the current month
+            prev_month_dates = [f"{startyear:04}-{startmonth:02}-{day:02}" for day in
+                                range(startday, prev_num_days + 1)]
+            endmonth_dates = [f"{endyear}-{endmonth}-{day}" for day in range(1, int(endday) + 1)]
+
+            if len(prev_month_dates)>len(endmonth_dates):
+                slipid_month=startmonth
+                slipid_year=startyear
+        else:
+            endmonth_dates = [f"{endyear}-{endmonth}-{day}" for day in range(startday, int(endday) + 1)]
+
+        # print(endmonth_dates)
+        dates = prev_month_dates + endmonth_dates
+        print(dates)
+        data = {}
+        data_date = []
+        if holidays != None:
+            if startmonth != endmonth:
+                count = 0
+                for day in range(0, len(dates)):
+                    print(dates[day], 'day')
+                    # print(endmonth_dates[day - 1])
+                    if dates[day] in holidays:
+                        print(dates[day])
+                        holiday += 1
+                    elif calendar.weekday(int(dates[day - 1].split('-')[0]), int(dates[day - 1].split('-')[1]),
+                                          int(dates[day - 1].split('-')[2])) not in (
+                    calendar.SATURDAY, calendar.SUNDAY):
+
+                        data_date.append(dates[day])
+                        num_working_days += 1
+                    else:
+                        # print(calendar.weekday(startyear, startmonth, day + startday - 1))
+                        Week_off += 1
+
+            else:
+                for day in range(startday, endday + 1):
+
+                    print(day)
+                    if dates[day - startday] in holidays:
+                        holiday += 1
+                    elif calendar.weekday(endyear, endmonth, day) not in (calendar.SATURDAY, calendar.SUNDAY):
+                        data_date.append(dates[day])
+                        num_working_days += 1
+                    else:
+                        Week_off += 1
+
+        data = {
+            'weekoff': Week_off,
+            'workingDays': num_working_days,
+            'holydays': holiday
+                }
         salary_total = {
             'netSalary': 0,
             'grossSalary': 0,
@@ -45,47 +96,21 @@ class SalaryCalculation():
             'pt': 0,
             'tds': 0,
         }
-        # Get the number of days in the current month
-        prev_num_days = calendar.monthrange(year, (prev_month))[1]
-
-        # Create a list of all the dates in the current month
-        prev_month_dates = [f"{year:04}-{prev_month:02}-{day:02}" for day in range(26, prev_num_days + 1)]
-        current_month_dates = [f"{year:04}-{current_month:02}-{day:02}" for day in range(1, 26)]
-        dates = prev_month_dates + current_month_dates
-
-        data_date = []
-        if holidays != None:
-            for day in range(1, len(prev_month_dates) + 1):
-                if current_month_dates[day - 1] in holidays:
-                    holiday += 1
-                elif calendar.weekday(year, prev_month, day) not in (calendar.SATURDAY, calendar.SUNDAY):
-                    data_date.append(current_month_dates[day - 1])
-                    num_working_days += 1
-                else:
-                    Week_off += 1
-            for day in range(1, 26):
-
-                if dates[day - 1] in holidays:
-                    holiday += 1
-                elif calendar.weekday(year, current_month, day) not in (calendar.SATURDAY, calendar.SUNDAY):
-                    data_date.append(current_month_dates[day - 1])
-                    num_working_days += 1
-                else:
-                    Week_off += 1
-
         employee_list_with_increments = (self.db.collection(self.companyname).document('increments').get()).to_dict()
 
         result = []
+        if employee_list_with_increments == None or employee_list_with_increments == {}:
+            pass
+        else:
+            for increment in employee_list_with_increments['increments']:
+                effective_date = increment.get('effectiveDate')
+                if effective_date:
+                    increment_month = int(effective_date.split('-')[1])
+                    increment_date = int(effective_date.split('-')[2])
+                    increment_year=int(effective_date.split('-')[0])
 
-        for increment in employee_list_with_increments['increments']:
-            effective_date = increment.get('effectiveDate')
-            if effective_date:
-                increment_month = int(effective_date.split('-')[1])
-                increment_date = int(effective_date.split('-')[2])
-                increment_year=int(effective_date.split('-')[0])
-
-                if ((increment_month == current_month and (increment_date) <= 25 and increment_year==year)) or ((increment_month == prev_month and (increment_date) >= 26) and increment_year==year):
-                    result.append(increment)
+                    if ((increment_month == endmonth and (increment_date) <= endday and increment_year==endyear)) or ((increment_month == startmonth and (increment_date) >= startdate) and increment_year==startyear):
+                        result.append(increment)
         salary_percentage = (self.db.collection(self.companyname).document('salary_calc').get()).to_dict()
 
         employee_list = {}
@@ -94,19 +119,9 @@ class SalaryCalculation():
         for doc in docs:
 
             if 'user_status' not in doc.to_dict():
-                self.db.collection(self.companyname).document('employee').collection('employee').document(
-                    doc.id).collection(
-                    'salaryslips').document(f'sal00{current_month - 1}').delete()
                 employee_list.update({doc.id: doc.to_dict()})
             elif doc.to_dict()['user_status'] != 'disable':
-                self.db.collection(self.companyname).document('employee').collection('employee').document(
-                    doc.id).collection(
-                    'salaryslips').document(f'sal00{current_month - 1}').delete()
                 employee_list.update({doc.id: doc.to_dict()})
-            else:
-                self.db.collection(self.companyname).document('employee').collection('employee').document(
-                    doc.id).collection(
-                    'salaryslips').document(f'sal00{current_month - 1}').delete()
 
         for key, value in employee_list.items():
 
@@ -117,7 +132,7 @@ class SalaryCalculation():
                 emp_name = emp_data['employeeName']
 
                 increment = [d for d in result if d.get('empid') == empid]
-                if increment != [] and emp_data['designation']=='Employee':
+                if increment != [] and (emp_data['role']=='Employee' or emp_data['role']=='Admin'or emp_data['role']=='HR'):
                     empid = increment[0]['empid']
                     effective_date = increment[0]['effectiveDate']
                     #print("effective_date",effective_date)
@@ -143,15 +158,15 @@ class SalaryCalculation():
 
                         emp_da_bfr = 0
 
-                        other_allowance_bfr = emp_salary_bfr - emp_basic_salary_bfr - emp_hra_bfr - emp_da_bfr
+                        other_allowance_bfr = round((emp_salary_bfr - emp_basic_salary_bfr - emp_hra_bfr - emp_da_bfr), 2)
 
                     else:
 
-                        emp_hra_bfr = emp_salary_bfr - emp_basic_salary_bfr
+                        emp_hra_bfr = round((emp_salary_bfr - emp_basic_salary_bfr), 2)
 
                         emp_da_bfr = 0
 
-                        other_allowance_bfr = emp_salary_bfr - emp_basic_salary_bfr - emp_hra_bfr - emp_da_bfr
+                        other_allowance_bfr = round((emp_salary_bfr - emp_basic_salary_bfr - emp_hra_bfr - emp_da_bfr), 2)
 
                     incentive_bfr = 0
 
@@ -181,7 +196,7 @@ class SalaryCalculation():
 
                     pt_bfr = 0
 
-                    tds_bfr = TDSData(db=self.db).deduction(id=empid, epfo=epfo_bfr, companyname=self.companyname)
+                    tds_bfr = round((TDSData(db=self.db).deduction(id=empid, epfo=epfo_bfr, companyname=self.companyname)), 2)
                     other_deduction_bfr = 0
                     leave_deduction_bfr = 0
                     total_deduction_bfr = round(
@@ -215,15 +230,15 @@ class SalaryCalculation():
 
                         emp_da_aft = 0
 
-                        other_allowance_aft = emp_salary_aft - emp_basic_salary_aft - emp_hra_aft - emp_da_aft
+                        other_allowance_aft = round((emp_salary_aft - emp_basic_salary_aft - emp_hra_aft - emp_da_aft), 2)
 
                     else:
 
-                        emp_hra_aft = emp_salary_aft - emp_basic_salary_aft
+                        emp_hra_aft = round((emp_salary_aft - emp_basic_salary_aft), 2)
 
                         emp_da_aft = 0
 
-                        other_allowance_aft = emp_salary_aft - emp_basic_salary_aft - emp_hra_aft - emp_da_aft
+                        other_allowance_aft = round((emp_salary_aft - emp_basic_salary_aft - emp_hra_aft - emp_da_aft), 2)
 
                     incentive_aft = 0
 
@@ -250,7 +265,7 @@ class SalaryCalculation():
 
                     pt_aft = 0
 
-                    tds_aft = TDSData(db=self.db).deduction(id=empid, epfo=epfo_aft, companyname=self.companyname)
+                    tds_aft = round((TDSData(db=self.db).deduction(id=empid, epfo=epfo_aft, companyname=self.companyname)), 2)
 
                     other_deduction_aft = 0
 
@@ -275,7 +290,7 @@ class SalaryCalculation():
                     }
 
                     salary_slip_data = {
-                        'employeeName': emp_name, 'userID': empid, 'slip_id': f'sal00{current_month}_{year}',
+                        'employeeName': emp_name, 'userID': empid, 'slip_id': f'sal00{slipid_month}_{slipid_year}',
                         'lwp': salary_slip_data_aft['lwp'] + salary_slip_data_bfr['lwp'],
                         'basic': round((salary_slip_data_aft['basic'] + salary_slip_data_bfr['basic']), 2),
                         'da': round((salary_slip_data_aft['da'] + salary_slip_data_bfr['da']), 2),
@@ -294,9 +309,9 @@ class SalaryCalculation():
                         'leaveDeduction': salary_slip_data_aft['leaveDeduction'] + salary_slip_data_bfr['leaveDeduction'],
                         'totalDeduction': salary_slip_data_aft['totalDeduction'] + salary_slip_data_bfr['totalDeduction'],
                         'netSalary': round((salary_slip_data_aft['netSalary'] + salary_slip_data_bfr['netSalary']), 2),
-                        'month': current_month, 'year': year, 'cosecID': emp_data['cosecID'], 'WO': 0,
+                        'month': slipid_month, 'year': slipid_year, 'cosecID': emp_data['cosecID'], 'WO': 0,
                         'UL': 0, 'OT': "00:00", 'WrkHrs': "00:00", 'CL': 0, 'PL': 0, 'SL': 0, 'totalLeave': 0, 'overtimeAmount': 0,
-                        'totalSalary': float(increment[0]['total']),
+                        'totalSalary': round((float(increment[0]['total'])), 2),
                         'before_gross':salary_slip_data_bfr['grossSalary'],
                         'after_gross':salary_slip_data_aft['grossSalary'],
                         'incremented_salary':'yes'
@@ -315,15 +330,17 @@ class SalaryCalculation():
                     users_ref = self.db.collection(self.companyname).document('employee').collection(
                         'employee').document(empid)
 
-                    users_ref.collection('salaryslips').document(f'sal00{current_month}_{year}').set(salary_slip_data)
+                    users_ref.collection('salaryslips').document(f'sal00{slipid_month}_{slipid_year}').set(salary_slip_data)
 
 
-                elif emp_data['designation']=='Employee' :
+                elif emp_data['role']=='Employee' :
                     this_month = int(emp_data['doj'].split('-')[1])
                     this_date = int(emp_data['doj'].split('-')[2])
                     this_year = int(emp_data['doj'].split('-')[0])
-                    if ((this_month <= current_month and (this_date) <= 25) or (this_month <= prev_month and (this_date) >= 26) or year>this_year ):
-
+                    print(emp_data['doj'])
+                    print(endyear,endday,endmonth)
+                    print(type(endyear),type(endmonth),type(endday))
+                    if ((this_month <= int(endmonth) and (this_date) <= int(endday)) or (this_month >= int(startmonth) and (this_date) >=int(startday)) or int(endyear)>this_year):
 
                         emp_salary = round((emp_data['salary'] / 12), 2)
 
@@ -384,14 +401,14 @@ class SalaryCalculation():
                         net_salary = round((gross_salary - total_deduction), 2)
 
                         salary_slip_data = {
-                            'employeeName': emp_name, 'userID': empid,'slip_id': f'sal00{current_month}_{year}', 'lwp': lwp,
+                            'employeeName': emp_name, 'userID': empid,'slip_id': f'sal00{slipid_month}_{slipid_year}', 'lwp': lwp,
                             'basic': emp_basic_salary, 'da': emp_da, 'hra': emp_hra, 'otherAllowance': other_allowance,
                             'incentive': incentive, 'grsOutstandingAdjustment': grs_outstanding_adjustment, 'arrears': arrears,
                             'statutoryBonus': statutory_bns, 'grossSalary': gross_salary, 'epfo': epfo,
                             'totalSalary': emp_salary,
                             'dedOutstandingAdjustment': ded_outstanding_adjustment, 'pt': pt, 'tds': tds,
                             'otherDeduction': other_deduction, 'leaveDeduction': leave_deduction, 'totalDeduction': total_deduction,
-                            'netSalary': net_salary, 'month': current_month, 'year': year, 'cosecID': emp_data['cosecID'], 'WO': 0,
+                            'netSalary': net_salary, 'month': slipid_month, 'year': slipid_year, 'cosecID': emp_data['cosecID'], 'WO': 0,
                             'UL': 0, 'OT': "00:00", 'WrkHrs': "00:00", 'CL': 0, 'PL': 0, 'SL': 0, 'totalLeave': 0, 'overtimeAmount': overtime_amount
 
                         }
@@ -413,46 +430,96 @@ class SalaryCalculation():
                         })
                         users_ref = self.db.collection(self.companyname).document('employee').collection('employee').document(empid)
 
-                        users_ref.collection('salaryslips').document(f'sal00{current_month}_{year}').set(salary_slip_data)
+                        users_ref.collection('salaryslips').document(f'sal00{slipid_month}_{slipid_year}').set(salary_slip_data)
 
-        month_name = calendar.month_name[current_month]
-        if( day<26 and month==2) or( day>26 and month==1):
-             self.db.collection(self.companyname).document('salary_status').update({str(year):{month_name:"None"}})
-             self.db.collection(self.companyname).document('monthly_salary_total').update({str(year):{f'sal00{current_month}_{year}':salary_total}})
-
-        else:
-            self.db.collection(self.companyname).document('salary_status').update({f'{year}.{month_name}': 'None'})
-            self.db.collection(self.companyname).document('monthly_salary_total').update({str(f'{year}.sal00{current_month}_{year}'): salary_total})
+        month_name = calendar.month_name[slipid_month]
+        salary_total.update({"startdate":startdate})
+        salary_total.update({"enddate":enddate})
+        print(salary_total)
+        self.db.collection(self.companyname).document('salary_status').update({f'{slipid_year}.{month_name}': 'None',"excel_upload":False})
+        self.db.collection(self.companyname).document('monthly_salary_total').update({str(f'{slipid_year}.sal00{slipid_month}_{slipid_year}'): salary_total})
 
     def excel_calculation(self,empid, salid, excel_data, holidays):
 
         holidays = holidays
+        month_data=self.db.collection(self.companyname).document("monthly_salary_total").get().to_dict()
+        data=(month_data[salid.split("_")[1]][salid])
+        print(data)
+        print(salid)
+        startdate =data["startdate"]
 
-        today = datetime.date.today()
-        year = today.year
-        day=today.day
-        month = today.month
-        if day >=26:
-            month+=1
-        if day<26 and month==1:
-            year-=1
-        if month == 1:
-            prev_month = 11
-            current_month = 12
-        elif month == 2:
-            prev_month = 12
-            current_month = 1
-        else:
-            prev_month = month - 2
-            current_month = month - 1
-            # Get number of days in the current month and the day of the week of the first day
-        first_day, num_days = calendar.monthrange(year, month)
-        # Loop through days and count working days
+        enddate = data["enddate"]
+
+        startday = int(startdate.split("-")[-1])
+        startmonth = int(startdate.split("-")[1])
+        startyear = int(startdate.split("-")[0])
+
+        endday = int(enddate.split("-")[-1])
+        endmonth = int(enddate.split("-")[1])
+        endyear = int(enddate.split("-")[0])
+
+        print(type(endyear), endday, endmonth)
+        print(startyear, startday, startyear)
+
         num_working_days = 0
         Week_off = 0
         working_days_per_week = {}
         # holidays=holidays.keys()
         holiday = 0
+
+        # Get the number of days in the current month
+        prev_month_dates = []
+        if startmonth != endmonth:
+            prev_num_days = calendar.monthrange(startyear, (startmonth))[1]
+            # Create a list of all the dates in the current month
+            prev_month_dates = [f"{startyear:04}-{startmonth:02}-{day:02}" for day in
+                                range(startday, prev_num_days + 1)]
+            endmonth_dates = [f"{endyear}-{endmonth}-{day}" for day in range(1, int(endday) + 1)]
+        else:
+            endmonth_dates = [f"{endyear}-{endmonth}-{day}" for day in range(startday, int(endday) + 1)]
+
+        # print(endmonth_dates)
+        dates = prev_month_dates + endmonth_dates
+        print(dates)
+        data = {}
+        data_date = []
+
+        if holidays != None:
+            if startmonth != endmonth:
+                count = 0
+                for day in range(0, len(dates)):
+                    print(dates[day], 'day')
+                    # print(endmonth_dates[day - 1])
+                    if dates[day] in holidays:
+                        print(dates[day])
+                        holiday += 1
+                    elif calendar.weekday(int(dates[day - 1].split('-')[0]), int(dates[day - 1].split('-')[1]),
+                                          int(dates[day - 1].split('-')[2])) not in (
+                            calendar.SATURDAY, calendar.SUNDAY):
+
+                        data_date.append(dates[day])
+                        num_working_days += 1
+                    else:
+                        # print(calendar.weekday(startyear, startmonth, day + startday - 1))
+                        Week_off += 1
+
+            else:
+                for day in range(startday, endday + 1):
+
+                    print(day)
+                    if dates[day - startday] in holidays:
+                        holiday += 1
+                    elif calendar.weekday(endyear, endmonth, day) not in (calendar.SATURDAY, calendar.SUNDAY):
+                        data_date.append(dates[day])
+                        num_working_days += 1
+                    else:
+                        Week_off += 1
+
+        data = {
+            'weekoff': Week_off,
+            'workingDays': num_working_days,
+            'holydays': holiday
+        }
         salary_total = {
             'netSalary': 0,
             'grossSalary': 0,
@@ -460,48 +527,22 @@ class SalaryCalculation():
             'pt': 0,
             'tds': 0,
         }
-        # Get the number of days in the current month
-        prev_num_days = calendar.monthrange(year, (prev_month))[1]
-
-        # Create a list of all the dates in the current month
-        prev_month_dates = [f"{year:04}-{prev_month:02}-{day:02}" for day in range(26, prev_num_days + 1)]
-        current_month_dates = [f"{year:04}-{current_month:02}-{day:02}" for day in range(1, 26)]
-        dates = prev_month_dates + current_month_dates
-
-        data_date = []
-        if holidays != None:
-            for day in range(1, len(prev_month_dates) + 1):
-                if current_month_dates[day - 1] in holidays:
-                    holiday += 1
-                elif calendar.weekday(year, prev_month, day) not in (calendar.SATURDAY, calendar.SUNDAY):
-                    data_date.append(current_month_dates[day - 1])
-                    num_working_days += 1
-                else:
-                    Week_off += 1
-            for day in range(1, 26):
-
-                if dates[day - 1] in holidays:
-                    holiday += 1
-                elif calendar.weekday(year, current_month, day) not in (calendar.SATURDAY, calendar.SUNDAY):
-                    data_date.append(current_month_dates[day - 1])
-                    num_working_days += 1
-                else:
-                    Week_off += 1
-
         employee_list_with_increments = (self.db.collection(self.companyname).document('increments').get()).to_dict()
 
         result = []
+        if employee_list_with_increments == None or employee_list_with_increments == {}:
+            pass
+        else:
+            for increment in employee_list_with_increments['increments']:
+                if empid == increment.get('empid'):
+                    effective_date = increment.get('effectiveDate')
+                    if effective_date:
+                        increment_month = int(effective_date.split('-')[1])
+                        increment_date = int(effective_date.split('-')[2])
+                        increment_year = int(effective_date.split('-')[0])
 
-        for increment in employee_list_with_increments['increments']:
-            if empid == increment.get('empid'):
-                effective_date = increment.get('effectiveDate')
-                if effective_date:
-                    increment_month = int(effective_date.split('-')[1])
-                    increment_date = int(effective_date.split('-')[2])
-                    increment_year=int(effective_date.split('-')[0])
-
-                    if ((increment_month == current_month and (increment_date) <= 25 and increment_year==year)) or ((increment_month == prev_month and (increment_date) >= 26) and increment_year==year):
-                        result.append(increment)
+                        if ((increment_month == endmonth and (increment_date) <= 25 and increment_year==endyear)) or ((increment_month == startmonth and (increment_date) >= startday) and increment_year == endyear):
+                            result.append(increment)
         salary_percentage = (self.db.collection(self.companyname).document('salary_calc').get()).to_dict()
 
         user_ref = self.db.collection(self.companyname).document('employee').collection('employee').document(empid)
@@ -545,17 +586,20 @@ class SalaryCalculation():
 
             month_working_hrs = working_days * 9
 
-            salary_per_hrs = totalSalary / month_working_hrs
+            salary_per_hrs = round((totalSalary / month_working_hrs), 2)
 
-            unpaid_leaves = float(excel_data['UL'])
+            unpaid_leaves = round((float(excel_data['UL'])),2)
 
-            paid_leaves = float(excel_data['paidLeave'])
+            paid_leaves = round((float(excel_data['paidLeave'])), 2)
 
-            emp_working_hrs = float(excel_data['WrkHrs'].split(':')[0]) + round((float(excel_data['WrkHrs'].split(':')[1]) / 60), 2)
 
-            leave_hrs = (unpaid_leaves + paid_leaves) * 9
 
-            need_working_hrs = month_working_hrs - leave_hrs
+            # emp_working_hrs = round(((float(excel_data['WrkHrs'].split(':')[0]) + round((float(excel_data['WrkHrs'].split(':')[1]) / 60), 2)), 2)
+            emp_working_hrs = round((float(excel_data['WrkHrs'])), 2)
+
+            leave_hrs = round(((unpaid_leaves + paid_leaves) * 9), 2)
+
+            need_working_hrs = round((month_working_hrs - leave_hrs), 2)
 
             lwp = 0
 
@@ -565,9 +609,9 @@ class SalaryCalculation():
 
                 remaining_hrs = need_working_hrs - emp_working_hrs
 
-                lwp += (remaining_hrs / 9)
+                lwp += round((remaining_hrs / 9), 2)
 
-                remaining_hrs_ded = remaining_hrs * salary_per_hrs * 2.5
+                remaining_hrs_ded = round((remaining_hrs * salary_per_hrs * 2.5), 2)
 
                 leave_deduction += remaining_hrs_ded
 
@@ -575,19 +619,19 @@ class SalaryCalculation():
 
                 lwp += unpaid_leaves
 
-                lwp_deduction = unpaid_leaves * salary_per_hrs * 9
+                lwp_deduction = round((unpaid_leaves * salary_per_hrs * 9), 2)
 
                 leave_deduction += lwp_deduction
 
-            overtime_hrs = float(excel_data['OT'].split(':')[0]) + round((float(excel_data['OT'].split(':')[1]) / 60), 2)
+            overtime_hrs = round((float(excel_data['OT'].split(':')[0]) + round((float(excel_data['OT'].split(':')[1]) / 60), 2)), 2)
 
-            overtime_amount = overtime_hrs * salary_per_hrs
+            overtime_amount = round((overtime_hrs * salary_per_hrs), 2)
 
-            gross_salary = basic + hra + da + otherAllowance + incentive + arrears + grsOutstandingAdjustment + statutoryBonus + overtime_amount
+            gross_salary = round((basic + hra + da + otherAllowance + incentive + arrears + grsOutstandingAdjustment + statutoryBonus + overtime_amount), 2)
 
-            total_deduction = epfo + pt + tds + leave_deduction + otherDeduction + dedOutstandingAdjustment
+            total_deduction = round((epfo + pt + tds + leave_deduction + otherDeduction + dedOutstandingAdjustment), 2)
 
-            net_salary = gross_salary - total_deduction
+            net_salary = round((gross_salary - total_deduction), 2)
 
 
             salary_slip_data = {
@@ -616,18 +660,19 @@ class SalaryCalculation():
                     2)
             })
 
+            print(salary_total)
+
             print(salary_slip_data)
 
             user_ref.collection('salaryslips').document(salid).update(salary_slip_data)
 
-            month_name = calendar.month_name[current_month]
-            if( day<26 and month==2) or( day>26 and month==1):
-                 self.db.collection(self.companyname).document('salary_status').update({str(year):{month_name:"None"}})
-                 self.db.collection(self.companyname).document('monthly_salary_total').update({str(year):{f'{salid}':salary_total}})
 
-            else:
-                self.db.collection(self.companyname).document('salary_status').update({f'{year}.{month_name}': 'None'})
-                self.db.collection(self.companyname).document('monthly_salary_total').update({str(f'{year}.{salid }'): salary_total})
+        month_name = calendar.month_name[endmonth]
+        salary_total.update({"startdate": startdate})
+        salary_total.update({"enddate": enddate})
+        print(salary_total)
+        self.db.collection(self.companyname).document('salary_status').update({f'{endyear}.{month_name}': 'None',"excel_upload":False})
+        self.db.collection(self.companyname).document('monthly_salary_total').update({str(f'{endyear}.{salid }'): salary_total})
 
 
 

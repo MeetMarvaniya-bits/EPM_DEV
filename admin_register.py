@@ -14,7 +14,7 @@ class Admin_Register():
         for key, value in data.items():
             data_dict.update({key: value})
 
-        user = auth.create_user(email=request.form.get('workEmail'), password=request.form.get('password'))
+        user = auth.create_user(email=request.form.get('email'), password=request.form.get('password'))
         set_data = {
             **data_dict,
             "role":"Admin",
