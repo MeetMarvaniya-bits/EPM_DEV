@@ -96,7 +96,6 @@ class Uploaddata():
 
             try:
                 print(count)
-
                 print(emp_data['employeeName'].strip())
                 print(emp_data['workEmail'])
                 user = auth.create_user(
@@ -117,11 +116,3 @@ class Uploaddata():
                         user_auth['localId']).set(emp_data)
                 else:
                     print('Error:', str(e))
-
-
-
-
-
-
-
-

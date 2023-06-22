@@ -56,59 +56,76 @@
  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-  <style>
-    .popup {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background-color: #f9f9f9;
-      padding: 20px;
-      border: 1px solid #ddd;
-    }
-  </style>
-   <script>
-    $(function() {
-      $("#datepicker1").datepicker();
-      $("#datepicker2").datepicker();
-    });
+<style>
+  .popup {
+    position: fixed;
+    top: 14%;
+    left: 75%;
+    transform: translate(-50%, -50%);
+    background-color: #f9f9f9;
+    padding: 10px;
+    color: red; /* Set the text color to red */
+    font-size:large;
+    border: 1px solid #ddd;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Add box-shadow for the highlight effect */
+  }
+</style>
 
-    function formatDate(date) {
-      var formattedDate = "";
-      var year = date.getFullYear();
-      var month = String(date.getMonth() + 1).padStart(2, '0');
-      var day = String(date.getDate()).padStart(2, '0');
 
-      formattedDate = year + "-" + month + "-" + day;
+<script>
+  $(function() {
+    $("#datepicker1").datepicker();
+    $("#datepicker2").datepicker();
+  });
 
-      return formattedDate;
-    }
+  function formatDate(date) {
+    var formattedDate = "";
+    var year = date.getFullYear();
+    var month = String(date.getMonth() + 1).padStart(2, '0');
+    var day = String(date.getDate()).padStart(2, '0');
 
-    function submitForm() {
-      var date1 = $("#datepicker1").datepicker("getDate");
-      var date2 = $("#datepicker2").datepicker("getDate");
-      var username = "{{ username }}"; // Replace with the actual username value
+    formattedDate = year + "-" + month + "-" + day;
 
-      if (date1 && date2) {
-        var formattedDate1 = formatDate(date1);
-        var formattedDate2 = formatDate(date2);
-        var url = "/" + username + "/generatesalary/" + encodeURIComponent(formattedDate1) + "/" + encodeURIComponent(formattedDate2);
-        console.log("URL:", url);
-        $("#submitBtn").attr("href", url);
-      } else {
-        displayPopup("Please select both dates.");
+    return formattedDate;
+  }
+
+  function submitForm() {
+    var date1 = $("#datepicker1").datepicker("getDate");
+    var date2 = $("#datepicker2").datepicker("getDate");
+    var username = "{{ username }}"; // Replace with the actual username value
+
+    if (date1 && date2) {
+      var formattedDate1 = formatDate(date1);
+      var formattedDate2 = formatDate(date2);
+
+      if (date2 <= date1) {
+        displayPopup("End date must be after the start date.");
+        return;
       }
-    }
 
-    function displayPopup(message) {
-      var popup = $("<div>").addClass("popup").text(message);
-      $("body").append(popup);
-      setTimeout(function() {
-        popup.remove();
-      }, 3000);
+      var diffInDays = Math.floor((date2 - date1) / (1000 * 60 * 60 * 24));
+      if (diffInDays > 60) {
+        displayPopup("Date difference cannot exceed 60 days.");
+        return;
+      }
+
+      var url = "/" + username + "/generatesalary/" + encodeURIComponent(formattedDate1) + "/" + encodeURIComponent(formattedDate2);
+      console.log("URL:", url);
+      $("#submitBtn").attr("href", url);
+    } else {
+      displayPopup("Please select both dates.");
     }
-  </script>
-  </script>
+  }
+
+  function displayPopup(message) {
+    var popup = $("<div>").addClass("popup").text(message);
+    $("body").append(popup);
+    setTimeout(function() {
+      popup.remove();
+    }, 3000);
+  }
+</script>
+
   <style>
     .dropdown {
       display: inline-block;

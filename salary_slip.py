@@ -4,7 +4,7 @@ from details import Profile
 from salary_manage import Salarymanage
 import calendar
 import threading
-from moth_days import MonthCount
+from month_days import MonthCount
 from flask import Response
 import os
 import zipfile
@@ -12,7 +12,6 @@ from io import BytesIO
 import io
 
 month_count = MonthCount()
-
 
 def draw_my_rular(pdf):
     """ FOR GRID LAYOUT """

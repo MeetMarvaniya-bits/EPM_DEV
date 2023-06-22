@@ -290,15 +290,27 @@ td, th {
                                     </button>
                                 </div>
                             </li>
-
-                            <li class="nav-item me-2">
+<li class="nav-item me-2">
                                 <div class="dropdown">
                                     <!-- Button trigger modal -->
                                     <button id="uploadButton" class="btn border-1 btn-secondary" type="button">
-                                        Import Excel Sheet
+                                        Import Cosec Excel Sheet
                                     </button>
                                 </div>
                             </li>
+                            <li class="nav-item me-2">
+                                <div class="dropdown">
+                                    <!-- Button trigger modal -->
+                                    <button id="uploadButton2" class="btn border-1 btn-secondary" type="button">
+                                        Import ERP Excel Sheet
+                                    </button>
+                                </div>
+                            </li>
+
+
+
+
+
                             <!-- HOLIDAYS MODAL -->
                             <div class="modal" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModalLabel"
                                  aria-hidden="true">
@@ -1036,6 +1048,7 @@ else if(salaryStatus==='Inreview') {
 
 
 
+
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const uploadButton = document.getElementById('uploadButton');
@@ -1048,8 +1061,44 @@ else if(salaryStatus==='Inreview') {
                 const file = fileInput.files[0];
                 const formData = new FormData();
                 formData.append('file', file);
+                fileInput.accept = '.xlsx, .xls';
 
                 fetch('/{{username}}/upload/{{salid}}', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Handle the response from the server
+                        console.log(data);
+                    })
+                    .catch(error => {
+                        // Handle any errors
+                        console.error(error);
+                    });
+            });
+
+            fileInput.click();
+        });
+    });
+</script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const uploadButton = document.getElementById('uploadButton2');
+
+        uploadButton.addEventListener('click', () => {
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+
+            fileInput.addEventListener('change', () => {
+                const file = fileInput.files[0];
+                const formData = new FormData();
+                formData.append('file', file);
+                fileInput.accept = '.json';
+
+                fetch('/{{username}}/upload_erp_sheet/{{salid}}', {
                     method: 'POST',
                     body: formData
                 })

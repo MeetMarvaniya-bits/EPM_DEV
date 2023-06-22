@@ -10,9 +10,6 @@ class SalaryCalculation():
         self.companyname=companyname
     def generate_salary(self, holidays,startdate,enddate):
         print("start")
-        # if int(enddate.split('_')[1])==4:
-        total_days=count_days.total_days_count(enddate,holidays)
-        print("total_days",total_days)
 
 
         startday = int(startdate.split("-")[-1])
@@ -33,63 +30,54 @@ class SalaryCalculation():
         holiday = 0
         slipid_month = endmonth
         slipid_year = endyear
-        # Get the number of days in the current month
-        prev_month_dates = []
-        if startmonth != endmonth:
-            prev_num_days = calendar.monthrange(startyear, (startmonth))[1]
-            # Create a list of all the dates in the current month
-            prev_month_dates = [f"{startyear:04}-{startmonth:02}-{day:02}" for day in
-                                range(startday, prev_num_days + 1)]
-            endmonth_dates = [f"{endyear}-{endmonth}-{day}" for day in range(1, int(endday) + 1)]
 
-            if len(prev_month_dates)>len(endmonth_dates):
-                slipid_month=startmonth
-                slipid_year=startyear
-        else:
-            endmonth_dates = [f"{endyear}-{endmonth}-{day}" for day in range(startday, int(endday) + 1)]
 
-        # print(endmonth_dates)
-        dates = prev_month_dates + endmonth_dates
-        print(dates)
+        month_num_days = calendar.monthrange(startyear, (startmonth))[1]
+        month_dates = [f"{startyear:04}-{startmonth:02}-{day:02}" for day in
+                            range(1, month_num_days + 1)]
+
+        for day in range(1, month_num_days + 1):
+            if calendar.weekday(endyear, endmonth, day) in (calendar.SATURDAY, calendar.SUNDAY):
+                print(month_dates[day - startday], type(month_dates[day - startday]))
+                Week_off += 1
+            elif str(datetime.datetime.strptime(month_dates[day - startday], "%Y-%m-%d").date()) in holidays:
+                print(month_dates[day - startday], "hol")
+                holiday += 1
+            elif calendar.weekday(endyear, endmonth, day) not in (calendar.SATURDAY, calendar.SUNDAY):
+                print(month_dates[day - 1], "wd")
+                num_working_days += 1
+
+        total_days = {
+            'weekoff': Week_off,
+            'workingDays': num_working_days,
+            'holydays': holiday
+                }
+
+
+        num_working_days = 0
+        Week_off = 0
+        working_days_per_week = {}
+        # holidays=holidays.keys()
+        holiday = 0
         data = {}
         data_date = []
         if holidays != None:
-            if startmonth != endmonth:
-                count = 0
-                for day in range(0, len(dates)):
-                    print(dates[day], 'day')
-                    # print(endmonth_dates[day - 1])
-                    if calendar.weekday(int(dates[day - 1].split('-')[0]), int(dates[day - 1].split('-')[1]),
-                                        int(dates[day - 1].split('-')[2])) in (
-                            calendar.SATURDAY, calendar.SUNDAY):
-                        Week_off += 1
-                    elif  str(datetime.datetime.strptime(dates[day-1], "%Y-%m-%d").date()) in holidays:
-                        data_date.append(dates[day])
-                        print(dates[day] ,"hol")
-                        holiday += 1
-                    elif calendar.weekday(int(dates[day - 1].split('-')[0]), int(dates[day - 1].split('-')[1]),
-                                          int(dates[day - 1].split('-')[2])) not in (
-                    calendar.SATURDAY, calendar.SUNDAY):
-                        data_date.append(dates[day])
-                        num_working_days += 1
-
-
-            else:
                 print(holidays)
                 for day in range(startday, endday + 1):
 
                     if calendar.weekday(endyear, endmonth, day) in (calendar.SATURDAY, calendar.SUNDAY):
-                        print(dates[day - startday], type(dates[day - startday]))
+                        print(month_dates[day - startday], type(month_dates[day - startday]))
                         Week_off += 1
-                    elif str(datetime.datetime.strptime(dates[day-startday], "%Y-%m-%d").date()) in holidays:
-                        data_date.append(day - startday)
-                        print(dates[day - startday],"hol")
+                    elif str(datetime.datetime.strptime(month_dates[day-startday], "%Y-%m-%d").date()) in holidays:
+                        data_date.append(month_dates[day - startday])
+                        print(month_dates[day - startday],"hol")
                         holiday += 1
                     elif calendar.weekday(endyear, endmonth, day) not in (calendar.SATURDAY, calendar.SUNDAY):
-                        print(dates[day - startday], "wd")
-
-                        data_date.append(day - startday)
+                        print(month_dates[day - startday], "wd")
+                        data_date.append(month_dates[day - startday])
                         num_working_days += 1
+
+
         data = {
             'weekoff': Week_off,
             'workingDays': num_working_days,
@@ -358,6 +346,7 @@ class SalaryCalculation():
                     if ((this_month <= int(endmonth) and (this_date) <= int(endday)) or (this_month >= int(startmonth) and (this_date) >=int(startday)) or int(endyear)>this_year):
 
                         emp_salary = round((emp_data['salary'] / 12/total_month_salary_days*salary_days), 2)
+                        print(emp_salary)
 
                         lwp = 0
 
@@ -470,65 +459,28 @@ class SalaryCalculation():
         working_days_per_week = {}
 
         holiday = 0
-
-        prev_month_dates = []
+        month_num_days = calendar.monthrange(startyear, (startmonth))[1]
+        month_dates = [f"{startyear:04}-{startmonth:02}-{day:02}" for day in
+                       range(1, month_num_days + 1)]
+        data_date = []
         slipid_month = startmonth
         slipid_year = endyear
-        if startmonth != endmonth:
-            prev_num_days = calendar.monthrange(startyear, (startmonth))[1]
-            # Create a list of all the dates in the current month
-            prev_month_dates = [f"{startyear:04}-{startmonth:02}-{day:02}" for day in
-                                range(startday, prev_num_days + 1)]
-            endmonth_dates = [f"{endyear}-{endmonth}-{day}" for day in range(1, int(endday) + 1)]
-
-            if len(prev_month_dates) > len(endmonth_dates):
-                slipid_month = startmonth
-                slipid_year = startyear
-        else:
-            endmonth_dates = [f"{endyear}-{endmonth}-{day}" for day in range(startday, int(endday) + 1)]
-
-        # print(endmonth_dates)
-        dates = prev_month_dates + endmonth_dates
-        print(dates)
-        data = {}
-        data_date = []
         if holidays != None:
-            if startmonth != endmonth:
-                count = 0
-                for day in range(0, len(dates)):
-                    print(dates[day], 'day')
-                    # print(endmonth_dates[day - 1])
-                    if calendar.weekday(int(dates[day - 1].split('-')[0]), int(dates[day - 1].split('-')[1]),
-                                        int(dates[day - 1].split('-')[2])) in (
-                            calendar.SATURDAY, calendar.SUNDAY):
-                        Week_off += 1
-                    elif str(datetime.datetime.strptime(dates[day - 1], "%Y-%m-%d").date()) in holidays:
-                        data_date.append(dates[day])
-                        print(dates[day], "hol")
-                        holiday += 1
-                    elif calendar.weekday(int(dates[day - 1].split('-')[0]), int(dates[day - 1].split('-')[1]),
-                                          int(dates[day - 1].split('-')[2])) not in (
-                            calendar.SATURDAY, calendar.SUNDAY):
-                        data_date.append(dates[day])
-                        num_working_days += 1
+            print(holidays)
+            for day in range(startday, endday + 1):
 
+                if calendar.weekday(endyear, endmonth, day) in (calendar.SATURDAY, calendar.SUNDAY):
+                    print(month_dates[day - startday], type(month_dates[day - startday]))
+                    Week_off += 1
+                elif str(datetime.datetime.strptime(month_dates[day - startday], "%Y-%m-%d").date()) in holidays:
+                    data_date.append(month_dates[day - startday])
+                    print(month_dates[day - startday], "hol")
+                    holiday += 1
+                elif calendar.weekday(endyear, endmonth, day) not in (calendar.SATURDAY, calendar.SUNDAY):
+                    print(month_dates[day - startday], "wd")
+                    data_date.append(month_dates[day - startday])
+                    num_working_days += 1
 
-            else:
-                print(holidays)
-                for day in range(startday, endday + 1):
-
-                    if calendar.weekday(endyear, endmonth, day) in (calendar.SATURDAY, calendar.SUNDAY):
-                        print(dates[day - startday], type(dates[day - startday]))
-                        Week_off += 1
-                    elif str(datetime.datetime.strptime(dates[day - startday], "%Y-%m-%d").date()) in holidays:
-                        data_date.append(day - startday)
-                        print(dates[day - startday], "hol")
-                        holiday += 1
-                    elif calendar.weekday(endyear, endmonth, day) not in (calendar.SATURDAY, calendar.SUNDAY):
-                        print(dates[day - startday], "wd")
-
-                        data_date.append(day - startday)
-                        num_working_days += 1
         data = {
             'weekoff': Week_off,
             'workingDays': num_working_days,
@@ -671,6 +623,7 @@ class SalaryCalculation():
             {str(f'{slipid_year}.sal00{slipid_month}_{slipid_year}'): salary_total})
 
     def erp_excel_calculation(self, salid, excel_data_all, holidays,startdate,enddate):
+
         startday = int(startdate.split("-")[-1])
         startmonth = int(startdate.split("-")[1])
         startyear = int(startdate.split("-")[0])
@@ -679,70 +632,34 @@ class SalaryCalculation():
         endmonth = int(enddate.split("-")[1])
         endyear = int(enddate.split("-")[0])
 
+
         num_working_days = 0
         Week_off = 0
         working_days_per_week = {}
 
         holiday = 0
-
-        prev_month_dates = []
+        month_num_days = calendar.monthrange(startyear, (startmonth))[1]
+        month_dates = [f"{startyear:04}-{startmonth:02}-{day:02}" for day in
+                       range(1, month_num_days + 1)]
+        data_date = []
         slipid_month = startmonth
         slipid_year = endyear
-        if startmonth != endmonth:
-            prev_num_days = calendar.monthrange(startyear, (startmonth))[1]
-            # Create a list of all the dates in the current month
-            prev_month_dates = [f"{startyear:04}-{startmonth:02}-{day:02}" for day in
-                                range(startday, prev_num_days + 1)]
-            endmonth_dates = [f"{endyear}-{endmonth}-{day}" for day in range(1, int(endday) + 1)]
-
-            if len(prev_month_dates) > len(endmonth_dates):
-                slipid_month = startmonth
-                slipid_year = startyear
-        else:
-            endmonth_dates = [f"{endyear}-{endmonth}-{day}" for day in range(startday, int(endday) + 1)]
-
-        # print(endmonth_dates)
-        dates = prev_month_dates + endmonth_dates
-        print(dates)
-        data = {}
-        data_date = []
         if holidays != None:
-            if startmonth != endmonth:
-                count = 0
-                for day in range(0, len(dates)):
-                    print(dates[day], 'day')
-                    # print(endmonth_dates[day - 1])
-                    if calendar.weekday(int(dates[day - 1].split('-')[0]), int(dates[day - 1].split('-')[1]),
-                                        int(dates[day - 1].split('-')[2])) in (
-                            calendar.SATURDAY, calendar.SUNDAY):
-                        Week_off += 1
-                    elif str(datetime.datetime.strptime(dates[day - 1], "%Y-%m-%d").date()) in holidays:
-                        data_date.append(dates[day])
-                        print(dates[day], "hol")
-                        holiday += 1
-                    elif calendar.weekday(int(dates[day - 1].split('-')[0]), int(dates[day - 1].split('-')[1]),
-                                          int(dates[day - 1].split('-')[2])) not in (
-                            calendar.SATURDAY, calendar.SUNDAY):
-                        data_date.append(dates[day])
-                        num_working_days += 1
+            print(holidays)
+            for day in range(startday, endday + 1):
 
+                if calendar.weekday(endyear, endmonth, day) in (calendar.SATURDAY, calendar.SUNDAY):
+                    print(month_dates[day - startday], type(month_dates[day - startday]))
+                    Week_off += 1
+                elif str(datetime.datetime.strptime(month_dates[day - startday], "%Y-%m-%d").date()) in holidays:
+                    data_date.append(month_dates[day - startday])
+                    print(month_dates[day - startday], "hol")
+                    holiday += 1
+                elif calendar.weekday(endyear, endmonth, day) not in (calendar.SATURDAY, calendar.SUNDAY):
+                    print(month_dates[day - startday], "wd")
+                    data_date.append(month_dates[day - startday])
+                    num_working_days += 1
 
-            else:
-                print(holidays)
-                for day in range(startday, endday + 1):
-
-                    if calendar.weekday(endyear, endmonth, day) in (calendar.SATURDAY, calendar.SUNDAY):
-                        print(dates[day - startday], type(dates[day - startday]))
-                        Week_off += 1
-                    elif str(datetime.datetime.strptime(dates[day - startday], "%Y-%m-%d").date()) in holidays:
-                        data_date.append(day - startday)
-                        print(dates[day - startday], "hol")
-                        holiday += 1
-                    elif calendar.weekday(endyear, endmonth, day) not in (calendar.SATURDAY, calendar.SUNDAY):
-                        print(dates[day - startday], "wd")
-
-                        data_date.append(day - startday)
-                        num_working_days += 1
         data = {
             'weekoff': Week_off,
             'workingDays': num_working_days,
