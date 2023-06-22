@@ -1,58 +1,73 @@
-import openpyxl
 import calendar
 from salary_manage import Salarymanage
-import os
 from openpyxl.styles import Alignment
+from openpyxl import Workbook
+from openpyxl.styles import numbers
+
 
 class SalaryData():
 
-    def __init__(self,db):
-        self.db=db
+    def __init__(self, db):
+        self.db = db
 
-    def add_data(self,companyname, salid, fields, path):
-        mont_in_num = int(salid[5:])
+    def add_data(self, salid, companyname):
+
+        # # FOR CUSTOM DETAIL 1
+        mont_in_num = int(salid.split('_')[0][5:])
         month = calendar.month_name[mont_in_num]
+        year = int(salid.split('_')[1])
 
-        # Create a new workbook
-        workbook = openpyxl.Workbook()
+        # # FOR VALUE DATE
+        next_month = 0
+        next_year = 0
 
-        # Store Excelsheet
-        file_path = f"{path}/Excelsheets/"
+        if mont_in_num == 12:
+            next_month += 1
+            next_year += year + 1
+        else:
+            next_month += mont_in_num + 1
+            next_year += year
 
-        if not os.path.exists(file_path):
-            os.makedirs(file_path)
+        value_date = f'01/{next_month}/{next_year}'
 
-        file_name = f'Salary_{month}.xlsx'
+        debited_account_no = '02940200001115'
 
-        excel_file = file_path + file_name
+        custom_detail_1 = f'{month}{year}'
 
-        # Select the active worksheet
-        worksheet = workbook.active
+        custom_detail_2 = ''
 
+        custom_detail_3 = ''
 
-        # Worksheet Name
-        worksheet.title = "Alian Software"
+        custom_detail_4 = ''
 
-        # Merge cell for heading
-        A1 = worksheet.merge_cells('A1:E1')
+        custom_detail_5 = ''
 
-        # Heading
-        worksheet['A1'] = 'Bank Name Associated With Company'
+        custom_detail_6 = ''
 
-        title_field = fields
+        remark = 'ALIAN SOFTWARE SALARY'
 
-        # Set Table Header
-        title_row = [title_field['field1'], title_field['field2'], title_field['field3'], title_field['field4'], title_field['field5']]
+        purpose = 'SALARY'
 
-        worksheet.append(title_row)
+        wb = Workbook()
 
-        for n in range(1,6):
-            worksheet.column_dimensions[worksheet.cell(row=2, column=n).column_letter].width = 25
+        ws = wb.active
+        ws.title = "Sheet"
 
-        workbook.save(excel_file)
+        # # Set Header
+        title_row = ['CUSTOM_DETAILS1', 'Value Date', 'Message Type', 'Debit Account No.', 'Beneficiary Name',
+                     'Payment Amount', 'Beneficiary Bank Swift Code / IFSC Code', 'Beneficiary Account No.',
+                     'Transaction Type Code', 'CUSTOM_DETAILS2', 'CUSTOM_DETAILS3', 'CUSTOM_DETAILS4',
+                     'CUSTOM_DETAILS5', 'CUSTOM_DETAILS6', 'Remarks', 'Purpose of Payment']
 
-        salary_list = Salarymanage(self.db).get_all_emp_salary_data(companyname,salid)
-        print(salary_list)
+        ws.append(title_row)
+
+        # # SET CELL WIDTH
+        for n in range(1, 17):
+            ws.column_dimensions[ws.cell(row=1, column=n).column_letter].width = 20
+
+        # # GET ALL EMPLOYEE DATA
+        salary_list = Salarymanage(self.db).get_all_emp_salary_data(companyname, salid)
+
         for i in salary_list:
 
             empid = salary_list[i]["userID"]
@@ -61,27 +76,63 @@ class SalaryData():
 
             data = user_ref.get().to_dict()
 
-            salary_data = user_ref.collection("salaryslips").document(f"{salid}").get().to_dict()
+            benificiary_bank = data['bankName']
+            if benificiary_bank == "BOB":
 
-            data = {
-                'Employee Name': data["accountHolderName"],
-                'Bank Name': data["bankName"],
-                'Account Number': data["accountNumber"],
-                'IFSC Code': data["ifscCode"],
-                'Salary': salary_data["netSalary"]
-            }
+                message_type = 'IFT'
 
-            employee_data = [data[title_field['field1']], data[title_field['field2']], data[title_field['field3']], data[title_field['field4']], data[title_field['field5']]]
+                transaction_type = 'IFT'
 
-            worksheet.append(employee_data)
+            else:
 
-            # Save the workbook
-            workbook.save(excel_file)
+                message_type = 'NEFT'
 
-        # Text Alignment For All Cell
-        alignment = Alignment(horizontal='center')
-        for n in range(1, 50):
-            for cell in worksheet[str(n)]:
+                transaction_type = 'NEFT'
+
+            benificiary_name = data['employeeName'].capitalize()
+            net_salary = salary_list[i]['netSalary']
+
+            if net_salary == '':
+
+                payment_amount = '0.00'
+
+            else:
+
+                payment_amount = f'{round(float(net_salary), 2)}'
+            if data['bankName'] != "BOB":
+                # beneficiary_ifsc_code = data['ifscCode']
+                beneficiary_ifsc_code = "skdjbvskjdb"
+            else:
+                beneficiary_ifsc_code = ""
+
+            beneficiary_account_no = data['accountNumber']
+            # beneficiary_account_no = "9874987987987"
+
+            data = {'CUSTOM_DETAILS1': custom_detail_1, 'Value Date': value_date, 'Message Type': message_type,
+                    'Debit Account No.': debited_account_no, 'Beneficiary Name': benificiary_name,
+                    'Payment Amount': payment_amount, 'Beneficiary Bank Swift Code / IFSC Code': beneficiary_ifsc_code,
+                    'Beneficiary Account No.': beneficiary_account_no, 'Transaction Type Code': transaction_type,
+                    'CUSTOM_DETAILS2': custom_detail_2, 'CUSTOM_DETAILS3': custom_detail_3,
+                    'CUSTOM_DETAILS4': custom_detail_4, 'CUSTOM_DETAILS5': custom_detail_5,
+                    'CUSTOM_DETAILS6': custom_detail_6, 'Remarks': remark, 'Purpose of Payment': purpose
+                    }
+
+            employee_data = [data[title_row[0]], data[title_row[1]], data[title_row[2]], data[title_row[3]],
+                             data[title_row[4]], data[title_row[5]], data[title_row[6]], data[title_row[7]],
+                             data[title_row[8]], data[title_row[9]], data[title_row[10]], data[title_row[11]],
+                             data[title_row[12]], data[title_row[13]], data[title_row[14]], data[title_row[15]]]
+
+            ws.append(employee_data)
+
+        # # SET FORMATE AS A TEXT
+        for row in ws.iter_rows():
+            for cell in row:
+                cell.number_format = numbers.FORMAT_TEXT
+
+        # # TEXT ALIGN LEFT
+        alignment = Alignment(horizontal='left')
+        for n in range(1, len(salary_list) + 1):
+            for cell in ws[str(n)]:
                 cell.alignment = alignment
-        workbook.save(excel_file)
-
+        print("done")
+        return wb

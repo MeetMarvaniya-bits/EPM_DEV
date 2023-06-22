@@ -3536,7 +3536,7 @@ return daysDiff;
             xhr.addEventListener('readystatechange', function () {
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
-                        window.location.href = `http://192.168.0.181:3005/${username}/tds_data_update/${id}`;
+                        window.location.href = `http://192.168.0.78:3005/${username}/tds_data_update/${id}`;
                     } else {
                         console.error(xhr.responseText); // Handle error response
                     }

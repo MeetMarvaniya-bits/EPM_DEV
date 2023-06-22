@@ -5,7 +5,7 @@ moth_count = MonthCount()
 class Register():
     def __init__(self, db):
         self.db = db
-        self.mail = Mail()
+        self.mail = Mail(db)
 
     def register(self, data=None):
         data_dict = {}

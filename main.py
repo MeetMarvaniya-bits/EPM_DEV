@@ -36,6 +36,7 @@ import os
 import platform
 from urllib.parse import unquote
 from store_excel_data import Uploaddata
+import calendar
 
 
 
@@ -55,9 +56,10 @@ register_obj = Register(db)
 admin_register_obj = Admin_Register(db)
 login_obj = Login(db)
 moth_count = MonthCount()
-mail_obj = Mail()
+mail_obj = Mail(db)
 upload_excel = Uploaddata(db)
 companyname = 'alian_software_dev'
+# companyname = 'alian_software'
 FIREBASE_WEB_API_KEY = "AIzaSyDe2qwkIds8JwMdLBbY3Uw7JQkFRNXtFqo"
 rest_api_url = f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
 CURRENT_YEAR=datetime.date.today().year
@@ -1018,28 +1020,23 @@ def upload(username,salid):
     if request.method == 'POST':
         file = request.files['file']
         all_data = read_excel_leave_data.read_excel_rows(file)
-        # GET ALL EMPLOYEE USER ID FROM EXCEL SHEET
-        for data in all_data:
-            # print(data)
-            cosecID = int(data[" User ID"])
-            new_data = db.collection(companyname).document(u'employee').collection('employee').where('cosecID', '==', cosecID).get()
-            print(new_data)
-            if len(new_data) != 0:
-                for details in new_data:
-                    document_name = details.to_dict()['userID']
-                    emp_salary_data = {'cosecID': data[" User ID"], 'WO': data["WO"], 'UL': data["UL"],
-                                       'OT': data["OT"], 'WrkHrs': data[" WrkHrs"],'paidLeave':data["PL"], 'CL': data["C_L"],
-                                       'PL': data["P_L"], 'SL': data["S_L"]}
-                    # print(emp_salary_data)
-                    SalaryCalculation(db, companyname).excel_calculation(empid=document_name, salid=salid, excel_data=emp_salary_data, holidays=holidays)
-                    try:
-                        db.collection(companyname).document(u'employee').collection('employee').document(document_name).collection('salaryslips').document(salid).update(emp_salary_data)
-                    except:
-                        pass
-                    # print(details.to_dict())
+        SalaryCalculation(db, companyname).excel_calculation(salid=salid,excel_data_all=all_data, holidays=holidays)
         return redirect(url_for('salary', username=username))
     return redirect(url_for('salary', username=username))
 
+@app.route('/<username>/upload_erp_sheet/<salid>', methods=['POST'])
+@login_required
+def upload_erp_sheet(username,salid):
+    ''' IMPORT EXCEL SHEET FOR SALARY DATA '''
+    holidays = db.collection(companyname).document('holidays').get().to_dict()
+    if request.method == 'POST':
+        file = request.files['file']
+        data = file.read().decode('utf-8')
+        data_list = json.loads(data)
+        data_dict = {item['email']: item['workHours'] for item in data_list}
+        SalaryCalculation(db, companyname).erp_excel_calculation(salid=salid, excel_data_all=data_dict, holidays=holidays)
+        return redirect(url_for('salary', username=username))
+    return redirect(url_for('salary', username=username))
 
 
 @app.route('/<username>/salarysheetview/<salid>', methods=['GET', 'POST'])
@@ -1088,6 +1085,39 @@ def salary_sheet_view(username, salid):
     print(months[0])
     return render_template('salary_sheet_view.html', data=salary_list, salid=salid, username=username,
                            salary_status=salary_status, moath_data=moath_data, holidays=holidays,month_name=month_name,months=months)
+
+
+@app.route('/bank_excel/<salid>')
+# @login_required
+def generate_bank_excel(salid):
+    ''' SALARY EXCEL SHEET FOR BANK '''
+    # Create the Excel file
+
+    salary_excel = SalaryData(db)
+
+    wb = salary_excel.add_data(salid=salid, companyname=companyname)
+
+    # # Set name for File
+    mont_in_num = int(salid.split('_')[0][5:])
+    month = calendar.month_name[mont_in_num]
+    year = int(salid.split('_')[1])
+    file_name = f"Salary_{month}_{year}_Bank_Sheet.xlsx"
+
+    # # Save the file to a BytesIO object
+    excel_file = io.BytesIO()
+    wb.save(excel_file)
+    excel_file.seek(0)
+
+    # # Return the file as a response
+    return Response(
+        excel_file,
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        headers={
+            "Content-Disposition": f"attachment;filename={file_name}",
+            "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        }
+    )
+
 
 @app.route('/<username>/salarysheetedit/<empid> <salid>', methods=['GET', 'POST'])
 @login_required
@@ -1242,19 +1272,20 @@ def download_pdf():
 def pdf_all(username, salid):
     ''' SALARY SLIP PDF GENERATION '''
     salary_list = Salarymanage(db).get_all_emp_salary_data(salid=salid, companyname=companyname)
-    #print(salary_list)
-    responses = []
-    for i in salary_list:
-        empid = salary_list[i]["userID"]
-        path = get_download_folder()
-        salary = SalarySlip(db)
-        responcedata = salary.salary_slip_personal(companyname, empid, salid, path)
-        return responcedata
-    # for response in responses:
-    #     # CHECK THE USER
-    #     return response
-    return redirect(url_for('salary', username=username, salid=salid))
+    path = get_download_folder()
+    salary = SalarySlip(db)
+    zip_buffer = salary.generate_slip(salary_list, companyname, salid, path)
+    response = make_response(zip_buffer.getvalue())
+    mont_in_num = int(salid.split('_')[0][5:])
+    month = calendar.month_name[mont_in_num]
+    year = int(salid.split('_')[1])
+    file_name = f"{month}_{year}"
 
+    # Set the appropriate headers for the response
+    response.headers['Content-Type'] = 'application/zip'
+    response.headers['Content-Disposition'] = f'attachment; filename={file_name}.zip'
+
+    return response
 
 
 # @app.route('/<username>/excel/<salid>')
@@ -1289,15 +1320,14 @@ def add_data(username):
         return redirect(url_for('dashboard', username=username))
     return render_template('add_excel_file.html', username=username)
 
-
 @app.route('/<username>/send_email/<salid>')
 @login_required
 def send_employee_salaryslip(username, salid):
-    ''' GENERATE EXCELSHEET FOR BANK '''
+    ''' SEND SALARY SLIP TO EMPLOYEE '''
 
     path = get_download_folder()
     auth_data = db.collection(companyname).document('admin').get().to_dict()
-    company_mail = auth_data['AdminID']
+    company_mail = auth_data['email']
     auth_password = auth_data['auth_password']
     docs = db.collection(companyname).document(u'employee').collection('employee').stream()
     employee_list = {}
@@ -1307,7 +1337,7 @@ def send_employee_salaryslip(username, salid):
         data = value
 
         mail_obj.send_employee_pdf(company_mail=company_mail, data=data, auth_password=auth_password, path=path,
-                                   companyname=companyname)
+                                   companyname=companyname, salid=salid)
     return redirect(url_for('salary_sheet_view', salid=salid, username=username))
 
 

@@ -2,12 +2,14 @@ from reportlab.pdfgen import canvas
 from reportlab.lib import colors
 from details import Profile
 from salary_manage import Salarymanage
-import os
 import calendar
 import threading
 from moth_days import MonthCount
-import io
 from flask import Response
+import os
+import zipfile
+from io import BytesIO
+import io
 
 month_count = MonthCount()
 
@@ -36,7 +38,6 @@ class SalarySlip():
 
     def __init__(self, db):
         self.db = db
-
     def salary_slip_personal(self, companyname, id, salid, path):
         """ CREATE SALARYSLIP PDF FROM PROFILE VIEW """
 
@@ -46,24 +47,13 @@ class SalarySlip():
 
         salary_data = Profile(self.db, empid, companyname).salary_data()[salid]
 
-        leave_data = Profile(self.db, empid, companyname).leave_data()[0]
-
         # GET MONTH WORKING DAYS
         holidays = self.db.collection(companyname).document('holidays').get().to_dict()
         month_data = month_count.count_previous_month(holidays, salid)
-
-        # GET MONTH NAME
         mont_in_num = int(salid.split('_')[0][5:])
-        #print(mont_in_num)
         month = calendar.month_name[mont_in_num]
-
-        # PDF STORAGE LOCATION
-        # pdf_location = f"{path}/EPMS/Salaryslips/{empid}/{month}_{salary_data['year']}/"
-        # if not os.path.exists(pdf_location):
-        #     os.makedirs(pdf_location)
-
-        # PDF FILE NAME
-        filename = f'{empid}_{salid}.pdf'
+        emp_name = (personal_data["employeeName"]).replace(" ", "_")
+        filename = f'{salid}_{emp_name}.pdf'
         pdf_file = io.BytesIO()
         documentTitle = "SalarySlip!"
         title = "ALIAN SOFTWARE"
@@ -84,10 +74,10 @@ class SalarySlip():
                      "LWP": salary_data["lwp"]
                      }
 
-        textLines_two = {"PAN No.": personal_data["panCardNo"],
-                         "UAN No.": personal_data["uanNo"],
-                         "PF No.": personal_data["pfAccountNo"],
-                         "ESIC No.": personal_data["esicNo"],
+        textLines_two = {"PAN No.": "hardcoded number",
+                          "UAN No.": "hardcoded number",
+                          "PF No.": "hardcoded number",
+                         "ESIC No.": "hardcoded number",
                          "Bank Name": personal_data["bankName"],
                          "Bank A/c No.": personal_data["accountNumber"],
                          }
@@ -188,14 +178,14 @@ class SalarySlip():
         pdf.line(530, 520, 530, 460)
 
         pdf.setFont("Helvetica-Bold", 10)
-        pdf.drawCentredString(425, 505, "Leave Balance")
+        pdf.drawCentredString(425, 505, "Leave Avail")
         pdf.drawCentredString(355, 485, "CL")
         pdf.drawCentredString(425, 485, "SL")
         pdf.drawCentredString(495, 485, "PL")
         pdf.setFont("Helvetica", 10)
-        pdf.drawCentredString(355, 465, str(leave_data["CL"]))
-        pdf.drawCentredString(425, 465, str(leave_data["SL"]))
-        pdf.drawCentredString(495, 465, str(leave_data["PL"]))
+        pdf.drawCentredString(355, 465, str(salary_data["CL"]))
+        pdf.drawCentredString(425, 465, str(salary_data["SL"]))
+        pdf.drawCentredString(495, 465, str(salary_data["PL"]))
 
         pdf.line(30, 430, 550, 430)
 
@@ -292,260 +282,493 @@ class SalarySlip():
             }
         )
 
-    def generate_slip(self, empid, companyname, salid, path):
+    def generate_slip(self, salary_list, companyname, salid, path):
         """ CREATE SALARYSLIP PDF FOR ALL EMPLOYEES """
-        personal_data = Profile(self.db, empid, companyname).personal_data()
-        salary_data = Profile(self.db, empid, companyname).salary_data()[salid]
-        leave_data = Profile(self.db, empid, companyname).leave_data()[0]
-
-        # MONTH WORKING DAY
-        holidays = self.db.collection(companyname).document('holidays').get().to_dict()
-        month_data = month_count.count_previous_month(holidays, salid)
+        path = path
 
         # GET MONTH NAME
-        mont_in_num = int(salid[5:])
-        month = calendar.month_name[mont_in_num]
-        #
-        # # DEFINE PDF LOCATION
-        pdf_location = f"{path}/EPMS/Salaryslips/{month}_{salary_data['year']}/"
-        if not os.path.exists(pdf_location):
-            os.makedirs(pdf_location)
+        zip_buffer = BytesIO()
 
-        # PDF FILE NAME
-        filename = f'{empid}_{salid}.pdf'
-        pdf_file = io.BytesIO()
-        documentTitle = "SalarySlip!"
-        title = "ALIAN SOFTWARE"
-        address_line1 = "Shreeji Arcade, 2nd Floor, Opp Shasvat Hospital,"
-        address_line2 = "Indira Circle, Anand, Gujarat 388001"
-        subtitle = f"Pay Slip for the Month of {month} {salary_data['year']}"
-        subtitle_one = "Employee Pay Summary"
+        # Create a zip file
+        with zipfile.ZipFile(zip_buffer, 'w') as zip_file:
+            for i in salary_list:
+                empid = salary_list[i]["userID"]
+                personal_data = Profile(self.db, empid, companyname).personal_data()
+                salary_data = Profile(self.db, empid, companyname).salary_data()[salid]
+                holidays = self.db.collection(companyname).document('holidays').get().to_dict()
+                month_data = month_count.count_previous_month(holidays, salid)
+                mont_in_num = int(salid.split('_')[0][5:])
+                month = calendar.month_name[mont_in_num]
+                emp_name = (personal_data["employeeName"]).replace(" ", "_")
+                filename = f'{salid}_{emp_name}.pdf'
+                pdf_file = filename
+                documentTitle = "SalarySlip!"
+                title = "ALIAN SOFTWARE"
+                address_line1 = "Shreeji Arcade, 2nd Floor, Opp Shasvat Hospital,"
+                address_line2 = "Indira Circle, Anand, Gujarat 388001"
+                subtitle = f"Pay Slip for the Month of {month} {salary_data['year']}"
+                subtitle_one = "Employee Pay Summary"
 
-        textLines = {"Employee Name": personal_data["employeeName"],
-                     "Employee ID": personal_data["userID"],
-                     "Date of Joining": personal_data["doj"],
-                     "Branch": "Anand",
-                     "Designation": personal_data["designation"],
-                     "Department": personal_data["department"],
-                     "Date of effectiveness": personal_data["doj"],
-                     "Week Offs": month_data['weekoff'],
-                     "Working Days": month_data['workingDays'],
-                     "LWP": salary_data['lwp']
-                     }
+                textLines = {"Employee Name": personal_data["employeeName"],
+                             "Employee ID": personal_data["userID"],
+                             "Date of Joining": personal_data["doj"],
+                             "Branch": "Anand",
+                             "Designation": personal_data["designation"],
+                             "Department": personal_data["department"],
+                             "Date of Effectiveness": personal_data["doj"],
+                             "Week Offs": month_data['weekoff'],
+                             "Working Days": month_data['workingDays'],
+                             "LWP": salary_data["lwp"]
+                             }
 
-        textLines_two = {"PAN No.": personal_data["panCardNo"],
-                         "UAN No.": personal_data["uanNo"],
-                         "PF No.": personal_data["pfAccountNo"],
-                         "ESIC No.": personal_data["esicNo"],
-                         "Bank Name": personal_data["bankName"],
-                         "Bank A/c No.": personal_data["accountNumber"],
+                textLines_two = {"PAN No.": "hardcoded number",
+                             "UAN No.": "hardcoded number",
+                             "PF No.": "hardcoded number",
+                             "ESIC No.": "hardcoded number",
+                                 "Bank Name": personal_data["bankName"],
+                                 "Bank A/c No.": personal_data["accountNumber"],
+                                 }
+
+                textLines_three = {"Basic Salary": salary_data["basic"],
+                                   "HRA": salary_data["hra"],
+                                   "DA": salary_data["da"],
+                                   "Other Allowance": salary_data["otherAllowance"],
+                                   "Incentive": salary_data["incentive"],
+                                   "Arrears": salary_data["arrears"],
+                                   "Outstanding Adjustment": salary_data["grsOutstandingAdjustment"],
+                                   "Statutory Bonus": salary_data["statutoryBonus"]
+                                   }
+
+                textLines_four = {"EPFO": salary_data["epfo"],
+                                  "TDS": salary_data["tds"],
+                                  "PT": salary_data["pt"],
+                                  "Leave Deduction": salary_data["leaveDeduction"],
+                                  "Other Deduction": salary_data["otherDeduction"],
+                                  "Outstanding Adjustment": salary_data["dedOutstandingAdjustment"],
+                                  }
+
+                pdf = canvas.Canvas(pdf_file)
+
+                pdf.setTitle(documentTitle)
+
+                # # # # # Company Name and Address # # # # #
+
+                pdf.setFont("Helvetica-Bold", 15)
+                pdf.drawString(50, 800, title)
+
+                pdf.setFont("Helvetica", 10)
+                pdf.drawString(50, 780, address_line1)
+
+                pdf.setFont("Helvetica", 10)
+                pdf.drawString(50, 765, address_line2)
+
+                pdf.line(30, 750, 550, 750)
+
+                # # # # # Add Company Logo # # # # #
+
+                pdf.drawImage('static/assets/alian_logo_2.png', 380, 770, width=150, height=40)
+
+                # # # # # Employee Pay Summary # # # # #
+
+                pdf.setFont("Helvetica", 10)
+                pdf.drawCentredString(290, 735, subtitle)
+
+                pdf.setFont("Helvetica-Bold", 15)
+                pdf.drawCentredString(290, 710, subtitle_one)
+
+                # # # # # PERSONAL INFO # # # # #
+
+                text = pdf.beginText(50, 680)
+                pdf.setFont("Helvetica-Bold", 10)
+                text.setFillColor(colors.black)
+                for key, value in textLines.items():
+                    text.textLines(key)
+                    text.textLines('')
+                pdf.drawText(text)
+
+                text = pdf.beginText(190, 680)
+                pdf.setFont("Helvetica", 10)
+                text.setFillColor(colors.black)
+                for key, value in textLines.items():
+                    text.textLines(str(value))
+                    text.textLines('')
+                pdf.drawText(text)
+
+                # # # # # ACCOUNT INFO # # # # #
+
+                text = pdf.beginText(320, 680)
+                pdf.setFont("Helvetica-Bold", 10)
+                text.setFillColor(colors.black)
+                for key, value in textLines_two.items():
+                    text.textLines(key)
+                    text.textLines('')
+                pdf.drawText(text)
+
+                text = pdf.beginText(410, 680)
+                pdf.setFont("Helvetica", 10)
+                text.setFillColor(colors.black)
+                for key, value in textLines_two.items():
+                    text.textLines(str(value))
+                    text.textLines('')
+                pdf.drawText(text)
+
+                # Table Horizontal lines
+                pdf.line(320, 520, 530, 520)
+                pdf.line(320, 500, 530, 500)
+                pdf.line(320, 480, 530, 480)
+                pdf.line(320, 460, 530, 460)
+
+                # Table Vertical lines
+                pdf.line(320, 520, 320, 460)
+                pdf.line(390, 500, 390, 460)
+                pdf.line(460, 500, 460, 460)
+                pdf.line(530, 520, 530, 460)
+
+                pdf.setFont("Helvetica-Bold", 10)
+                pdf.drawCentredString(425, 505, "Leave Avail")
+                pdf.drawCentredString(355, 485, "CL")
+                pdf.drawCentredString(425, 485, "SL")
+                pdf.drawCentredString(495, 485, "PL")
+                pdf.setFont("Helvetica", 10)
+                pdf.drawCentredString(355, 465, str(salary_data["CL"]))
+                pdf.drawCentredString(425, 465, str(salary_data["SL"]))
+                pdf.drawCentredString(495, 465, str(salary_data["PL"]))
+
+                pdf.line(30, 430, 550, 430)
+
+                # # # # # Amounts # # # # #
+
+                pdf.setFont("Helvetica-Bold", 13)
+
+                pdf.drawString(50, 410, "Earning")
+
+                pdf.drawString(190, 410, "Amount")
+
+                pdf.drawString(320, 410, "Deduction")
+
+                pdf.drawString(470, 410, "Amount")
+
+                pdf.line(30, 400, 550, 400)
+
+                # # # # # EARNING # # # # #
+
+                text = pdf.beginText(50, 370)
+                pdf.setFont("Helvetica-Bold", 10)
+                text.setFillColor(colors.black)
+                for key, value in textLines_three.items():
+                    text.textLines(key)
+                    text.textLines('')
+                pdf.drawText(text)
+
+                text = pdf.beginText(190, 370)
+                pdf.setFont("Helvetica", 10)
+                text.setFillColor(colors.black)
+                for key, value in textLines_three.items():
+                    text.textLines(str(value))
+                    text.textLines('')
+                pdf.drawText(text)
+
+                pdf.line(290, 430, 290, 180)
+
+                # # # # # DEDUCTION # # # # #
+
+                text = pdf.beginText(320, 370)
+                pdf.setFont("Helvetica-Bold", 10)
+                text.setFillColor(colors.black)
+                for key, value in textLines_four.items():
+                    text.textLines(key)
+                    text.textLines('')
+                pdf.drawText(text)
+
+                text = pdf.beginText(470, 370)
+                pdf.setFont("Helvetica", 10)
+                text.setFillColor(colors.black)
+                for key, value in textLines_four.items():
+                    text.textLines(str(value))
+                    text.textLines('')
+                pdf.drawText(text)
+
+                pdf.line(30, 180, 550, 180)
+
+                pdf.setFont("Helvetica-Bold", 13)
+                pdf.drawString(50, 160, "Gross Salary(A)")
+                pdf.setFont("Helvetica", 13)
+                pdf.drawString(190, 160, str(salary_data["grossSalary"]))
+
+                pdf.setFont("Helvetica-Bold", 13)
+                pdf.drawString(320, 160, "Total Deductions(B)")
+                pdf.setFont("Helvetica", 13)
+                pdf.drawString(470, 160, str(salary_data["totalDeduction"]))
+
+                pdf.line(30, 150, 550, 150)
+
+                # # # # # Footer # # # # #
+
+                pdf.setFont("Helvetica-Bold", 15)
+                pdf.drawCentredString(290, 100, f"Total Net Payable = {salary_data['netSalary']} RS")
+
+                pdf.setFont("Helvetica", 10)
+                pdf.drawCentredString(290, 10, "Note : This is electronically generated document")
+
+                pdf.showPage()
+                pdf.save()
+
+                zip_file.write(pdf_file, os.path.basename(pdf_file))
+
+        zip_buffer.seek(0)
+        return zip_buffer
+
+
+    def salary_slip_mail(self, companyname, id, salid):
+        """ CREATE SALARYSLIP PDF FROM PROFILE VIEW """
+
+        empid = id
+
+        all_salary_data = Profile(self.db, empid, companyname).salary_data()
+
+        salary_data = ''
+
+        if salid in all_salary_data.keys():
+
+            personal_data = Profile(self.db, empid, companyname).personal_data()
+
+            salary_data = all_salary_data[salid]
+
+            # GET MONTH WORKING DAYS
+            holidays = self.db.collection(companyname).document('holidays').get().to_dict()
+            month_data = month_count.count_previous_month(holidays, salid)
+            month_data = month_count.count_previous_month(holidays, salid)
+            mont_in_num = int(salid.split('_')[0][5:])
+            month = calendar.month_name[mont_in_num]
+            emp_name = (personal_data["employeeName"]).replace(" ", "_")
+            filename = f'{salid}_{emp_name}.pdf'
+            pdf_file = filename
+            documentTitle = "SalarySlip!"
+            title = "ALIAN SOFTWARE"
+            address_line1 = "Shreeji Arcade, 2nd Floor, Opp Shasvat Hospital,"
+            address_line2 = "Indira Circle, Anand, Gujarat 388001"
+            subtitle = f"Pay Slip for the Month of {month} {salary_data['year']}"
+            subtitle_one = "Employee Pay Summary"
+
+            textLines = {"Employee Name": personal_data["employeeName"],
+                         "Employee ID": personal_data["userID"],
+                         "Date of Joining": personal_data["doj"],
+                         "Branch": "Anand",
+                         "Designation": personal_data["designation"],
+                         "Department": personal_data["department"],
+                         "Date of Effectiveness": personal_data["doj"],
+                         "Week Offs": month_data['weekoff'],
+                         "Working Days": month_data['workingDays'],
+                         "LWP": salary_data["lwp"]
                          }
 
-        textLines_three = {"Basic Salary": salary_data["basic"],
-                           "HRA": salary_data["hra"],
-                           "DA": salary_data["da"],
-                           "Other Allowance": salary_data["otherAllowance"],
-                           "Incentive": salary_data["incentive"],
-                           "Arrears": salary_data["arrears"],
-                           "Outstanding Adjustment": salary_data["grsOutstandingAdjustment"],
-                           "Statutory Bonus": salary_data["statutoryBonus"]
-                           }
+            textLines_two = {"PAN No.": "hardcoded number",
+                             "UAN No.": "hardcoded number",
+                             "PF No.": "hardcoded number",
+                             "ESIC No.": "hardcoded number",
+                             "Bank Name": personal_data["bankName"],
+                             "Bank A/c No.": personal_data["accountNumber"],
+                             }
 
-        textLines_four = {"EPFO": salary_data["epfo"],
-                          "TDS": salary_data["tds"],
-                          "PT": salary_data["pt"],
-                          "Leave Deduction": salary_data["leaveDeduction"],
-                          "Other Deduction": salary_data["otherDeduction"],
-                          "Outstanding Adjustment": salary_data["dedOutstandingAdjustment"],
-                          }
+            textLines_three = {"Basic Salary": salary_data["basic"],
+                               "HRA": salary_data["hra"],
+                               "DA": salary_data["da"],
+                               "Other Allowance": salary_data["otherAllowance"],
+                               "Incentive": salary_data["incentive"],
+                               "Arrears": salary_data["arrears"],
+                               "Outstanding Adjustment": salary_data["grsOutstandingAdjustment"],
+                               "Statutory Bonus": salary_data["statutoryBonus"]
+                               }
 
-        pdf = canvas.Canvas(pdf_file)
+            textLines_four = {"EPFO": salary_data["epfo"],
+                              "TDS": salary_data["tds"],
+                              "PT": salary_data["pt"],
+                              "Leave Deduction": salary_data["leaveDeduction"],
+                              "Other Deduction": salary_data["otherDeduction"],
+                              "Outstanding Adjustment": salary_data["dedOutstandingAdjustment"],
+                              }
 
-        pdf.setTitle(documentTitle)
+            pdf = canvas.Canvas(pdf_file)
 
-        # # # # # Company Name and Address # # # # #
+            pdf.setTitle(documentTitle)
 
-        pdf.setFont("Helvetica-Bold", 15)
-        pdf.drawString(50, 800, title)
+            # # # # # Company Name and Address # # # # #
 
-        pdf.setFont("Helvetica", 10)
-        pdf.drawString(50, 780, address_line1)
+            pdf.setFont("Helvetica-Bold", 15)
+            pdf.drawString(50, 800, title)
 
-        pdf.setFont("Helvetica", 10)
-        pdf.drawString(50, 765, address_line2)
+            pdf.setFont("Helvetica", 10)
+            pdf.drawString(50, 780, address_line1)
 
-        pdf.line(30, 750, 550, 750)
+            pdf.setFont("Helvetica", 10)
+            pdf.drawString(50, 765, address_line2)
 
-        # # # # # Add Company Logo # # # # #
+            pdf.line(30, 750, 550, 750)
 
-        pdf.drawImage('static/assets/alian_logo_2.png', 380, 770, width=150, height=40)
+            # # # # # Add Company Logo # # # # #
 
-        # # # # # Employee Pay Summary # # # # #
+            pdf.drawImage('static/assets/alian_logo_2.png', 380, 770, width=150, height=40)
 
-        pdf.setFont("Helvetica", 10)
-        pdf.drawCentredString(290, 735, subtitle)
+            # # # # # Employee Pay Summary # # # # #
 
-        pdf.setFont("Helvetica-Bold", 15)
-        pdf.drawCentredString(290, 710, subtitle_one)
+            pdf.setFont("Helvetica", 10)
+            pdf.drawCentredString(290, 735, subtitle)
 
-        # # # # # PERSONAL INFO # # # # #
+            pdf.setFont("Helvetica-Bold", 15)
+            pdf.drawCentredString(290, 710, subtitle_one)
 
-        text = pdf.beginText(50, 680)
-        pdf.setFont("Helvetica-Bold", 10)
-        text.setFillColor(colors.black)
-        for key, value in textLines.items():
-            text.textLines(key)
-            text.textLines('')
-        pdf.drawText(text)
+            # # # # # PERSONAL INFO # # # # #
 
-        text = pdf.beginText(190, 680)
-        pdf.setFont("Helvetica", 10)
-        text.setFillColor(colors.black)
-        for key, value in textLines.items():
-            text.textLines(str(value))
-            text.textLines('')
-        pdf.drawText(text)
+            text = pdf.beginText(50, 680)
+            pdf.setFont("Helvetica-Bold", 10)
+            text.setFillColor(colors.black)
+            for key, value in textLines.items():
+                text.textLines(key)
+                text.textLines('')
+            pdf.drawText(text)
 
-        # # # # # ACCOUNT INFO # # # # #
+            text = pdf.beginText(190, 680)
+            pdf.setFont("Helvetica", 10)
+            text.setFillColor(colors.black)
+            for key, value in textLines.items():
+                text.textLines(str(value))
+                text.textLines('')
+            pdf.drawText(text)
 
-        text = pdf.beginText(320, 680)
-        pdf.setFont("Helvetica-Bold", 10)
-        text.setFillColor(colors.black)
-        for key, value in textLines_two.items():
-            text.textLines(key)
-            text.textLines('')
-        pdf.drawText(text)
+            # # # # # ACCOUNT INFO # # # # #
 
-        text = pdf.beginText(410, 680)
-        pdf.setFont("Helvetica", 10)
-        text.setFillColor(colors.black)
-        for key, value in textLines_two.items():
-            text.textLines(str(value))
-            text.textLines('')
-        pdf.drawText(text)
+            text = pdf.beginText(320, 680)
+            pdf.setFont("Helvetica-Bold", 10)
+            text.setFillColor(colors.black)
+            for key, value in textLines_two.items():
+                text.textLines(key)
+                text.textLines('')
+            pdf.drawText(text)
 
-        # Table Horizontal lines
-        pdf.line(320, 520, 530, 520)
-        pdf.line(320, 500, 530, 500)
-        pdf.line(320, 480, 530, 480)
-        pdf.line(320, 460, 530, 460)
+            text = pdf.beginText(410, 680)
+            pdf.setFont("Helvetica", 10)
+            text.setFillColor(colors.black)
+            for key, value in textLines_two.items():
+                text.textLines(str(value))
+                text.textLines('')
+            pdf.drawText(text)
 
-        # Table Vertical lines
-        pdf.line(320, 520, 320, 460)
-        pdf.line(390, 500, 390, 460)
-        pdf.line(460, 500, 460, 460)
-        pdf.line(530, 520, 530, 460)
+            # Table Horizontal lines
+            pdf.line(320, 520, 530, 520)
+            pdf.line(320, 500, 530, 500)
+            pdf.line(320, 480, 530, 480)
+            pdf.line(320, 460, 530, 460)
 
-        pdf.setFont("Helvetica-Bold", 10)
-        pdf.drawCentredString(425, 505, "Leave Balance")
-        pdf.drawCentredString(355, 485, "CL")
-        pdf.drawCentredString(425, 485, "SL")
-        pdf.drawCentredString(495, 485, "PL")
-        pdf.setFont("Helvetica", 10)
-        pdf.drawCentredString(355, 465, str(leave_data["CL"]))
-        pdf.drawCentredString(425, 465, str(leave_data["SL"]))
-        pdf.drawCentredString(495, 465, str(leave_data["PL"]))
+            # Table Vertical lines
+            pdf.line(320, 520, 320, 460)
+            pdf.line(390, 500, 390, 460)
+            pdf.line(460, 500, 460, 460)
+            pdf.line(530, 520, 530, 460)
 
-        pdf.line(30, 430, 550, 430)
+            pdf.setFont("Helvetica-Bold", 10)
+            pdf.drawCentredString(425, 505, "Leave Avail")
+            pdf.drawCentredString(355, 485, "CL")
+            pdf.drawCentredString(425, 485, "SL")
+            pdf.drawCentredString(495, 485, "PL")
+            pdf.setFont("Helvetica", 10)
+            pdf.drawCentredString(355, 465, str(salary_data["CL"]))
+            pdf.drawCentredString(425, 465, str(salary_data["SL"]))
+            pdf.drawCentredString(495, 465, str(salary_data["PL"]))
 
-        # # # # # Amounts # # # # #
+            pdf.line(30, 430, 550, 430)
 
-        pdf.setFont("Helvetica-Bold", 13)
+            # # # # # Amounts # # # # #
 
-        pdf.drawString(50, 410, "Earning")
+            pdf.setFont("Helvetica-Bold", 13)
 
-        pdf.drawString(190, 410, "Amount")
+            pdf.drawString(50, 410, "Earning")
 
-        pdf.drawString(320, 410, "Deduction")
+            pdf.drawString(190, 410, "Amount")
 
-        pdf.drawString(470, 410, "Amount")
+            pdf.drawString(320, 410, "Deduction")
 
-        pdf.line(30, 400, 550, 400)
+            pdf.drawString(470, 410, "Amount")
 
-        # # # # # EARNING # # # # #
+            pdf.line(30, 400, 550, 400)
 
-        text = pdf.beginText(50, 370)
-        pdf.setFont("Helvetica-Bold", 10)
-        text.setFillColor(colors.black)
-        for key, value in textLines_three.items():
-            text.textLines(key)
-            text.textLines('')
-        pdf.drawText(text)
+            # # # # # EARNING # # # # #
 
-        text = pdf.beginText(190, 370)
-        pdf.setFont("Helvetica", 10)
-        text.setFillColor(colors.black)
-        for key, value in textLines_three.items():
-            text.textLines(str(value))
-            text.textLines('')
-        pdf.drawText(text)
+            text = pdf.beginText(50, 370)
+            pdf.setFont("Helvetica-Bold", 10)
+            text.setFillColor(colors.black)
+            for key, value in textLines_three.items():
+                text.textLines(key)
+                text.textLines('')
+            pdf.drawText(text)
 
-        pdf.line(290, 430, 290, 180)
+            text = pdf.beginText(190, 370)
+            pdf.setFont("Helvetica", 10)
+            text.setFillColor(colors.black)
+            for key, value in textLines_three.items():
+                text.textLines(str(value))
+                text.textLines('')
+            pdf.drawText(text)
 
-        # # # # # DEDUCTION # # # # #
+            pdf.line(290, 430, 290, 180)
 
-        text = pdf.beginText(320, 370)
-        pdf.setFont("Helvetica-Bold", 10)
-        text.setFillColor(colors.black)
-        for key, value in textLines_four.items():
-            text.textLines(key)
-            text.textLines('')
-        pdf.drawText(text)
+            # # # # # DEDUCTION # # # # #
 
-        text = pdf.beginText(470, 370)
-        pdf.setFont("Helvetica", 10)
-        text.setFillColor(colors.black)
-        for key, value in textLines_four.items():
-            text.textLines(str(value))
-            text.textLines('')
-        pdf.drawText(text)
+            text = pdf.beginText(320, 370)
+            pdf.setFont("Helvetica-Bold", 10)
+            text.setFillColor(colors.black)
+            for key, value in textLines_four.items():
+                text.textLines(key)
+                text.textLines('')
+            pdf.drawText(text)
 
-        pdf.line(30, 180, 550, 180)
+            text = pdf.beginText(470, 370)
+            pdf.setFont("Helvetica", 10)
+            text.setFillColor(colors.black)
+            for key, value in textLines_four.items():
+                text.textLines(str(value))
+                text.textLines('')
+            pdf.drawText(text)
 
-        pdf.setFont("Helvetica-Bold", 13)
-        pdf.drawString(50, 160, "Gross Salary(A)")
-        pdf.setFont("Helvetica", 13)
-        pdf.drawString(190, 160, str(salary_data["grossSalary"]))
+            pdf.line(30, 180, 550, 180)
 
-        pdf.setFont("Helvetica-Bold", 13)
-        pdf.drawString(320, 160, "Total Deductions(B)")
-        pdf.setFont("Helvetica", 13)
-        pdf.drawString(470, 160, str(salary_data["totalDeduction"]))
+            pdf.setFont("Helvetica-Bold", 13)
+            pdf.drawString(50, 160, "Gross Salary(A)")
+            pdf.setFont("Helvetica", 13)
+            pdf.drawString(190, 160, str(salary_data["grossSalary"]))
 
-        pdf.line(30, 150, 550, 150)
+            pdf.setFont("Helvetica-Bold", 13)
+            pdf.drawString(320, 160, "Total Deductions(B)")
+            pdf.setFont("Helvetica", 13)
+            pdf.drawString(470, 160, str(salary_data["totalDeduction"]))
 
-        # # # # # Footer # # # # #
+            pdf.line(30, 150, 550, 150)
 
-        pdf.setFont("Helvetica-Bold", 15)
-        pdf.drawCentredString(290, 100, f"Total Net Payable = {salary_data['netSalary']} RS")
+            # # # # # Footer # # # # #
 
-        pdf.setFont("Helvetica", 10)
-        pdf.drawCentredString(290, 10, "Note : This is electronically generated document")
+            pdf.setFont("Helvetica-Bold", 15)
+            pdf.drawCentredString(290, 100, f"Total Net Payable = {salary_data['netSalary']} RS")
 
-        pdf.showPage()
-        pdf.save()
+            pdf.setFont("Helvetica", 10)
+            pdf.drawCentredString(290, 10, "Note : This is electronically generated document")
 
-        # Save the file to a BytesIO object
-        pdf_file.seek(0)
+            pdf.showPage()
+            pdf.save()
 
-        # Return the file as a response with appropriate headers
-        return Response(
-            pdf_file,
-            mimetype='application/pdf',
-            headers={
-                "Content-Disposition": f"attachment;filename={filename}",
-                "Content-Type": "application/pdf"
-            }
-        )
+            return pdf_file
+
+        else:
+            pass
 
     def salary_slip(self, companyname, salid, path):
         """ CREATE SALARYSLIP PDF """
         salary_list = Salarymanage(self.db).get_all_emp_salary_data(salid=salid, companyname=companyname)
-        threads = []
-        for i in salary_list:
-            empid = salary_list[i]["userID"]
-            thread = threading.Thread(target=self.salary_slip_personal, args=(empid, companyname, salid, path))
-            thread.start()
-            threads.append(thread)
-        for thread in threads:
-            thread.join()
+        thread = threading.Thread(target=self.generate_slip, args=(salary_list, companyname, salid, path))
+        return thread
+        #
+        # threads = []
+        # for i in salary_list:
+        #     empid = salary_list[i]["userID"]
+        #     thread.start()
+        #     threads.append(thread)
+        # for thread in threads:
+        #     thread.join()

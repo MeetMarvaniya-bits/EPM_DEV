@@ -87,6 +87,31 @@ td, th {
   background-color: #FFFFFF;
 }
 
+ /* Set the width of the first column to 15% */
+ .employee-table th:first-child,
+  .employee-table td:first-child {
+    width: 70%;
+  }
+
+  /* Set the width of the third column to 30% */
+  .employee-table th:nth-child(2),
+  .employee-table td:nth-child(2) {
+    width: 30%;
+  }
+    /* Set the width and height of the modal to 80% of the screen size */
+    .modal-dialog {
+    max-width: 80%;
+    height: 80%;
+  }
+
+  /* Set the height of the modal content to fill the available space */
+  .modal-content {
+    height: 100%;
+  }
+  .modal-body {
+    overflow-y: auto;
+  }
+
 </style>
 {% endblock %}
 {% block content %}
@@ -173,7 +198,15 @@ td, th {
                                 <div class="dropdown">
                                     <!-- Button trigger modal -->
                                     <button id="uploadButton" class="btn border-1 btn-secondary" type="button">
-                                        Import Excel Sheet
+                                        Import Cosec Excel Sheet
+                                    </button>
+                                </div>
+                            </li>
+                            <li class="nav-item me-2">
+                                <div class="dropdown">
+                                    <!-- Button trigger modal -->
+                                    <button id="uploadButton2" class="btn border-1 btn-secondary" type="button">
+                                        Import ERP Excel Sheet
                                     </button>
                                 </div>
                             </li>
@@ -331,15 +364,61 @@ td, th {
                             {% if salary_status=='Paid' or salary_status=='Approved' %}
                             <li class="nav-item me-2">
                                 <div class="dropdown">
-
-                                    <button class="btn border-1 btn-secondary " type="button" aria-haspopup="true"
-                                            data-bs-toggle="modal" data-bs-target="#exampleModal1" id="btn_5"
-                                            aria-expanded="false">
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                         Generate Excelsheet
                                     </button>
-
                                 </div>
                             </li>
+                            <!-- Button trigger modal -->
+                            
+                            
+                            <!-- Modal -->
+                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Generate Excelsheet</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                    <!-- First section -->
+                                    <h6>Generate excel sheet</h6>
+                                    <a href="/bank_excel/{{salid}}"><button type="button" class="btn btn-secondary">Generate for all</button>
+                                    </a>
+                                    
+                                    <!-- Second section -->
+                                    <h6>Employee information</h6>
+                                    <table class="table employee-table">
+                                        <thead>
+                                          <tr>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Select</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          <!-- Generate table rows dynamically -->
+                                          {% for j in data %}
+                                            <tr>
+                                              <td id="{{ data[j]["userID"] }}">{{ data[j]["employeeName"] }}</td>
+                                              <td><input type="checkbox"></td>
+                                            </tr>
+                                          {% endfor %}
+                                        </tbody>
+                                      </table>
+                            
+                                    <!-- Third section -->
+                                    
+                            
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary">Save selected employees</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                            
+  
                             {% endif %}
                             {% if salary_status=='Paid' %}
                             <li class="nav-item me-2">
@@ -395,6 +474,9 @@ td, th {
                         <thead class="text-center" style="position: sticky; top: 0px;">
                         <tr class="border-bottom center align-baseline"
                             style="border: 2px solid !important;  background-color: #FFFFFF;">
+                            <th scope="col rwo-2" rowspan="2" class="fix align-middle"
+                                style="background-color: #DFE1E6;">SR
+                            </th>
                             <th scope="col rwo-2" rowspan="2" class="fix align-middle"
                                 style="background-color: #DFE1E6;">Employee
                                 Name
@@ -459,6 +541,7 @@ td, th {
                         {% for i in data%}
 
                         <tr class="border-bottom" style="border:2px solid black !important;">
+                            <td>{{ loop.index}}</td>
                             <td scope="col" class="fix second-child">{{data[i]['employeeName']}}</td>
                             <td scope="col" class="fix third-child" style="background-color: #FFFFFF;">
                                 {{data[i]['WrkHrs']}}
@@ -1019,36 +1102,72 @@ else if(salaryStatus==='Inreview') {
 
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const uploadButton = document.getElementById('uploadButton');
+    document.addEventListener('DOMContentLoaded', () => {
+        const uploadButton = document.getElementById('uploadButton');
 
-    uploadButton.addEventListener('click', () => {
-        const fileInput = document.createElement('input');
-        fileInput.type = 'file';
+        uploadButton.addEventListener('click', () => {
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
 
-        fileInput.addEventListener('change', () => {
-            const file = fileInput.files[0];
-            const formData = new FormData();
-            formData.append('file', file);
+            fileInput.addEventListener('change', () => {
+                const file = fileInput.files[0];
+                const formData = new FormData();
+                formData.append('file', file);
+                fileInput.accept = '.xlsx, .xls';
 
-            fetch('/{{username}}/upload/{{salid}}', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Handle the response from the server
-                console.log(data);
-            })
-            .catch(error => {
-                // Handle any errors
-                console.error(error);
+                fetch('/{{username}}/upload/{{salid}}', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Handle the response from the server
+                        console.log(data);
+                    })
+                    .catch(error => {
+                        // Handle any errors
+                        console.error(error);
+                    });
             });
-        });
 
-        fileInput.click();
+            fileInput.click();
+        });
     });
-});
+</script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const uploadButton = document.getElementById('uploadButton2');
+
+        uploadButton.addEventListener('click', () => {
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+
+            fileInput.addEventListener('change', () => {
+                const file = fileInput.files[0];
+                const formData = new FormData();
+                formData.append('file', file);
+                fileInput.accept = '.txt';
+
+                fetch('/{{username}}/upload_erp_sheet/{{salid}}', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        // Handle the response from the server
+                        console.log(data);
+                    })
+                    .catch(error => {
+                        // Handle any errors
+                        console.error(error);
+                    });
+            });
+
+            fileInput.click();
+        });
+    });
 </script>
 
 

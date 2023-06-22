@@ -7,7 +7,7 @@ from flask import request
 class Admin_Register():
     def __init__(self, db):
         self.db = db
-        self.mail = Mail()
+        self.mail = Mail(db)
 
     def admin_register(self, data=None, companyname=None):
         data_dict = {}
