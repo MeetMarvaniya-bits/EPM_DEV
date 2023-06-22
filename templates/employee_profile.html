@@ -678,7 +678,7 @@
                                                                                                                                        type="radio"
                                                                                                                                        name="epfo"
                                                                                                                                        id="inlineRadio1"
-                                                                                                                                       value="yes"
+                                                                                                                                       value="True"
                                                                                                                                        onclick="toggleDataFields(true)">
                                                                                                                                 <label class="form-check-label"
                                                                                                                                        for="inlineRadio1" style="color:black;">Yes</label>
@@ -688,7 +688,7 @@
                                                                                                                                        type="radio"
                                                                                                                                        name="epfo"
                                                                                                                                        id="inlineRadio2"
-                                                                                                                                       value="no"
+                                                                                                                                       value="False"
                                                                                                                                        checked
                                                                                                                                        onclick="toggleDataFields(false)">
                                                                                                                                 <label class="form-check-label"
@@ -755,11 +755,11 @@
                                                                                                                                       <label class="col-form-label control-label col-sm-4" for="abry" style="color:black;"><b>ABRY</b></label>
                                                                                                                                       <div class="col-sm-5" id="abry">
                                                                                                                                         <div class="form-check form-check-inline">
-                                                                                                                                          <input class="form-check-input" type="radio" name="abry" id="abryYes" value="yes" onclick="setAbryValue('yes')">
+                                                                                                                                          <input class="form-check-input" type="radio" name="abry" id="abryYes" value="True" onclick="setAbryValue('yes')">
                                                                                                                                           <label class="form-check-label" for="abryYes" style="color:black;">Yes</label>
                                                                                                                                         </div>
                                                                                                                                         <div class="form-check form-check-inline">
-                                                                                                                                          <input class="form-check-input" type="radio" name="abry" id="abryNo" value="no" onclick="setAbryValue('no')">
+                                                                                                                                          <input class="form-check-input" type="radio" name="abry" id="abryNo" value="False" onclick="setAbryValue('no')">
                                                                                                                                           <label class="form-check-label" for="abryNo" style="color:black;">No</label>
                                                                                                                                         </div>
                                                                                                                                       </div>
@@ -4058,7 +4058,7 @@ return daysDiff;
             xhr.addEventListener('readystatechange', function () {
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
-                        window.location.href = `http://192.168.0.181:3005/${username}/tds_data_update/${id}`;
+                        window.location.href = `http://192.168.0.78:3005/${username}/tds_data_update/${id}`;
                     } else {
                         console.error(xhr.responseText); // Handle error response
                     }
@@ -4266,7 +4266,7 @@ function handleDropdownChange(index) {
   }
 
   var epfoValue = "{{ data['personal_data']['epfo_status'] }}";
-  if (epfoValue === 'yes') {
+  if (epfoValue === 'True') {
     toggleDataFields(true);
   } else {
     toggleDataFields(false);
@@ -4279,7 +4279,7 @@ function handleDropdownChange(index) {
     var abryYesRadioButton = document.getElementById('abryYes');
     var abryNoRadioButton = document.getElementById('abryNo');
 
-    if (value === 'yes') {
+    if (value === 'True') {
       abryYesRadioButton.checked = true;
       abryNoRadioButton.checked = false;
     } else {

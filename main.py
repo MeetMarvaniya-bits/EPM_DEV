@@ -40,6 +40,7 @@ from store_excel_data import Uploaddata
 from flask_caching import Cache
 
 
+
 # FLASK APP
 app = Flask(__name__)
 cache = Cache(app, config={'CACHE_TYPE': 'redis'})
@@ -425,8 +426,6 @@ def employee_list(username):
     department = department_data.result()
     #print(employee_list)
     return render_template('employees_list.html', data=employee_list, department=department, username=username)
-
-
 
 
 @app.route('/<username>/upload_data', methods=['POST'])
@@ -1030,6 +1029,19 @@ def upload(username,salid):
         return redirect(url_for('salary', username=username))
     return redirect(url_for('salary', username=username))
 
+@app.route('/<username>/upload_erp_sheet/<salid>', methods=['POST'])
+@login_required
+def upload_erp_sheet(username,salid):
+    ''' IMPORT EXCEL SHEET FOR SALARY DATA '''
+    holidays = db.collection(companyname).document('holidays').get().to_dict()
+    if request.method == 'POST':
+        file = request.files['file']
+        data = file.read().decode('utf-8')
+        data_list = json.loads(data)
+        data_dict = {item['email']: item['workHours'] for item in data_list}
+        SalaryCalculation(db, companyname).erp_excel_calculation(salid=salid, excel_data_all=data_dict, holidays=holidays)
+        return redirect(url_for('salary', username=username))
+    return redirect(url_for('salary', username=username))
 
 @app.route('/<username>/upload_erp_sheet/<salid>', methods=['POST'])
 @login_required
@@ -1105,9 +1117,6 @@ def salary_sheet_view(username, salid):
     print(months[0])
     return render_template('salary_sheet_view.html', data=salary_list, salid=salid, username=username,
                            salary_status=salary_status, moath_data=moath_data, holidays=holidays,month_name=month_name,months=months)
-
-
-
 
 @app.route('/bank_excel/<salid>')
 # @login_required
@@ -1339,7 +1348,6 @@ def add_data(username):
         excel.store_excel_data(companyname, excel_path)
         return redirect(url_for('dashboard', username=username))
     return render_template('add_excel_file.html', username=username)
-
 
 @app.route('/<username>/send_email/<salid>')
 @login_required

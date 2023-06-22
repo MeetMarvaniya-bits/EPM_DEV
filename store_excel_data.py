@@ -56,7 +56,7 @@ class Uploaddata():
         header_row_index = None
 
         for i, row in enumerate(data):
-            if row == ['Name', 'Department', 'Job Position', 'Designation', 'COSEC ID', 'Password', 'Confirm Password', 'Date of Joining (DD/MM/YYYY)', 'CTC ₹ per year', 'Email','role']:
+            if row == ['Name', 'Department', 'Job Position', 'Designation', 'COSEC ID', 'Password', 'Confirm Password', 'DOJ (DD-MM-YYYY)', 'DOB (DD-MM-YYYY)', 'CTC ₹ per year', 'Email', 'role', 'Bank Name ', 'Account Nuimber', 'Location', 'EPFO', 'ABRY']:
                 header_row_index = i
 
         if header_row_index is None:
@@ -73,46 +73,61 @@ class Uploaddata():
                 employee_records.append(record)
 
         all_data = employee_records
-        print((all_data))
-        print((all_data[1:]))
         count = 0
 
         for data in all_data[1:]:
             doj = ''
-            if data['Date of Joining (DD/MM/YYYY)'][2] == "/":
-                date = (data['Date of Joining (DD/MM/YYYY)']).split('/')
+            if data['DOJ (DD-MM-YYYY)'][2] == "/":
+                date = (data['DOJ (DD-MM-YYYY)']).split('/')
                 doj = f"{date[2]}-{date[1]}-{date[0]}"
-            elif data['Date of Joining (DD/MM/YYYY)'][2] == "-":
-                date = (data['Date of Joining (DD/MM/YYYY)']).split('-')
+            elif data['DOJ (DD-MM-YYYY)'][2] == "-":
+                date = (data['DOJ (DD-MM-YYYY)']).split('-')
                 doj = f"{date[2]}-{date[1]}-{date[0]}"
+
+
+
+            dob = ''
+            if data['DOB (DD-MM-YYYY)'][2] == "/":
+                date = (data['DOB (DD-MM-YYYY)']).split('/')
+                dob = f"{date[2]}-{date[1]}-{date[0]}"
+            elif data['DOB (DD-MM-YYYY)'][2] == "-":
+                date = (data['DOB (DD-MM-YYYY)']).split('-')
+
+                dob = f"{date[2]}-{date[1]}-{date[0]}"
             emp_data = {'cosecID': data["COSEC ID"], 'employeeName': data["Name"], 'department': data["Department"],
-                        'designation': data["Designation"], "password": data['Password'],
-                        'confirmPassword': data["Confirm Password"], 'doj': doj,
-                        'salary': data['CTC ₹ per year'], 'workEmail': data['Email'], 'role':data['role'],
+                        'designation': data["Designation"],'jobPosition': data['Job Position'], "password": data['Password'],
+                        'confirmPassword': data["Confirm Password"], 'doj': doj,'dob':dob,
+                        'salary': data['CTC ₹ per year'], 'workEmail': data['Email'], 'role':   data['role'],
+                        'bankName': data['Bank Name '],'accountNumber': data['Account Nuimber'],
+                        'location': data['Location'], 'epfo_status': data['EPFO'], 'abry': data['ABRY']
                         }
             # #print(emp_data)
             count+=1
-            print(count)
 
-            try:
-                print(count)
-                print(emp_data['employeeName'].strip())
-                print(emp_data['workEmail'])
-                user = auth.create_user(
-                    email=emp_data['workEmail'],
-                    password=emp_data['password']
-                )
-                emp_data["userID"] = user.uid
-                print('User created successfully:', user.uid)
-                self.db.collection(companyname).document('employee').collection('employee').document(user.uid).set(emp_data)
-            except Exception as e:
-                user_auth = sign_in_with_email_and_password(email=emp_data['workEmail'].strip(),
-                                                            password=emp_data['password'])
-                if "registered" in user_auth:
-                    print(count)
-                    emp_data["userID"] = user_auth['localId']
-                    print(user_auth['email'])
-                    self.db.collection(companyname).document('employee').collection('employee').document(
-                        user_auth['localId']).set(emp_data)
-                else:
-                    print('Error:', str(e))
+
+            # try:
+            #     user = auth.create_user(
+            #         email=emp_data['workEmail'],
+            #         password=emp_data['password']
+            #     )
+            #     emp_data["userID"] = user.uid
+            #     print("in try")
+            #     self.db.collection(companyname).document('employee').collection('employee').document(user.uid).set(emp_data)
+            # except Exception as e:
+            #     user_auth = sign_in_with_email_and_password(email=emp_data['workEmail'].strip(),
+            #                                                 password=emp_data['password'])
+            #     if "registered" in user_auth:
+            #         emp_data["userID"] = user_auth['localId']
+            #
+            #         self.db.collection(companyname).document('employee').collection('employee').document(
+            #             user_auth['localId']).set(emp_data)
+            #         print("in excep")
+            #     else:
+            #         # global counts
+            #         # counts += 1
+            #         print("in else")
+            #         emp_data["userID"] = data["Name"].strip()
+            #         self.db.collection(companyname).document('employee').collection('employee').document(emp_data['userID']).set(emp_data)
+
+            self.db.collection(companyname).document('employee').collection('employee').document().set(emp_data)
+

@@ -12,11 +12,12 @@ class TDSData():
 
         users_ref = self.db.collection(companyname).document('employee').collection('employee').document(id)
 
+        # personal_data = users_ref.get().to_dict()
+
         tds_data = users_ref.collection('tdsmst').document('tds').get().to_dict()
 
 
-
-        if tds_data == None or tds_data['hlamount'] == '' or tds_data['hlamount'] == None :
+        if tds_data == None:
 
             tds = 0
 
@@ -24,7 +25,7 @@ class TDSData():
 
         else:
 
-            current_month = float(datetime.date.today().month)
+            current_month = 5
 
             # current_month = 12
 
@@ -44,12 +45,16 @@ class TDSData():
 
             # EPFO Data from previous Salaryslip
 
+            # if personal_data['abry'] == 'True':
+
+
             if current_month == 1:
                 annual_pf = float(epfo) * 12
             elif current_month == 2:
                 annual_pf = float(epfo) * 12
             else:
                 annual_pf = float(epfo) * 12
+            print(f"epfo{annual_pf}")
 
             # 80C (1,50,000 Limit)
 
@@ -63,9 +68,9 @@ class TDSData():
 
             # TDS Health Insurance
 
-            health_insurance = float(tds_data["hipannual"]) + \
-                               float(tds_data["hisannual"]) + \
-                               float(tds_data["hifannual"])
+            health_insurance = float(tds_data["hipannual"]) + float(tds_data["hisannual"]) + float(tds_data["hifannual"])
+
+
 
             if health_insurance >= 50000:
                 new_total_2 = 50000
@@ -138,22 +143,25 @@ class TDSData():
 
             else:
                 tds_deducted_till_now = 0
-                if current_month <= 4:
-                    no_of_remaining_month = (12 - 9 - current_month) + 2
-                elif current_month == 5:
-                    no_of_remaining_month = 12
-                    tds_deducted_till_now = 0
-                else:
-                    no_of_remaining_month = (12 - current_month) + 5
+                no_of_remaining_month = 12
+                # if current_month <= 4:
+                #     no_of_remaining_month = (12 - 9 - current_month) + 2
+                # elif current_month == 5:
+                #     no_of_remaining_month = 12
+                #     tds_deducted_till_now = 0
+                # else:
+                #     no_of_remaining_month = (12 - current_month) + 5
+
+            print(no_of_remaining_month)
 
 
 
             # TDS Calculate
 
             if no_of_remaining_month == 0:
-                tds = round(abs(new_total_6), 2)
+                tds = round(abs(new_total_6))
             else:
-                tds = round(abs((new_total_6 - tds_deducted_till_now) / no_of_remaining_month), 2)
+                tds = round(abs((new_total_6 - tds_deducted_till_now) / no_of_remaining_month))
 
             return tds
 

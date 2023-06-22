@@ -30,7 +30,7 @@ class SalaryData():
 
         value_date = f'01/{next_month}/{next_year}'
 
-        debited_account_no = '000000000'
+        debited_account_no = '02940200001115'
 
         custom_detail_1 = f'{month}{year}'
 
@@ -77,8 +77,7 @@ class SalaryData():
             data = user_ref.get().to_dict()
 
             benificiary_bank = data['bankName']
-
-            if benificiary_bank == "BankOfBaroda":
+            if benificiary_bank == "BOB":
 
                 message_type = 'IFT'
 
@@ -90,8 +89,7 @@ class SalaryData():
 
                 transaction_type = 'NEFT'
 
-            benificiary_name = data['accountHolderName']
-
+            benificiary_name = data['employeeName'].capitalize()
             net_salary = salary_list[i]['netSalary']
 
             if net_salary == '':
@@ -101,10 +99,14 @@ class SalaryData():
             else:
 
                 payment_amount = f'{round(float(net_salary), 2)}'
-
-            beneficiary_ifsc_code = data['ifscCode']
+            if data['bankName'] != "BOB":
+                # beneficiary_ifsc_code = data['ifscCode']
+                beneficiary_ifsc_code = "skdjbvskjdb"
+            else:
+                beneficiary_ifsc_code = ""
 
             beneficiary_account_no = data['accountNumber']
+            # beneficiary_account_no = "9874987987987"
 
             data = {'CUSTOM_DETAILS1': custom_detail_1, 'Value Date': value_date, 'Message Type': message_type,
                     'Debit Account No.': debited_account_no, 'Beneficiary Name': benificiary_name,

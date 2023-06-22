@@ -46,11 +46,8 @@ class SalarySlip():
 
         salary_data = Profile(self.db, empid, companyname).salary_data()[salid]
 
-        leave_data = Profile(self.db, empid, companyname).leave_data()[0]
-
         # GET MONTH WORKING DAYS
         holidays = self.db.collection(companyname).document('holidays').get().to_dict()
-        month_data = month_count.count_previous_month(holidays, salid)
         month_data = month_count.count_previous_month(holidays, salid)
         mont_in_num = int(salid.split('_')[0][5:])
         month = calendar.month_name[mont_in_num]
@@ -76,10 +73,10 @@ class SalarySlip():
                      "LWP": salary_data["lwp"]
                      }
 
-        textLines_two = {"PAN No.": personal_data["panCardNo"],
-                         "UAN No.": personal_data["uanNo"],
-                         "PF No.": personal_data["pfAccountNo"],
-                         "ESIC No.": personal_data["esicNo"],
+        textLines_two = {"PAN No.": "hardcoded number",
+                          "UAN No.": "hardcoded number",
+                          "PF No.": "hardcoded number",
+                         "ESIC No.": "hardcoded number",
                          "Bank Name": personal_data["bankName"],
                          "Bank A/c No.": personal_data["accountNumber"],
                          }
@@ -180,14 +177,14 @@ class SalarySlip():
         pdf.line(530, 520, 530, 460)
 
         pdf.setFont("Helvetica-Bold", 10)
-        pdf.drawCentredString(425, 505, "Leave Balance")
+        pdf.drawCentredString(425, 505, "Leave Avail")
         pdf.drawCentredString(355, 485, "CL")
         pdf.drawCentredString(425, 485, "SL")
         pdf.drawCentredString(495, 485, "PL")
         pdf.setFont("Helvetica", 10)
-        pdf.drawCentredString(355, 465, str(leave_data["CL"]))
-        pdf.drawCentredString(425, 465, str(leave_data["SL"]))
-        pdf.drawCentredString(495, 465, str(leave_data["PL"]))
+        pdf.drawCentredString(355, 465, str(salary_data["CL"]))
+        pdf.drawCentredString(425, 465, str(salary_data["SL"]))
+        pdf.drawCentredString(495, 465, str(salary_data["PL"]))
 
         pdf.line(30, 430, 550, 430)
 
@@ -297,7 +294,6 @@ class SalarySlip():
                 empid = salary_list[i]["userID"]
                 personal_data = Profile(self.db, empid, companyname).personal_data()
                 salary_data = Profile(self.db, empid, companyname).salary_data()[salid]
-                leave_data = Profile(self.db, empid, companyname).leave_data()[0]
                 holidays = self.db.collection(companyname).document('holidays').get().to_dict()
                 month_data = month_count.count_previous_month(holidays, salid)
                 mont_in_num = int(salid.split('_')[0][5:])
@@ -324,10 +320,10 @@ class SalarySlip():
                              "LWP": salary_data["lwp"]
                              }
 
-                textLines_two = {"PAN No.": personal_data["panCardNo"],
-                                 "UAN No.": personal_data["uanNo"],
-                                 "PF No.": personal_data["pfAccountNo"],
-                                 "ESIC No.": personal_data["esicNo"],
+                textLines_two = {"PAN No.": "hardcoded number",
+                             "UAN No.": "hardcoded number",
+                             "PF No.": "hardcoded number",
+                             "ESIC No.": "hardcoded number",
                                  "Bank Name": personal_data["bankName"],
                                  "Bank A/c No.": personal_data["accountNumber"],
                                  }
@@ -428,14 +424,14 @@ class SalarySlip():
                 pdf.line(530, 520, 530, 460)
 
                 pdf.setFont("Helvetica-Bold", 10)
-                pdf.drawCentredString(425, 505, "Leave Balance")
+                pdf.drawCentredString(425, 505, "Leave Avail")
                 pdf.drawCentredString(355, 485, "CL")
                 pdf.drawCentredString(425, 485, "SL")
                 pdf.drawCentredString(495, 485, "PL")
                 pdf.setFont("Helvetica", 10)
-                pdf.drawCentredString(355, 465, str(leave_data["CL"]))
-                pdf.drawCentredString(425, 465, str(leave_data["SL"]))
-                pdf.drawCentredString(495, 465, str(leave_data["PL"]))
+                pdf.drawCentredString(355, 465, str(salary_data["CL"]))
+                pdf.drawCentredString(425, 465, str(salary_data["SL"]))
+                pdf.drawCentredString(495, 465, str(salary_data["PL"]))
 
                 pdf.line(30, 430, 550, 430)
 
@@ -537,8 +533,6 @@ class SalarySlip():
 
             salary_data = all_salary_data[salid]
 
-            leave_data = Profile(self.db, empid, companyname).leave_data()[0]
-
             # GET MONTH WORKING DAYS
             holidays = self.db.collection(companyname).document('holidays').get().to_dict()
             month_data = month_count.count_previous_month(holidays, salid)
@@ -567,10 +561,10 @@ class SalarySlip():
                          "LWP": salary_data["lwp"]
                          }
 
-            textLines_two = {"PAN No.": personal_data["panCardNo"],
-                             "UAN No.": personal_data["uanNo"],
-                             "PF No.": personal_data["pfAccountNo"],
-                             "ESIC No.": personal_data["esicNo"],
+            textLines_two = {"PAN No.": "hardcoded number",
+                             "UAN No.": "hardcoded number",
+                             "PF No.": "hardcoded number",
+                             "ESIC No.": "hardcoded number",
                              "Bank Name": personal_data["bankName"],
                              "Bank A/c No.": personal_data["accountNumber"],
                              }
@@ -671,14 +665,14 @@ class SalarySlip():
             pdf.line(530, 520, 530, 460)
 
             pdf.setFont("Helvetica-Bold", 10)
-            pdf.drawCentredString(425, 505, "Leave Balance")
+            pdf.drawCentredString(425, 505, "Leave Avail")
             pdf.drawCentredString(355, 485, "CL")
             pdf.drawCentredString(425, 485, "SL")
             pdf.drawCentredString(495, 485, "PL")
             pdf.setFont("Helvetica", 10)
-            pdf.drawCentredString(355, 465, str(leave_data["CL"]))
-            pdf.drawCentredString(425, 465, str(leave_data["SL"]))
-            pdf.drawCentredString(495, 465, str(leave_data["PL"]))
+            pdf.drawCentredString(355, 465, str(salary_data["CL"]))
+            pdf.drawCentredString(425, 465, str(salary_data["SL"]))
+            pdf.drawCentredString(495, 465, str(salary_data["PL"]))
 
             pdf.line(30, 430, 550, 430)
 
