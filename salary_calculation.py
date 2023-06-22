@@ -503,8 +503,7 @@ class SalaryCalculation():
         working_days_per_week = {}
         # holidays=holidays.keys()
         holiday = 0
-
-        # # Get the number of days in the current month
+ # # Get the number of days in the current month
         prev_num_days = calendar.monthrange(year, (prev_month))[1]
 
         # Create a list of all the dates in the current month
@@ -536,7 +535,7 @@ class SalaryCalculation():
 
         employee_list_with_increments = (self.db.collection(self.companyname).document('increments').get()).to_dict()
 
-        for data in excel_data_all:
+  for data in excel_data_all:
             # print(data)
             new_data = self.db.collection(self.companyname).document(u'employee').collection('employee').where('cosecID', '==', int(data[" User ID"])).get()
             print(new_data)
@@ -568,6 +567,7 @@ class SalaryCalculation():
                     incentive = float(salary_data['incentive'])
 
                     grsOutstandingAdjustment = float(salary_data['grsOutstandingAdjustment'])
+                    statutoryBonus = float(salary_data['statutoryBonus'])
 
                     statutoryBonus = float(salary_data['statutoryBonus'])
 

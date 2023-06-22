@@ -1,3 +1,4 @@
+import calendar
 import datetime
 from concurrent.futures import ThreadPoolExecutor
 from flask import Flask, render_template, request, redirect, url_for, session, send_file, Response
@@ -17,7 +18,7 @@ from salary_slip import SalarySlip
 from register import Register
 from admin_register import Admin_Register
 from login import Login
-from moth_days import MonthCount
+from month_days import MonthCount
 from mail import Mail
 import concurrent.futures
 from salary_calculation import SalaryCalculation
@@ -950,9 +951,9 @@ def salary(username,year=datetime.datetime.now().year):
     year=year
     holidays = db.collection(companyname).document('holidays').get().to_dict()
     if datetime.datetime.now().day == 1 and 'session_salary' not in session:
-        SalaryCalculation(db, companyname).generate_salary(holidays=holidays)
+
         leaveobj.leave_add(companyname)
-        session['session_salary'] = datetime.datetime.now()
+        session['session_leave'] = datetime.datetime.now()
         #print("create session Variable")
 
     if request.method == 'POST':
@@ -974,18 +975,14 @@ def salary(username,year=datetime.datetime.now().year):
     def get_all_month_salary_data(year):
         data=db.collection(companyname).document('monthly_salary_total').get().to_dict()
         # print(data.to_dict())
-        if data == None:
-            return {}
+
         return data[str(year)]
 
     def get_salary_status(year):
         data_dict=db.collection(companyname).document('salary_status').get().to_dict()
         year = year
-
-        if data_dict == None or data_dict == {}:
-            return {}, [year], year
-
-        return data_dict[str(year)],list(data_dict.keys()),year
+        print(data_dict['excel_upload'])
+        return data_dict[str(year)],list(data_dict.keys()),year,data_dict['excel_upload']
 
     with ThreadPoolExecutor(max_workers=3) as executor:
         salary_criteria_future = executor.submit(get_salary_criteria)
@@ -994,18 +991,35 @@ def salary(username,year=datetime.datetime.now().year):
 
     salary_criteria = salary_criteria_future.result()
     salary_list = salary_list_future.result()
-    salary_status,years,current_year = salary_status_future.result()
-    print(salary_list)
-    print(year)
-    print(years)
-    return render_template('salary_sheet_month.html', data=salary_list, salary_criteria=salary_criteria
-                           , username=username, salary_status=salary_status, current_year=current_year,years=years)
+    salary_status,years,current_year,register_button = salary_status_future.result()
+    years = [i for i in years if 'excel_upload'!= i]
+    return render_template('salary_sheet_month.html', data=salary_list, salary_criteria=salary_criteria,username=username, salary_status=salary_status, current_year=current_year,years=years,register_button=register_button)
 
 
-@app.route('/<username>/generatesalary/')
-def generate_salarysheet (username):
+@app.route('/<username>/generatesalary/<date1>/<date2>')
+def generate_salarysheet(username, date1, date2):
+    print(type(date2),date1)
+
+    startdate = date1
+
+    enddate = date2
+    startday = startdate.split("-")[-1]
+    startmonth = startdate.split("-")[1]
+    startyear = startdate.split("-")[0]
+
+    endday = enddate.split("-")[-1]
+    endmonth = enddate.split("-")[1]
+    endyear = enddate.split("-")[0]
+
+    print(endyear, endday )
+    print(startyear, startday)
+
+
     holidays = db.collection(companyname).document('holidays').get().to_dict()
-    SalaryCalculation(db, companyname).generate_salary(holidays=holidays)
+
+    working_days=moth_count.count_working_days(holidays, startdate, enddate)
+    print(working_days)
+    SalaryCalculation(db, companyname).generate_salary(holidays=holidays,startdate=date1,enddate=date2)
     leaveobj.leave_add(companyname)
     session['session_salary'] = datetime.datetime.now()
     print("create session Variable")
@@ -1038,6 +1052,47 @@ def upload_erp_sheet(username,salid):
         return redirect(url_for('salary', username=username))
     return redirect(url_for('salary', username=username))
 
+# @app.route('/<username>/upload/<salid>', methods=['POST'])
+# @login_required
+# def upload(username,salid):
+#     ''' IMPORT EXCEL SHEET FOR SALARY DATA '''
+#     holidays = db.collection(companyname).document('holidays').get().to_dict()
+#     if request.method == 'POST':
+#         file = request.files['file']
+#         all_data = read_excel_leave_data.read_excel_rows(file)
+#         SalaryCalculation(db, companyname).excel_calculation(salid=salid,excel_data_all=all_data, holidays=holidays)
+#         year = salid.split('_')[1]
+#         salary_total = {'netSalary': 0, 'grossSalary': 0, 'epfo': 0, 'pt': 0, 'tds': 0}
+#         # GET ALL EMPLOYEE USER ID FROM EXCEL SHEET
+#         for data in all_data:
+#             # print(data)
+#             new_data = db.collection(companyname).document(u'employee').collection('employee').where('cosecID', '==', data[" User ID"]).get()
+#             if len(new_data) != 0:
+#                 for details in new_data:
+#                     document_name = details.to_dict()['userID']
+#                     emp_salary_data = {'cosecID': data[" User ID"], 'WO': data["WO"], 'UL': data["UL"],
+#                                        'OT': data["OT"], 'WrkHrs': data[" WrkHrs"],'paidLeave':data["PL"], 'CL': data["C_L"],
+#                                        'PL': data["P_L"], 'SL': data["S_L"]}
+#                     # print(emp_salary_data)
+#                     SalaryCalculation(db, companyname).excel_calculation(empid=document_name, salid=salid, excel_data=emp_salary_data, holidays=holidays)
+#                     # try:
+#                     #     db.collection(companyname).document(u'employee').collection('employee').document(document_name).collection('salaryslips').document(salid).update(emp_salary_data)
+#                     # except:
+#                     #     pass
+#                     # print(details.to_dict())
+#                     salary_data = db.collection(companyname).document(u'employee').collection('employee').document(document_name).collection('salaryslips').document(salid).get().to_dict()
+#                     if salary_data != None:
+#                         salary_total.update({
+#                             'netSalary': round(salary_total['netSalary'] + float(salary_data["netSalary"]), 2),
+#                             'grossSalary': round(salary_total['grossSalary'] + float(salary_data["grossSalary"]), 2),
+#                             'epfo': round(salary_total['epfo'] + float(salary_data["epfo"]), 2),
+#                             'pt': round(salary_total['pt'] + float(salary_data["pt"]), 2),
+#                             'tds': round((salary_total['tds'] + float(salary_data["tds"])),2)
+#                         })
+#         db.collection(companyname).document('monthly_salary_total').update({str(f'{year}.{salid}'): salary_total})
+#         return redirect(url_for('salary', username=username))
+#     return redirect(url_for('salary', username=username))
+
 
 @app.route('/<username>/salarysheetview/<salid>', methods=['GET', 'POST'])
 @login_required
@@ -1055,14 +1110,14 @@ def salary_sheet_view(username, salid):
             holidays = db.collection(companyname).document('holidays').get().to_dict()
             moath_data = moth_count.count(holidays)
             db.collection(companyname).document('month_data').set(moath_data)
-        elif 'date' not in form.keys():
-            fields = {}
-            for key, value in form.items():
-                fields.update({key: value})
-
-            path = get_download_folder()
-            salary_excel = SalaryData(db)
-            salary_excel.add_data(salid=salid, fields=fields, path=path, companyname=companyname)
+        # elif 'date' not in form.keys():
+        #     fields = {}
+        #     for key, value in form.items():
+        #         fields.update({key: value})
+        #
+        #     path = get_download_folder()
+        #     salary_excel = SalaryData(db)
+        #     salary_excel.add_data(salid=salid, fields=fields, path=path, companyname=companyname)
         else:
             pass
 
@@ -1085,7 +1140,6 @@ def salary_sheet_view(username, salid):
     print(months[0])
     return render_template('salary_sheet_view.html', data=salary_list, salid=salid, username=username,
                            salary_status=salary_status, moath_data=moath_data, holidays=holidays,month_name=month_name,months=months)
-
 
 @app.route('/bank_excel/<salid>')
 # @login_required
@@ -1265,8 +1319,6 @@ def download_pdf():
     return response
 
 
-
-
 @app.route('/<username>/pdf/<salid>')
 @login_required
 def pdf_all(username, salid):
@@ -1339,6 +1391,7 @@ def send_employee_salaryslip(username, salid):
         mail_obj.send_employee_pdf(company_mail=company_mail, data=data, auth_password=auth_password, path=path,
                                    companyname=companyname, salid=salid)
     return redirect(url_for('salary_sheet_view', salid=salid, username=username))
+
 
 
 if __name__ == '__main__':

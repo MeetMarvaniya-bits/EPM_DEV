@@ -42,9 +42,15 @@ class Profile:
             str(self.id)).collection('salaryslips').stream()
         data_dict = {}
         for doc in docs:
-            #print(doc.to_dict())
+            print(doc.to_dict())
             month_name = calendar.month_name[int(doc.id.split('_')[0][5:])]
             year=doc.id.split('_')[1]
+            print(month_name)
+            print(year)
             if salary_status[year][month_name]=='Paid':
+                print(444)
                 data_dict.update({doc.id: doc.to_dict()})
+            else:
+                pass
+        print(data_dict)
         return data_dict

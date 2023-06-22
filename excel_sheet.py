@@ -134,5 +134,5 @@ class SalaryData():
         for n in range(1, len(salary_list) + 1):
             for cell in ws[str(n)]:
                 cell.alignment = alignment
-        print("done")
+
         return wb

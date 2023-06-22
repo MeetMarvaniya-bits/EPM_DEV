@@ -55,18 +55,18 @@ td, th {
 }
 
 .other-child {
-  width:150px;
+  width:120px;
 }
 
 .earning-child {
-  width:1500px;
+  width:1000px;
 }
 .deduction-child {
   width:1000px;
 }
 .tableFixHead {
         /* make the table scrollable if height is more than 200 px  */
-        height: 630px; /* gives an initial height of 200px to the table */
+        height: 350px; /* gives an initial height of 200px to the table */
       }
       table {
         border-collapse: collapse; /* make the table borders collapse to each other */
@@ -159,7 +159,7 @@ td, th {
                                     <script>
                     // Set the default selected option
                     var defaultMonth = "{{month_name}}"; // Specify the default month here
-                  
+
                     // Find the corresponding option and set it as selected
                     var dropdown = document.getElementById("monthDropdown");
                     for (var i = 0; i < dropdown.options.length; i++) {
@@ -175,7 +175,7 @@ td, th {
                     document.getElementById("monthDropdown").addEventListener('change', function() {
                       var selectedOption = this.options[this.selectedIndex];
                       var selectedUrl = selectedOption.value;
-                      
+
                       // Redirect to the selected URL
                       window.location.href = selectedUrl;
                     });
@@ -225,63 +225,6 @@ td, th {
                                                   method="POST"
                                                   id="monthdata" class="pb-4">
 
-                                                <h6 class="modal-title pt-4" id="addholidays">ADD Holidays</h6>
-
-                                                <div class="modal-body inline">
-
-                                                    <input type="date" name="date" id="date" value="" required
-                                                           class="form-control-sm pe-3">
-
-                                                    <input type="text" name="description" id="description" value=""
-                                                           placeholder="Description"
-                                                           class="form-control-sm" required>
-                                                </div>
-                                                <div class="modal-footer justify-content-center">
-                                                    <button type="button" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal">Close
-                                                    </button>
-                                                    <button type="submit" value="submit"
-                                                            class="btn btn-primary">ADD
-                                                    </button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                        <hr>
-                                        <div class="container">
-                                            <h6 class="modal-title pb-4" id="exampleModalLabel">Holidays</h6>
-                                            <table>
-                                                {% for month_str, month_data in holidays.items(): %}
-                                                <tr class="p-2">
-                                                    <th colspan="2">
-                                                        <b class="ps-2 pt-4"> {{month_str}} </b>
-                                                    </th>
-                                                </tr>
-                                                {% for date_str, value in month_data.items():%}
-                                                <tr>
-                                                    <td col=1>
-                                                        <b class="ps-5"> {{date_str }} </b>
-                                                    </td>
-                                                    <td col=1>
-                                                        <i class="ps-5"> {{value }} </i>
-                                                    </td>
-                                                </tr>
-                                                {% endfor %}
-                                                {% endfor %}
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <li class="nav-item me-2">
-                                <div class="dropdown">
-                                    <!-- Button trigger modal -->
-                                    <button class="btn border-1 btn-secondary " type="button"
-                                            data-bs-toggle="modal" data-bs-target="#exampleModal3" aria-haspopup="true"
-                                            aria-expanded="false">
-                                        Holidays
-                                    </button>
-                                </div>
-                            </li>
                             <li class="nav-item me-2">
                                 <div class="dropdown">
                                     <label style="    width: 100px;
@@ -364,9 +307,13 @@ td, th {
                             {% if salary_status=='Paid' or salary_status=='Approved' %}
                             <li class="nav-item me-2">
                                 <div class="dropdown">
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+
+                                    <button class="btn border-1 btn-secondary " type="button" aria-haspopup="true"
+                                            data-bs-toggle="modal" data-bs-target="#exampleModal1" id="btn_5"
+                                            aria-expanded="false">
                                         Generate Excelsheet
                                     </button>
+
                                 </div>
                             </li>
                             <!-- Button trigger modal -->
@@ -432,6 +379,96 @@ td, th {
                                 </div>
                             </li>
                             {% endif %}
+
+                            <li class="nav-item me-2">
+                                <div class="dropdown">
+                                    <button id="edit-row-button" class="btn border-1 btn-secondary" type="button">
+                                        Edit Rows
+                                    </button>
+                                </div>
+                            </li>
+
+                            <li class="nav-item me-2">
+                                <div class="dropdown">
+                                    <!-- Button trigger modal -->
+                                    <button id="uploadButton" class="btn border-1 btn-secondary" type="button">
+                                        Import Excel Sheet
+                                    </button>
+                                </div>
+                            </li>
+                            <!-- HOLIDAYS MODAL -->
+                            <div class="modal" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModalLabel"
+                                 aria-hidden="true">
+                                <div class="modal-dialog vh-100  modal-dialog-scrollable justify-content-end p-0 me-0 mt-0 mb-0">
+                                    <div class="modal-content vh-100">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="managmonthdays">Manage Month Days</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="container">
+                                            <form action="{{url_for('salary_sheet_view', username=username, salid=salid)}}"
+                                                  method="POST"
+                                                  id="monthdata" class="pb-4">
+
+                                                <h6 class="modal-title pt-4" id="addholidays">ADD Holidays</h6>
+
+                                                <div class="modal-body inline">
+
+                                                    <input type="date" name="date" id="date" value="" required
+                                                           class="form-control-sm pe-3">
+
+                                                    <input type="text" name="description" id="description" value=""
+                                                           placeholder="Description"
+                                                           class="form-control-sm" required>
+                                                </div>
+                                                <div class="modal-footer justify-content-center">
+                                                    <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Close
+                                                    </button>
+                                                    <button type="submit" value="submit"
+                                                            class="btn btn-primary">ADD
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <hr>
+                                        <div class="container">
+                                            <h6 class="modal-title pb-4" id="exampleModalLabel">Holidays</h6>
+                                            <table>
+                                                {% for month_str, month_data in holidays.items(): %}
+                                                <tr class="p-2">
+                                                    <th colspan="2">
+                                                        <b class="ps-2 pt-4"> {{month_str}} </b>
+                                                    </th>
+                                                </tr>
+                                                {% for date_str, value in month_data.items():%}
+                                                <tr>
+                                                    <td col=1>
+                                                        <b class="ps-5"> {{date_str }} </b>
+                                                    </td>
+                                                    <td col=1>
+                                                        <i class="ps-5"> {{value }} </i>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                                {% endfor %}
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <li class="nav-item me-2">
+                                <div class="dropdown">
+                                    <!-- Button trigger modal -->
+                                    <button class="btn border-1 btn-secondary " type="button"
+                                            data-bs-toggle="modal" data-bs-target="#exampleModal3" aria-haspopup="true"
+                                            aria-expanded="false">
+                                        Holidays
+                                    </button>
+                                </div>
+                            </li>
 
                             <li class="nav-item me-2">
                                 <div class=>
@@ -537,47 +574,45 @@ td, th {
                         </thead>
 
                         <!-- Salary data  -->
-                        <tbody style="background-color:#ffffff; overflow:hidden;" class="text-center">
-                        {% for i in data%}
+                        <tbody style="background-color:#ffffff;" class="text-center">
+                            {% for i in data%}
 
-                        <tr class="border-bottom" style="border:2px solid black !important;">
-                            <td>{{ loop.index}}</td>
-                            <td scope="col" class="fix second-child">{{data[i]['employeeName']}}</td>
-                            <td scope="col" class="fix third-child" style="background-color: #FFFFFF;">
-                                {{data[i]['WrkHrs']}}
-                            </td>
-                            <td scope="col">{{ data[i]['lwp'] }}</td>
-                            <td scope="col">{{ data[i]['totalLeave'] }}</td>
-                            <td scope="col">{{ data[i]['OT'] }}</td>
-                            <td scope="col">{{data[i]['basic']}}</td>
-                            <td scope="col">{{data[i]['hra']}}</td>
-                            <td scope="col">{{data[i]['da']}}</td>
-                            <td scope="col">{{data[i]['otherAllowance']}}</td>
-                            <td scope="col">{{data[i]['incentive']}}</td>
-                            <td scope="col">{{data[i]['arrears']}}</td>
-                            <td scope="col">{{data[i]['grsOutstandingAdjustment']}}</td>
-                            <td scope="col">{{data[i]['statutoryBonus']}}</td>
-                            <td scope="col">{{data[i]['overtimeAmount']}}</td>
-                            <td scope="col">{{data[i]['totalSalary']}}</td>
-                            <td scope="col">{{data[i]['grossSalary']}}</td>
-                            <td scope="col">{{data[i]['epfo']}}</td>
-                            <td scope="col">{{data[i]['pt']}}</td>
-                            <td scope="col">{{data[i]['tds']}}</td>
-                            <td scope="col">{{data[i]['leaveDeduction']}}</td>
-                            <td scope="col">{{data[i]['otherDeduction']}}</td>
-                            <td scope="col">{{data[i]['dedOutstandingAdjustment']}}</td>
-                            <td scope="col">{{data[i]['totalDeduction']}}</td>
-                            <td scope="col" class="second-last-child" style="background-color: #FFFFFF;">
-                                {{data[i]['netSalary']}}
-                            </td>
+                            <tr class="border-bottom" style="border:2px solid black !important;">
+                                <td scope="col" class="fix second-child">{{data[i]['employeeName']}}</td>
+                                <td scope="col" class="fix third-child" style="background-color: #FFFFFF;">
+                                    {{data[i]['WrkHrs']}}</td>
+                                <td scope="col">{{ data[i]['lwp'] }}</td>
+                                <td scope="col">{{ data[i]['totalLeave'] }} </td>
+                                <td scope="col">{{ data[i]['OT'] }}</td>
+                                <td scope="col">{{data[i]['basic']}}</td>
+                                <td scope="col">{{data[i]['hra']}}</td>
+                                <td scope="col">{{data[i]['da']}}</td>
+                                <td scope="col">{{data[i]['otherAllowance']}}</td>
+                                <td scope="col">{{data[i]['incentive']}}</td>
+                                <td scope="col">{{data[i]['arrears']}}</td>
+                                <td scope="col">{{data[i]['grsOutstandingAdjustment']}}</td>
+                                <td scope="col">{{data[i]['statutoryBonus']}}</td>
+                                <td scope="col">{{data[i]['overtimeAmount']}}</td>
+                                <td scope="col">{{data[i]['totalSalary']}}</td>
+                                <td scope="col">{{data[i]['grossSalary']}}</td>
+                                <td scope="col">{{data[i]['epfo']}}</td>
+                                <td scope="col">{{data[i]['pt']}}</td>
+                                <td scope="col">{{data[i]['tds']}}</td>
+                                <td scope="col">{{data[i]['leaveDeduction']}}</td>
+                                <td scope="col">{{data[i]['otherDeduction']}}</td>
+                                <td scope="col">{{data[i]['dedOutstandingAdjustment']}}</td>
+                                <td scope="col">{{data[i]['totalDeduction']}}</td>
+                                <td scope="col" class="second-last-child" style="background-color: #FFFFFF;">
+                                    {{data[i]['netSalary']}}</td>
 
                             <!-- Edit Button  -->
                             {% if salary_status=='Paid' or salary_status=='Approved'%}
                             <td scope="col" class="fix last-child" style="background-color: #FFFFFF;">
-                                <a href="{{url_for('salary_sheet_edit_', username=username,empid=data[i]['userID'],salid=salid)}}" >
+                                <a href="#" >
                                     <button class="btn border-1 btn-secondary" type="button" aria-haspopup="true"
                                             aria-expanded="false"
-                                            style="color:#2F3990; border-color:#2F3990; background-color: #FFFFFF">
+                                            style="color:#2F3990; border-color:#2F3990; background-color: #FFFFFF"
+                                            disabled>
                                         Edit
                                     </button>
                                 </a>
@@ -989,28 +1024,28 @@ else if(salaryStatus==='Inreview') {
 
 
 
-  function removeSelectedOption(selectElement, otherSelectIds) {
-    const selectedValue = selectElement.value;
-    for (let i = 0; i < otherSelectIds.length; i++) {
-      const otherSelect = document.getElementById(otherSelectIds[i]);
-      const options = otherSelect.options;
+    function removeSelectedOption(selectElement, otherSelectIds) {
+        const selectedValue = selectElement.value;
+        for (let i = 0; i < otherSelectIds.length; i++) {
+            const otherSelect = document.getElementById(otherSelectIds[i]);
+            const options = otherSelect.options;
 
-      for (let j = 0; j < options.length; j++) {
-        if (options[j].value === selectedValue) {
-          options[j].remove();
-          break;
+            for (let j = 0; j < options.length; j++) {
+                if (options[j].value === selectedValue) {
+                    options[j].remove();
+                    break;
+                }
+            }
         }
-      }
     }
-  }
 
 </script>
 
 <script>
-    document.getElementById("topEditButton").addEventListener("click", function() {
+    document.getElementById("topEditButton").addEventListener("click", function () {
         // Get all the table rows
         var rows = document.querySelectorAll("table tbody tr");
-        
+
         // Enable editing for each row
         for (var i = 0; i < rows.length; i++) {
             var cells = rows[i].querySelectorAll("td");
@@ -1051,7 +1086,7 @@ else if(salaryStatus==='Inreview') {
 
                 // Add the rowData object to the updatedData array
                 updatedData.push(rowData);
-                
+
             }
         }
 
